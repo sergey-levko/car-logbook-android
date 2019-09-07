@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">fuel-consumption-calculator</string>
+
+    <string name="activity_main_add_fab">Add</string>
+
+    <string name="add_dialog_title">New entry</string>
+    <string name="add_dialog_volume_parameter_hint">Volume (L)</string>
+    <string name="add_dialog_distance_parameter_hint">Distance (km)</string>
+    <string name="add_dialog_date">Date</string>
+    <string name="add_dialog_positive_button" translatable="false">OK</string>
+    <string name="add_dialog_negative_button">Cancel</string>
+
+    <string name="km">km</string>
+    <string name="liters">L</string>
+    <string name="consumption_value">L/100km</string>
 </resources>
