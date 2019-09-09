@@ -1,7 +1,9 @@
 <resources>
-    <string name="app_name">fuel-consumption-calculator</string>
+    <string name="app_name">Fuel consumption calculator</string>
 
     <string name="activity_main_add_fab">Add</string>
+    <string name="activity_main_snackbar_message">Record successfully removed</string>
+    <string name="activity_main_snackbar_undo">UNDO</string>
 
     <string name="add_dialog_title">New entry</string>
     <string name="add_dialog_volume_parameter_hint">Volume (L)</string>

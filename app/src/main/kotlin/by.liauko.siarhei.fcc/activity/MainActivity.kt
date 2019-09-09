@@ -4,18 +4,21 @@ import android.content.ContentValues
 import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
+import android.provider.BaseColumns._ID
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.liauko.siarhei.fcc.R
 import by.liauko.siarhei.fcc.adapter.DataAdapter
-import by.liauko.siarhei.fcc.database.FCCEntry.columnNameConsumption
-import by.liauko.siarhei.fcc.database.FCCEntry.columnNameDistance
-import by.liauko.siarhei.fcc.database.FCCEntry.columnNameLitres
-import by.liauko.siarhei.fcc.database.FCCEntry.columnNameTime
-import by.liauko.siarhei.fcc.database.FCCEntry.tableName
+import by.liauko.siarhei.fcc.controller.RecyclerViewSwipeController
 import by.liauko.siarhei.fcc.database.FuelConsumptionCalculatorDBHelper
+import by.liauko.siarhei.fcc.database.entry.FCCEntry.columnNameConsumption
+import by.liauko.siarhei.fcc.database.entry.FCCEntry.columnNameDistance
+import by.liauko.siarhei.fcc.database.entry.FCCEntry.columnNameLitres
+import by.liauko.siarhei.fcc.database.entry.FCCEntry.columnNameTime
+import by.liauko.siarhei.fcc.database.entry.FCCEntry.tableName
 import by.liauko.siarhei.fcc.entity.FuelConsumptionData
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.*
@@ -35,13 +38,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         initDatabase()
 
         items = mutableListOf<FuelConsumptionData>() as ArrayList<FuelConsumptionData>
-        rvAdapter = DataAdapter(items, resources)
-
-        findViewById<RecyclerView>(R.id.recycler_view).apply {
-            setHasFixedSize(true)
-            layoutManager = LinearLayoutManager(context)
-            adapter = rvAdapter
-        }
+        initRecyclerView()
 
         val fab = findViewById<FloatingActionButton>(R.id.add_fab)
         fab.setOnClickListener(this)
@@ -54,6 +51,19 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         database = dbHelper.writableDatabase
     }
 
+    private fun initRecyclerView() {
+        rvAdapter = DataAdapter(items, resources, database)
+
+        val recyclerView = findViewById<RecyclerView>(R.id.recycler_view).apply {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(context)
+            adapter = rvAdapter
+        }
+
+        val helper = ItemTouchHelper(RecyclerViewSwipeController(rvAdapter))
+        helper.attachToRecyclerView(recyclerView)
+    }
+
     override fun onClick(v: View?) = startActivityForResult(Intent(this, AddDialogActivity::class.java), requestCodeAdd)
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -62,19 +72,18 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         if (resultCode == RESULT_OK && data != null) {
             when (requestCode) {
                 requestCodeAdd -> {
-                    val fuel = data.getStringExtra("litres").toDouble()
+                    val litres = data.getStringExtra("litres").toDouble()
                     val distance = data.getStringExtra("distance").toDouble()
-                    val fuelConsumption = fuel * 100 / distance
+                    val fuelConsumption = litres * 100 / distance
                     val calendar = Calendar.getInstance() as GregorianCalendar
                     calendar.set(data.getIntExtra("year", 1970),
                             data.getIntExtra("month", 0),
                             data.getIntExtra("day", 1))
-                    val id = insert(fuel, distance, fuelConsumption, calendar.timeInMillis)
+                    val id = insert(litres, distance, fuelConsumption, calendar.timeInMillis)
 
                     if (id != -1L) {
-                        items.add(FuelConsumptionData(fuelConsumption, fuel, distance, calendar))
-                        items.sortByDescending { it.date }
-                        rvAdapter.notifyDataSetChanged()
+                        items.add(FuelConsumptionData(id, fuelConsumption, litres, distance, calendar))
+                        rvAdapter.refreshRecyclerView()
                     }
                 }
             }
@@ -83,27 +92,30 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun select() {
         items.clear()
-        val cursor = database.query(tableName, null, "", emptyArray(), null, null, null)
+        database.query(tableName, null, "", emptyArray(), null, null, null).use {
+            if (it.moveToFirst()) {
+                val idColumnIndex = it.getColumnIndex(_ID)
+                val litresColumnIndex = it.getColumnIndex(columnNameLitres)
+                val distanceColumnIndex = it.getColumnIndex(columnNameDistance)
+                val consumptionColumnIndex = it.getColumnIndex(columnNameConsumption)
+                val timeColumnIndex = it.getColumnIndex(columnNameTime)
 
-        if (cursor.moveToFirst()) {
-            val litresColumnIndex = cursor.getColumnIndex(columnNameLitres)
-            val distanceColumnIndex = cursor.getColumnIndex(columnNameDistance)
-            val consumptionColumnIndex = cursor.getColumnIndex(columnNameConsumption)
-            val timeColumnIndex = cursor.getColumnIndex(columnNameTime)
-
-            do {
-                val calendar = GregorianCalendar.getInstance() as GregorianCalendar
-                calendar.timeInMillis = cursor.getLong(timeColumnIndex)
-                items.add(FuelConsumptionData(cursor.getDouble(consumptionColumnIndex),
-                    cursor.getDouble(litresColumnIndex),
-                    cursor.getDouble(distanceColumnIndex),
-                    calendar))
-            } while (cursor.moveToNext())
+                do {
+                    val calendar = GregorianCalendar.getInstance() as GregorianCalendar
+                    calendar.timeInMillis = it.getLong(timeColumnIndex)
+                    items.add(
+                        FuelConsumptionData(
+                            it.getLong(idColumnIndex),
+                            it.getDouble(consumptionColumnIndex),
+                            it.getDouble(litresColumnIndex),
+                            it.getDouble(distanceColumnIndex),
+                            calendar
+                        )
+                    )
+                } while (it.moveToNext())
+            }
         }
-
-        cursor.close()
-        items.sortByDescending { it.date }
-        rvAdapter.notifyDataSetChanged()
+        rvAdapter.refreshRecyclerView()
     }
 
     private fun insert(litres: Double, distance: Double, fuelConsumption: Double, time: Long) : Long {

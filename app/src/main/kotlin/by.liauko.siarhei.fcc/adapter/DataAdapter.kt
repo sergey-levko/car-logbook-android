@@ -1,16 +1,17 @@
 package by.liauko.siarhei.fcc.adapter
 
 import android.content.res.Resources
+import android.database.sqlite.SQLiteDatabase
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
 import by.liauko.siarhei.fcc.R
 import by.liauko.siarhei.fcc.entity.FuelConsumptionData
 import by.liauko.siarhei.fcc.util.DateConverter
 
-class DataAdapter(private val dataSet: List<FuelConsumptionData>, private val resources: Resources)
+class DataAdapter(val dataSet: MutableList<FuelConsumptionData>, val resources: Resources, val database: SQLiteDatabase)
     : RecyclerView.Adapter<DataAdapter.DataViewHolder>() {
 
     class DataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -31,4 +32,20 @@ class DataAdapter(private val dataSet: List<FuelConsumptionData>, private val re
     }
 
     override fun getItemCount() = dataSet.size
+
+    fun refreshRecyclerView() {
+        dataSet.sortByDescending { it.date }
+        notifyDataSetChanged()
+    }
+
+    fun removeItem(position: Int) {
+        dataSet.removeAt(position)
+        notifyItemRemoved(position)
+        notifyItemRangeChanged(position, dataSet.size)
+    }
+
+    fun restoreItem(data: FuelConsumptionData, position: Int) {
+        dataSet.add(position, data)
+        notifyItemInserted(position)
+    }
 }
