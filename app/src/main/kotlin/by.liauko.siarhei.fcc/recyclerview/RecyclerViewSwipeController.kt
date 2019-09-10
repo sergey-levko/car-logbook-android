@@ -1,4 +1,4 @@
-package by.liauko.siarhei.fcc.controller
+package by.liauko.siarhei.fcc.recyclerview
 
 import android.graphics.Canvas
 import android.graphics.Color
@@ -7,11 +7,10 @@ import android.provider.BaseColumns._ID
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import by.liauko.siarhei.fcc.R
-import by.liauko.siarhei.fcc.adapter.DataAdapter
 import by.liauko.siarhei.fcc.database.entry.FCCEntry.tableName
 import com.google.android.material.snackbar.Snackbar
 
-class RecyclerViewSwipeController(private val adapter: DataAdapter): ItemTouchHelper.Callback() {
+class RecyclerViewSwipeController(private val adapter: RecyclerViewDataAdapter): ItemTouchHelper.Callback() {
     private val deleteBackground = ColorDrawable(Color.RED)
     private val deleteIcon = adapter.resources.getDrawable(R.drawable.delete_white)
 
