@@ -10,8 +10,8 @@
             android:supportsRtl="true"
             android:theme="@style/AppDefault">
         <activity
-                android:name=".activity.AddDialogActivity"
-                android:theme="@style/DialogTheme"></activity>
+                android:name=".activity.DataDialogActivity"
+                android:theme="@style/DialogTheme" />
         <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
