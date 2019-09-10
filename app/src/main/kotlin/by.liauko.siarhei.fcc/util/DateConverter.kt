@@ -1,11 +1,12 @@
 package by.liauko.siarhei.fcc.util
 
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
 
 object DateConverter {
     fun convert(calendar: Calendar) : String {
-        val simpleDateFormat = SimpleDateFormat.getDateInstance()
+        val pattern = "dd.MM.yyyy"
+        val simpleDateFormat = SimpleDateFormat(pattern)
         return simpleDateFormat.format(calendar.time)
     }
 }

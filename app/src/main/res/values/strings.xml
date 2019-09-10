@@ -1,14 +1,18 @@
 <resources>
-    <string name="app_name">fuel-consumption-calculator</string>
+    <string name="app_name">Fuel consumption calculator</string>
 
     <string name="activity_main_add_fab">Add</string>
+    <string name="activity_main_snackbar_message">Record successfully removed</string>
+    <string name="activity_main_snackbar_undo">UNDO</string>
 
-    <string name="add_dialog_title">New entry</string>
-    <string name="add_dialog_volume_parameter_hint">Volume (L)</string>
-    <string name="add_dialog_distance_parameter_hint">Distance (km)</string>
-    <string name="add_dialog_date">Date</string>
-    <string name="add_dialog_positive_button" translatable="false">OK</string>
-    <string name="add_dialog_negative_button">Cancel</string>
+    <string name="data_dialog_title_add">New entry</string>
+    <string name="data_dialog_title_edit">Edit entry</string>
+    <string name="data_dialog_volume_parameter_hint">Volume (L)</string>
+    <string name="data_dialog_distance_parameter_hint">Distance (km)</string>
+    <string name="data_dialog_date">Date</string>
+    <string name="data_dialog_positive_button_add">Add</string>
+    <string name="data_dialog_positive_button_edit">Save</string>
+    <string name="data_dialog_negative_button">Cancel</string>
 
     <string name="km">km</string>
     <string name="liters">L</string>

@@ -6,20 +6,13 @@
         android:padding="16dp"
         android:gravity="center" >
 
-    <com.google.android.material.textfield.TextInputLayout
+    <Button
+            android:id="@+id/date_button"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="number"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-        <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/fuel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/add_dialog_volume_parameter_hint"
-                android:drawableStart="@drawable/gas_station"
-                android:inputType="numberDecimal" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:textSize="24sp"
+            android:layout_marginBottom="4dp" />
 
     <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -31,38 +24,46 @@
                 android:id="@+id/distance"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/add_dialog_distance_parameter_hint"
-                android:drawableStart="@drawable/gauge"
-                android:inputType="numberDecimal" />
+                android:hint="@string/data_dialog_distance_parameter_hint"
+                android:drawableStart="@drawable/gauge_accent"
+                android:inputType="numberDecimal"
+                android:drawablePadding="8dp" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
-            android:id="@+id/date_button"
-            style="?android:attr/borderlessButtonStyle"
+    <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp" />
+            android:inputType="number"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/litres"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/data_dialog_volume_parameter_hint"
+                android:drawableStart="@drawable/gas_station_accent"
+                android:inputType="numberDecimal"
+                android:drawablePadding="8dp" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:gravity="end|bottom">
+            android:gravity="end|bottom"
+            android:layout_marginTop="8dp">
 
         <Button
                 android:id="@+id/negative_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/add_dialog_negative_button"
+                android:text="@string/data_dialog_negative_button"
                 style="@style/Widget.AppCompat.Button.Borderless.Colored" />
 
         <Button
                 android:id="@+id/positive_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/add_dialog_positive_button"
                 style="@style/Widget.AppCompat.Button.Borderless.Colored" />
 
     </LinearLayout>

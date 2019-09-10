@@ -12,55 +12,71 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import by.liauko.siarhei.fcc.R
 import by.liauko.siarhei.fcc.util.DateConverter
-import java.util.*
-import java.util.Calendar.*
+import java.util.Calendar
+import java.util.Calendar.YEAR
+import java.util.Calendar.MONTH
+import java.util.Calendar.DAY_OF_MONTH
 
-class AddDialogActivity : AppCompatActivity(), View.OnClickListener, DatePickerDialog.OnDateSetListener {
-    lateinit var fuel: EditText
-    lateinit var distance: EditText
-    lateinit var dateButton: Button
-    lateinit var calendar: Calendar
+class DataDialogActivity : AppCompatActivity(), View.OnClickListener, DatePickerDialog.OnDateSetListener {
+    private lateinit var litres: EditText
+    private lateinit var distance: EditText
+    private lateinit var dateButton: Button
+    private lateinit var calendar: Calendar
+
+    private var id = -1L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add)
+        setContentView(R.layout.activity_data)
         val parameters = window.attributes
         parameters.width = WindowManager.LayoutParams.MATCH_PARENT
         window.attributes = parameters
 
-        setTitle(R.string.add_dialog_title)
-        initDialogButtons()
-        fuel = findViewById(R.id.fuel)
-        distance = findViewById(R.id.distance)
-        calendar = getInstance()
-        dateButton = findViewById(R.id.date_button)
+        setTitle(intent.getIntExtra("title", R.string.data_dialog_title_add))
+        calendar = Calendar.getInstance()
+        initElements()
+
+        id = intent.getLongExtra("id", -1L)
+        if (id != -1L) {
+            fillData()
+        }
         updateDateButtonText()
-        dateButton.setOnClickListener(this)
     }
 
-    private fun initDialogButtons() {
+    private fun initElements() {
+        litres = findViewById(R.id.litres)
+        distance = findViewById(R.id.distance)
+        dateButton = findViewById(R.id.date_button)
+        dateButton.setOnClickListener(this)
+
         val positiveButton = findViewById<Button>(R.id.positive_button)
         positiveButton.setOnClickListener(this)
+        positiveButton.setText(intent.getIntExtra("positive_button", R.string.data_dialog_positive_button_add))
 
         val negativeButton = findViewById<Button>(R.id.negative_button)
         negativeButton.setOnClickListener(this)
+    }
+
+    private fun fillData() {
+        litres.text.append(intent.getDoubleExtra("litres", 0.0).toString())
+        distance.text.append(intent.getDoubleExtra("distance", 0.0).toString())
+        calendar.timeInMillis = intent.getLongExtra("time", calendar.timeInMillis)
     }
 
     override fun onClick(v: View?) {
         if (v != null) {
             when (v.id) {
                 R.id.date_button -> {
-                    DatePickerDialog(this@AddDialogActivity, this,
+                    DatePickerDialog(this@DataDialogActivity, this,
                         calendar.get(YEAR), calendar.get(MONTH), calendar.get(DAY_OF_MONTH))
                         .show()
                 }
                 R.id.positive_button -> {
                     val intent = Intent()
-                    intent.putExtra("litres", fuel.text.toString())
+                    intent.putExtra("id", id)
+                    intent.putExtra("litres", litres.text.toString())
                     intent.putExtra("distance", distance.text.toString())
-                    intent.putExtra("year", calendar[YEAR])
-                    intent.putExtra("month", calendar[MONTH])
-                    intent.putExtra("day", calendar[DAY_OF_MONTH])
+                    intent.putExtra("time", calendar.timeInMillis)
                     setResult(RESULT_OK, intent)
                     finish()
                 }
