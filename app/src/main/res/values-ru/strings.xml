@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Калькулятор расхода</string>
+
+    <string name="activity_main_add_fab">Добавить запись</string>
+    <string name="activity_main_snackbar_message">Запись успешно удалена</string>
+    <string name="activity_main_snackbar_undo">ОТМЕНА</string>
+
+    <string name="data_dialog_title_add">Новая запись</string>
+    <string name="data_dialog_title_edit">Изменить запись</string>
+    <string name="data_dialog_volume_parameter_hint">Объём (л)</string>
+    <string name="data_dialog_distance_parameter_hint">Расстояние (км)</string>
+    <string name="data_dialog_positive_button_add">Добавить</string>
+    <string name="data_dialog_positive_button_edit">Сохранить</string>
+    <string name="data_dialog_negative_button">Отмена</string>
+
+    <string name="km">км</string>
+    <string name="liters">л</string>
+    <string name="consumption_value">л/100км</string>
+</resources>
