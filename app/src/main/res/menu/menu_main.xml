@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/log_menu_item"
+        android:title="@string/activity_main_navigation_menu_log_item" />
+
+    <item
+        android:id="@+id/fuel_menu_item"
+        android:title="@string/activity_main_navigation_menu_fuel_item" />
+</menu>

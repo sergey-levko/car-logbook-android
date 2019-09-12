@@ -1,9 +1,15 @@
 <resources>
     <string name="app_name">Калькулятор расхода</string>
 
+    <string name="activity_main_log_title">Бортовой журнал</string>
+    <string name="activity_main_fuel_title">Расход топлива</string>
     <string name="activity_main_add_fab">Добавить запись</string>
     <string name="activity_main_snackbar_message">Запись успешно удалена</string>
     <string name="activity_main_snackbar_undo">ОТМЕНА</string>
+    <string name="activity_main_navigation_view_open">Открыть</string>
+    <string name="activity_main_navigation_view_close">Закрыть</string>
+    <string name="activity_main_navigation_menu_log_item">Бортовой журнал</string>
+    <string name="activity_main_navigation_menu_fuel_item">Расход топлива</string>
 
     <string name="data_dialog_title_add">Новая запись</string>
     <string name="data_dialog_title_edit">Изменить запись</string>

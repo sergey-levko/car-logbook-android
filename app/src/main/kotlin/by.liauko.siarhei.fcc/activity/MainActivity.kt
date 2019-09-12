@@ -5,8 +5,12 @@ import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import android.provider.BaseColumns._ID
+import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,31 +26,40 @@ import by.liauko.siarhei.fcc.recyclerview.RecyclerViewDataAdapter
 import by.liauko.siarhei.fcc.recyclerview.RecyclerViewOnItemClickListener
 import by.liauko.siarhei.fcc.recyclerview.RecyclerViewSwipeController
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.navigation.NavigationView
 import java.util.ArrayList
 import java.util.Calendar
 
-class MainActivity : AppCompatActivity(), View.OnClickListener {
+class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
     private val requestCodeAdd = 1
     private val requestCodeEdit = 2
 
     private lateinit var items: ArrayList<FuelConsumptionData>
     private lateinit var rvAdapter: RecyclerViewDataAdapter
     private lateinit var database: SQLiteDatabase
+    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var toolbar: Toolbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setSupportActionBar(findViewById(R.id.toolbar))
-
-        initDatabase()
 
         items = mutableListOf<FuelConsumptionData>() as ArrayList<FuelConsumptionData>
+        initToolbar()
+        initDatabase()
         initRecyclerView()
+        initNavigationView()
 
         val fab = findViewById<FloatingActionButton>(R.id.add_fab)
         fab.setOnClickListener(this)
 
         select()
+    }
+
+    private fun initToolbar() {
+        toolbar = findViewById(R.id.toolbar)
+        toolbar.setTitle(R.string.activity_main_log_title)
+        setSupportActionBar(toolbar)
     }
 
     private fun initDatabase() {
@@ -75,7 +88,28 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         helper.attachToRecyclerView(recyclerView)
     }
 
+    private fun initNavigationView() {
+        drawerLayout = findViewById(R.id.drawer_layout)
+        val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.activity_main_navigation_view_open, R.string.activity_main_navigation_view_close)
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+
+        val navigationView = findViewById<NavigationView>(R.id.navigation_view)
+        navigationView.setNavigationItemSelectedListener(this)
+    }
+
     override fun onClick(v: View?) = startActivityForResult(Intent(this, DataDialogActivity::class.java), requestCodeAdd)
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        var result = false
+
+        when (item.itemId) {
+
+        }
+
+        drawerLayout.closeDrawers()
+        return result
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
