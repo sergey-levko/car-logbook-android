@@ -1,10 +1,8 @@
 package by.liauko.siarhei.fcc.activity
 
-import android.content.ContentValues
 import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
-import android.provider.BaseColumns._ID
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -16,27 +14,28 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.liauko.siarhei.fcc.R
 import by.liauko.siarhei.fcc.database.FuelConsumptionCalculatorDBHelper
-import by.liauko.siarhei.fcc.database.entry.FCCEntry.columnNameConsumption
-import by.liauko.siarhei.fcc.database.entry.FCCEntry.columnNameDistance
-import by.liauko.siarhei.fcc.database.entry.FCCEntry.columnNameLitres
-import by.liauko.siarhei.fcc.database.entry.FCCEntry.columnNameTime
-import by.liauko.siarhei.fcc.database.entry.FCCEntry.tableName
+import by.liauko.siarhei.fcc.database.util.CarLogDBUtil
+import by.liauko.siarhei.fcc.entity.Data
+import by.liauko.siarhei.fcc.entity.DataType
 import by.liauko.siarhei.fcc.entity.FuelConsumptionData
+import by.liauko.siarhei.fcc.entity.LogData
 import by.liauko.siarhei.fcc.recyclerview.RecyclerViewDataAdapter
 import by.liauko.siarhei.fcc.recyclerview.RecyclerViewOnItemClickListener
 import by.liauko.siarhei.fcc.recyclerview.RecyclerViewSwipeController
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
-import java.util.ArrayList
 import java.util.Calendar
 
 class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
-    private val requestCodeAdd = 1
-    private val requestCodeEdit = 2
+    private val requestCodeAddFuelConsumption = 1
+    private val requestCodeEditFuelConsumption = 2
+    private val requestCodeAddLog = 3
+    private val requestCodeEditLog = 4
 
-    private lateinit var items: ArrayList<FuelConsumptionData>
+    private lateinit var items: ArrayList<Data>
     private lateinit var rvAdapter: RecyclerViewDataAdapter
     private lateinit var database: SQLiteDatabase
+    private lateinit var dbUtil: CarLogDBUtil
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var toolbar: Toolbar
 
@@ -44,7 +43,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.O
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        items = mutableListOf<FuelConsumptionData>() as ArrayList<FuelConsumptionData>
+        items = arrayListOf()
         initToolbar()
         initDatabase()
         initRecyclerView()
@@ -53,7 +52,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.O
         val fab = findViewById<FloatingActionButton>(R.id.add_fab)
         fab.setOnClickListener(this)
 
-        select()
+        select(DataType.LOG)
     }
 
     private fun initToolbar() {
@@ -65,12 +64,17 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.O
     private fun initDatabase() {
         val dbHelper = FuelConsumptionCalculatorDBHelper(applicationContext)
         database = dbHelper.writableDatabase
+        dbUtil = CarLogDBUtil(database)
     }
 
     private fun initRecyclerView() {
         rvAdapter = RecyclerViewDataAdapter(items, resources, database, object: RecyclerViewOnItemClickListener {
-            override fun onItemClick(item: FuelConsumptionData) {
-                callEditActivityForResult(DataDialogActivity::class.java, item)
+            override fun onItemClick(item: Data) {
+                if (item is LogData) {
+
+                } else if (item is FuelConsumptionData) {
+                    callEditActivityForResult(FuelDataDialogActivity::class.java, item)
+                }
             }
         })
 
@@ -98,13 +102,22 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.O
         navigationView.setNavigationItemSelectedListener(this)
     }
 
-    override fun onClick(v: View?) = startActivityForResult(Intent(this, DataDialogActivity::class.java), requestCodeAdd)
+    override fun onClick(v: View?) = startActivityForResult(Intent(this, FuelDataDialogActivity::class.java), requestCodeAddFuelConsumption)
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         var result = false
 
         when (item.itemId) {
-
+            R.id.log_menu_item -> {
+                select(DataType.LOG)
+                toolbar.setTitle(R.string.activity_main_log_title)
+                result = true
+            }
+            R.id.fuel_menu_item -> {
+                select(DataType.FUEL)
+                toolbar.setTitle(R.string.activity_main_fuel_title)
+                result = true
+            }
         }
 
         drawerLayout.closeDrawers()
@@ -118,26 +131,39 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.O
             val litres = data.getStringExtra("litres").toDouble()
             val distance = data.getStringExtra("distance").toDouble()
             val fuelConsumption = litres * 100 / distance
+
+            val title = data.getStringExtra("title")
+            val text = data.getStringExtra("text")
+            val mileage = data.getStringExtra("mileage").toLong()
+
             val time = data.getLongExtra("time", Calendar.getInstance().timeInMillis)
             when (requestCode) {
-                requestCodeAdd -> {
-                    val id = insert(litres, distance, fuelConsumption, time)
+                requestCodeAddFuelConsumption -> {
+                    val id = dbUtil.insertFuelData(litres, distance, fuelConsumption, time)
                     if (id != -1L) {
-                        items.add(FuelConsumptionData(id, fuelConsumption, litres, distance, time))
+                        items.add(FuelConsumptionData(id, time, fuelConsumption, litres, distance))
                         rvAdapter.refreshRecyclerView()
                     }
                 }
-                requestCodeEdit -> {
+                requestCodeEditFuelConsumption -> {
                     val id = data.getLongExtra("id", -1L)
-                    val item = items.find { it.id == id }
-                    if (item != null) {
-                        item.litres = litres
-                        item.distance = distance
-                        item.fuelConsumption = fuelConsumption
-                        item.time = time
-                        update(item)
+                    val item = items.find { it.id == id } as FuelConsumptionData
+                    item.litres = litres
+                    item.distance = distance
+                    item.fuelConsumption = fuelConsumption
+                    item.time = time
+                    dbUtil.updateFuelItem(item)
+                    rvAdapter.refreshRecyclerView()
+                }
+                requestCodeAddLog -> {
+                    val id = dbUtil.insertLogData(title, text, time, mileage)
+                    if (id != -1L) {
+                        items.add(LogData(id, time, title, text, mileage))
                         rvAdapter.refreshRecyclerView()
                     }
+                }
+                requestCodeEditLog -> {
+
                 }
             }
         }
@@ -151,51 +177,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.O
         intent.putExtra("time", item.time)
         intent.putExtra("litres", item.litres)
         intent.putExtra("distance", item.distance)
-        startActivityForResult(intent, requestCodeEdit)
+        startActivityForResult(intent, requestCodeEditFuelConsumption)
     }
 
-    private fun select() {
+    private fun select(type: DataType) {
         items.clear()
-        database.query(tableName, null, "", emptyArray(), null, null, null).use {
-            if (it.moveToFirst()) {
-                val idColumnIndex = it.getColumnIndex(_ID)
-                val litresColumnIndex = it.getColumnIndex(columnNameLitres)
-                val distanceColumnIndex = it.getColumnIndex(columnNameDistance)
-                val consumptionColumnIndex = it.getColumnIndex(columnNameConsumption)
-                val timeColumnIndex = it.getColumnIndex(columnNameTime)
-
-                do {
-                    items.add(
-                        FuelConsumptionData(
-                            it.getLong(idColumnIndex),
-                            it.getDouble(consumptionColumnIndex),
-                            it.getDouble(litresColumnIndex),
-                            it.getDouble(distanceColumnIndex),
-                            it.getLong(timeColumnIndex)
-                        )
-                    )
-                } while (it.moveToNext())
-            }
+        when (type) {
+            DataType.LOG -> items.addAll(dbUtil.selectLogData())
+            DataType.FUEL -> items.addAll(dbUtil.selectFuelData())
         }
         rvAdapter.refreshRecyclerView()
-    }
-
-    private fun insert(litres: Double, distance: Double, fuelConsumption: Double, time: Long)
-            = database.insert(tableName, null, fillValues(litres, distance, fuelConsumption, time))
-
-    private fun update(item: FuelConsumptionData) {
-        database.update(tableName,
-            fillValues(item.litres, item.distance, item.fuelConsumption, item.time),
-            "$_ID LIKE ?",
-            arrayOf(item.id.toString()))
-    }
-
-    private fun fillValues(litres: Double, distance: Double, fuelConsumption: Double, time: Long): ContentValues {
-        val values = ContentValues()
-        values.put(columnNameLitres, litres)
-        values.put(columnNameDistance, distance)
-        values.put(columnNameConsumption, fuelConsumption)
-        values.put(columnNameTime, time)
-        return values
     }
 }

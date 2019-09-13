@@ -17,7 +17,7 @@ import java.util.Calendar.YEAR
 import java.util.Calendar.MONTH
 import java.util.Calendar.DAY_OF_MONTH
 
-class DataDialogActivity : AppCompatActivity(), View.OnClickListener, DatePickerDialog.OnDateSetListener {
+class FuelDataDialogActivity : AppCompatActivity(), View.OnClickListener, DatePickerDialog.OnDateSetListener {
     private lateinit var litres: EditText
     private lateinit var distance: EditText
     private lateinit var dateButton: Button
@@ -27,7 +27,7 @@ class DataDialogActivity : AppCompatActivity(), View.OnClickListener, DatePicker
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_data)
+        setContentView(R.layout.activity_fuel_data)
         val parameters = window.attributes
         parameters.width = WindowManager.LayoutParams.MATCH_PARENT
         window.attributes = parameters
@@ -67,7 +67,7 @@ class DataDialogActivity : AppCompatActivity(), View.OnClickListener, DatePicker
         if (v != null) {
             when (v.id) {
                 R.id.date_button -> {
-                    DatePickerDialog(this@DataDialogActivity, this,
+                    DatePickerDialog(this@FuelDataDialogActivity, this,
                         calendar.get(YEAR), calendar.get(MONTH), calendar.get(DAY_OF_MONTH))
                         .show()
                 }
