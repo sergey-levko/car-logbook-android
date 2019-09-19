@@ -39,6 +39,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.O
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var toolbar: Toolbar
 
+    private var type = DataType.LOG
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -52,7 +54,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.O
         val fab = findViewById<FloatingActionButton>(R.id.add_fab)
         fab.setOnClickListener(this)
 
-        select(DataType.LOG)
+        select(type)
     }
 
     private fun initToolbar() {
@@ -71,9 +73,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.O
         rvAdapter = RecyclerViewDataAdapter(items, resources, database, object: RecyclerViewOnItemClickListener {
             override fun onItemClick(item: Data) {
                 if (item is LogData) {
-
+                    callLogEditActivityForResult(LogDataActivity::class.java, item)
                 } else if (item is FuelConsumptionData) {
-                    callEditActivityForResult(FuelDataDialogActivity::class.java, item)
+                    callFuelConsumptionEditActivityForResult(FuelDataDialogActivity::class.java, item)
                 }
             }
         })
@@ -102,24 +104,29 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.O
         navigationView.setNavigationItemSelectedListener(this)
     }
 
-    override fun onClick(v: View?) = startActivityForResult(Intent(this, FuelDataDialogActivity::class.java), requestCodeAddFuelConsumption)
+    override fun onClick(v: View?) {
+        when (type) {
+            DataType.LOG -> startActivityForResult(Intent(this, LogDataActivity::class.java), requestCodeAddLog)
+            DataType.FUEL -> startActivityForResult(Intent(this, FuelDataDialogActivity::class.java), requestCodeAddFuelConsumption)
+        }
+    }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         var result = false
 
         when (item.itemId) {
             R.id.log_menu_item -> {
-                select(DataType.LOG)
+                type = DataType.LOG
                 toolbar.setTitle(R.string.activity_main_log_title)
                 result = true
             }
             R.id.fuel_menu_item -> {
-                select(DataType.FUEL)
+                type = DataType.FUEL
                 toolbar.setTitle(R.string.activity_main_fuel_title)
                 result = true
             }
         }
-
+        select(type)
         drawerLayout.closeDrawers()
         return result
     }
@@ -128,17 +135,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.O
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == RESULT_OK && data != null) {
-            val litres = data.getStringExtra("litres").toDouble()
-            val distance = data.getStringExtra("distance").toDouble()
-            val fuelConsumption = litres * 100 / distance
-
-            val title = data.getStringExtra("title")
-            val text = data.getStringExtra("text")
-            val mileage = data.getStringExtra("mileage").toLong()
-
             val time = data.getLongExtra("time", Calendar.getInstance().timeInMillis)
             when (requestCode) {
                 requestCodeAddFuelConsumption -> {
+                    val litres = data.getStringExtra("litres").toDouble()
+                    val distance = data.getStringExtra("distance").toDouble()
+                    val fuelConsumption = litres * 100 / distance
                     val id = dbUtil.insertFuelData(litres, distance, fuelConsumption, time)
                     if (id != -1L) {
                         items.add(FuelConsumptionData(id, time, fuelConsumption, litres, distance))
@@ -147,6 +149,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.O
                 }
                 requestCodeEditFuelConsumption -> {
                     val id = data.getLongExtra("id", -1L)
+                    val litres = data.getStringExtra("litres").toDouble()
+                    val distance = data.getStringExtra("distance").toDouble()
+                    val fuelConsumption = litres * 100 / distance
                     val item = items.find { it.id == id } as FuelConsumptionData
                     item.litres = litres
                     item.distance = distance
@@ -156,6 +161,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.O
                     rvAdapter.refreshRecyclerView()
                 }
                 requestCodeAddLog -> {
+                    val title = data.getStringExtra("title")
+                    val text = data.getStringExtra("text")
+                    val mileage = data.getStringExtra("mileage").toLong()
                     val id = dbUtil.insertLogData(title, text, time, mileage)
                     if (id != -1L) {
                         items.add(LogData(id, time, title, text, mileage))
@@ -163,13 +171,33 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.O
                     }
                 }
                 requestCodeEditLog -> {
-
+                    val id = data.getLongExtra("id", -1L)
+                    val title = data.getStringExtra("title")
+                    val text = data.getStringExtra("text")
+                    val mileage = data.getStringExtra("mileage").toLong()
+                    val item = items.find { it.id == id } as LogData
+                    item.title = title
+                    item.text = text
+                    item.mileage = mileage
+                    dbUtil.updateLogItem(item)
+                    rvAdapter.refreshRecyclerView()
                 }
             }
         }
     }
 
-    private fun callEditActivityForResult(activityClass: Class<*>, item: FuelConsumptionData) {
+    private fun callLogEditActivityForResult(activityClass: Class<*>, item: LogData) {
+        val intent = Intent(this, activityClass)
+        intent.putExtra("title", R.string.activity_log_title_edit)
+        intent.putExtra("id", item.id)
+        intent.putExtra("time", item.time)
+        intent.putExtra("log_title", item.title)
+        intent.putExtra("mileage", item.mileage)
+        intent.putExtra("text", item.text)
+        startActivityForResult(intent, requestCodeEditLog)
+    }
+
+    private fun callFuelConsumptionEditActivityForResult(activityClass: Class<*>, item: FuelConsumptionData) {
         val intent = Intent(this, activityClass)
         intent.putExtra("title", R.string.data_dialog_title_edit)
         intent.putExtra("positive_button", R.string.data_dialog_positive_button_edit)

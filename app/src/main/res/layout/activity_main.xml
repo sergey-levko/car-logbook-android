@@ -32,6 +32,7 @@
                     android:layout_height="match_parent"
                     android:padding="4dp" />
 
+
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/add_fab"
                     android:layout_width="wrap_content"

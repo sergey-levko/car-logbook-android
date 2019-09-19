@@ -57,11 +57,14 @@ class RecyclerViewDataAdapter(val dataSet: ArrayList<Data>,
 
     private fun bindFuelItem(item: FuelConsumptionData, holder: DataViewHolder) {
         holder.result.text = String.format("%.2f %s", item.fuelConsumption, resources.getString(R.string.consumption_value))
+        holder.details.visibility = View.GONE
         holder.parameters.text = String.format("%.2f %s / %.1f %s", item.litres, resources.getString(R.string.liters), item.distance, resources.getString(R.string.km))
     }
 
     private fun bindLogItem(item: LogData, holder: DataViewHolder) {
         holder.result.text = item.title
+        holder.details.visibility = View.VISIBLE
+        holder.details.text = item.text
         holder.parameters.text = String.format("%d %s", item.mileage, resources.getString(R.string.km))
     }
 }
@@ -71,9 +74,10 @@ interface RecyclerViewOnItemClickListener {
 }
 
 class DataViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-    val result: TextView = itemView.findViewById(R.id.result) as TextView
-    val parameters: TextView = itemView.findViewById(R.id.parameters) as TextView
-    val date: TextView = itemView.findViewById(R.id.date) as TextView
+    val result: TextView = itemView.findViewById(R.id.result)
+    val details: TextView = itemView.findViewById(R.id.details)
+    val parameters: TextView = itemView.findViewById(R.id.parameters)
+    val date: TextView = itemView.findViewById(R.id.date)
 
     fun bind(item: Data, listener: RecyclerViewOnItemClickListener) {
         itemView.setOnClickListener { listener.onItemClick(item) }

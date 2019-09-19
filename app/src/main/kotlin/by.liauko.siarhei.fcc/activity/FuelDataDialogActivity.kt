@@ -1,6 +1,5 @@
 package by.liauko.siarhei.fcc.activity
 
-import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
@@ -13,9 +12,9 @@ import androidx.appcompat.app.AppCompatActivity
 import by.liauko.siarhei.fcc.R
 import by.liauko.siarhei.fcc.util.DateConverter
 import java.util.Calendar
-import java.util.Calendar.YEAR
-import java.util.Calendar.MONTH
 import java.util.Calendar.DAY_OF_MONTH
+import java.util.Calendar.MONTH
+import java.util.Calendar.YEAR
 
 class FuelDataDialogActivity : AppCompatActivity(), View.OnClickListener, DatePickerDialog.OnDateSetListener {
     private lateinit var litres: EditText
@@ -46,7 +45,7 @@ class FuelDataDialogActivity : AppCompatActivity(), View.OnClickListener, DatePi
     private fun initElements() {
         litres = findViewById(R.id.litres)
         distance = findViewById(R.id.distance)
-        dateButton = findViewById(R.id.date_button)
+        dateButton = findViewById(R.id.fuel_date)
         dateButton.setOnClickListener(this)
 
         val positiveButton = findViewById<Button>(R.id.positive_button)
@@ -66,7 +65,7 @@ class FuelDataDialogActivity : AppCompatActivity(), View.OnClickListener, DatePi
     override fun onClick(v: View?) {
         if (v != null) {
             when (v.id) {
-                R.id.date_button -> {
+                R.id.fuel_date -> {
                     DatePickerDialog(this@FuelDataDialogActivity, this,
                         calendar.get(YEAR), calendar.get(MONTH), calendar.get(DAY_OF_MONTH))
                         .show()
@@ -81,7 +80,7 @@ class FuelDataDialogActivity : AppCompatActivity(), View.OnClickListener, DatePi
                     finish()
                 }
                 R.id.negative_button -> {
-                    setResult(Activity.RESULT_CANCELED)
+                    setResult(RESULT_CANCELED)
                     finish()
                 }
             }
