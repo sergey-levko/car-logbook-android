@@ -38,6 +38,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.O
     private lateinit var dbUtil: CarLogDBUtil
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var toolbar: Toolbar
+    private lateinit var fab: FloatingActionButton
 
     private var type = DataType.LOG
 
@@ -51,7 +52,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.O
         initRecyclerView()
         initNavigationView()
 
-        val fab = findViewById<FloatingActionButton>(R.id.add_fab)
+        fab = findViewById(R.id.add_fab)
         fab.setOnClickListener(this)
 
         select(type)
@@ -85,6 +86,16 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.O
             layoutManager = LinearLayoutManager(context)
             adapter = rvAdapter
         }
+        recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy > 0) {
+                    fab.hide()
+                } else if (dy < 0) {
+                    fab.show()
+                }
+            }
+        })
 
         val helper = ItemTouchHelper(
             RecyclerViewSwipeController(

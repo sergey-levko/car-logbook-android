@@ -9,7 +9,7 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppDefault">
-        <activity android:name=".activity.LogDataActivity"></activity>
+        <activity android:name=".activity.LogDataActivity" />
         <activity
                 android:name=".activity.FuelDataDialogActivity"
                 android:theme="@style/DialogTheme" />

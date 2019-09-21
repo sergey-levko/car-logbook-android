@@ -17,6 +17,8 @@ import java.util.Calendar.MONTH
 import java.util.Calendar.YEAR
 
 class LogDataActivity : AppCompatActivity(), View.OnClickListener, DatePickerDialog.OnDateSetListener {
+    private val defaultId = -1L
+
     private lateinit var calendar: Calendar
     private lateinit var title: EditText
     private lateinit var text: EditText
@@ -24,18 +26,18 @@ class LogDataActivity : AppCompatActivity(), View.OnClickListener, DatePickerDia
     private lateinit var date: Button
     private lateinit var toolbar: Toolbar
 
-    private var id = -1L
+    private var id = defaultId
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_log_data)
 
-        id = intent.getLongExtra("id", -1L)
+        id = intent.getLongExtra("id", defaultId)
 
         calendar = Calendar.getInstance()
         initToolbar()
         initElements()
-        if (id != -1L) {
+        if (id != defaultId) {
             fillData()
         }
         updateDateButtonText()
@@ -46,7 +48,7 @@ class LogDataActivity : AppCompatActivity(), View.OnClickListener, DatePickerDia
         toolbar.setTitle(intent.getIntExtra("title", R.string.activity_log_title_add))
         toolbar.setNavigationIcon(R.drawable.arrow_left_white)
         toolbar.setNavigationOnClickListener {
-            if (id != -1L) {
+            if (id != defaultId) {
                 intent.putExtra("id", id)
                 intent.putExtra("title", title.text.toString())
                 intent.putExtra("mileage", mileage.text.toString())
@@ -59,7 +61,7 @@ class LogDataActivity : AppCompatActivity(), View.OnClickListener, DatePickerDia
                 finish()
             }
         }
-        if (id == -1L) {
+        if (id == defaultId) {
             toolbar.inflateMenu(R.menu.log_menu_save)
             toolbar.setOnMenuItemClickListener {
                 var result = false

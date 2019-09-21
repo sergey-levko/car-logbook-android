@@ -17,12 +17,14 @@ import java.util.Calendar.MONTH
 import java.util.Calendar.YEAR
 
 class FuelDataDialogActivity : AppCompatActivity(), View.OnClickListener, DatePickerDialog.OnDateSetListener {
+    private val defaultId = -1L
+
     private lateinit var litres: EditText
     private lateinit var distance: EditText
     private lateinit var dateButton: Button
     private lateinit var calendar: Calendar
 
-    private var id = -1L
+    private var id = -defaultId
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,8 +37,8 @@ class FuelDataDialogActivity : AppCompatActivity(), View.OnClickListener, DatePi
         calendar = Calendar.getInstance()
         initElements()
 
-        id = intent.getLongExtra("id", -1L)
-        if (id != -1L) {
+        id = intent.getLongExtra("id", -defaultId)
+        if (id != -defaultId) {
             fillData()
         }
         updateDateButtonText()

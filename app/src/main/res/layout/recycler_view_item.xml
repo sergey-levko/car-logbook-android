@@ -20,7 +20,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:layout_weight="3"
+                android:layout_weight="1"
                 android:gravity="start|center_vertical">
 
             <TextView
@@ -42,7 +42,7 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:gravity="end|center_vertical"
-                android:layout_weight="5">
+                android:layout_weight="1">
 
             <TextView
                     android:id="@+id/parameters"
