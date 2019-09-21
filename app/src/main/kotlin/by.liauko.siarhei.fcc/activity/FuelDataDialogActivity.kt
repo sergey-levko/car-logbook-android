@@ -1,6 +1,5 @@
 package by.liauko.siarhei.fcc.activity
 
-import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
@@ -13,11 +12,11 @@ import androidx.appcompat.app.AppCompatActivity
 import by.liauko.siarhei.fcc.R
 import by.liauko.siarhei.fcc.util.DateConverter
 import java.util.Calendar
-import java.util.Calendar.YEAR
-import java.util.Calendar.MONTH
 import java.util.Calendar.DAY_OF_MONTH
+import java.util.Calendar.MONTH
+import java.util.Calendar.YEAR
 
-class DataDialogActivity : AppCompatActivity(), View.OnClickListener, DatePickerDialog.OnDateSetListener {
+class FuelDataDialogActivity : AppCompatActivity(), View.OnClickListener, DatePickerDialog.OnDateSetListener {
     private lateinit var litres: EditText
     private lateinit var distance: EditText
     private lateinit var dateButton: Button
@@ -27,7 +26,7 @@ class DataDialogActivity : AppCompatActivity(), View.OnClickListener, DatePicker
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_data)
+        setContentView(R.layout.activity_fuel_data)
         val parameters = window.attributes
         parameters.width = WindowManager.LayoutParams.MATCH_PARENT
         window.attributes = parameters
@@ -46,7 +45,7 @@ class DataDialogActivity : AppCompatActivity(), View.OnClickListener, DatePicker
     private fun initElements() {
         litres = findViewById(R.id.litres)
         distance = findViewById(R.id.distance)
-        dateButton = findViewById(R.id.date_button)
+        dateButton = findViewById(R.id.fuel_date)
         dateButton.setOnClickListener(this)
 
         val positiveButton = findViewById<Button>(R.id.positive_button)
@@ -66,8 +65,8 @@ class DataDialogActivity : AppCompatActivity(), View.OnClickListener, DatePicker
     override fun onClick(v: View?) {
         if (v != null) {
             when (v.id) {
-                R.id.date_button -> {
-                    DatePickerDialog(this@DataDialogActivity, this,
+                R.id.fuel_date -> {
+                    DatePickerDialog(this@FuelDataDialogActivity, this,
                         calendar.get(YEAR), calendar.get(MONTH), calendar.get(DAY_OF_MONTH))
                         .show()
                 }
@@ -81,7 +80,7 @@ class DataDialogActivity : AppCompatActivity(), View.OnClickListener, DatePicker
                     finish()
                 }
                 R.id.negative_button -> {
-                    setResult(Activity.RESULT_CANCELED)
+                    setResult(RESULT_CANCELED)
                     finish()
                 }
             }
