@@ -3,13 +3,11 @@ package by.liauko.siarhei.fcc.recyclerview
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.provider.BaseColumns._ID
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import by.liauko.siarhei.fcc.R
-import by.liauko.siarhei.fcc.database.entry.FuelEntry.fuelTableName
-import by.liauko.siarhei.fcc.database.entry.LogEntry.logTableName
 import by.liauko.siarhei.fcc.entity.FuelConsumptionData
+import by.liauko.siarhei.fcc.entity.LogData
 import com.google.android.material.snackbar.Snackbar
 
 class RecyclerViewSwipeController(private val adapter: RecyclerViewDataAdapter): ItemTouchHelper.Callback() {
@@ -39,11 +37,11 @@ class RecyclerViewSwipeController(private val adapter: RecyclerViewDataAdapter):
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                 super.onDismissed(transientBottomBar, event)
                 if (event != DISMISS_EVENT_ACTION) {
-                    var tableName = logTableName
-                    if (deletedItem is FuelConsumptionData) {
-                        tableName = fuelTableName
+                    if (deletedItem is LogData) {
+                        adapter.dbUtil.deleteLogData(deletedItem)
+                    } else if (deletedItem is FuelConsumptionData) {
+                        adapter.dbUtil.deleteFuelConsumptionData(deletedItem)
                     }
-                    adapter.database.delete(tableName, "$_ID LIKE ?", arrayOf(deletedItem.id.toString()))
                 }
             }
         })

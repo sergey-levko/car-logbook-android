@@ -1,7 +1,6 @@
 package by.liauko.siarhei.fcc.activity
 
 import android.content.Intent
-import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -12,8 +11,9 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
 import by.liauko.siarhei.fcc.R
-import by.liauko.siarhei.fcc.database.FuelConsumptionCalculatorDBHelper
+import by.liauko.siarhei.fcc.database.CarLogDatabase
 import by.liauko.siarhei.fcc.database.util.CarLogDBUtil
 import by.liauko.siarhei.fcc.entity.Data
 import by.liauko.siarhei.fcc.entity.DataType
@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.O
 
     private lateinit var items: ArrayList<Data>
     private lateinit var rvAdapter: RecyclerViewDataAdapter
-    private lateinit var database: SQLiteDatabase
+    private lateinit var database: CarLogDatabase
     private lateinit var dbUtil: CarLogDBUtil
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var toolbar: Toolbar
@@ -65,13 +65,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.O
     }
 
     private fun initDatabase() {
-        val dbHelper = FuelConsumptionCalculatorDBHelper(applicationContext)
-        database = dbHelper.writableDatabase
+        database = Room.databaseBuilder(applicationContext, CarLogDatabase::class.java, "car-log").build()
         dbUtil = CarLogDBUtil(database)
     }
 
     private fun initRecyclerView() {
-        rvAdapter = RecyclerViewDataAdapter(items, resources, database, object: RecyclerViewOnItemClickListener {
+        rvAdapter = RecyclerViewDataAdapter(items, resources, dbUtil, object: RecyclerViewOnItemClickListener {
             override fun onItemClick(item: Data) {
                 if (item is LogData) {
                     callLogEditActivityForResult(LogDataActivity::class.java, item)
@@ -152,7 +151,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.O
                     val litres = data.getStringExtra("litres").toDouble()
                     val distance = data.getStringExtra("distance").toDouble()
                     val fuelConsumption = litres * 100 / distance
-                    val id = dbUtil.insertFuelData(litres, distance, fuelConsumption, time)
+                    val id = dbUtil.insertFuelConsumptionEntity(fuelConsumption, litres, distance, time)
                     if (id != -1L) {
                         items.add(FuelConsumptionData(id, time, fuelConsumption, litres, distance))
                         rvAdapter.refreshRecyclerView()
@@ -168,14 +167,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.O
                     item.distance = distance
                     item.fuelConsumption = fuelConsumption
                     item.time = time
-                    dbUtil.updateFuelItem(item)
+                    dbUtil.updateFuelConsumptionData(item)
                     rvAdapter.refreshRecyclerView()
                 }
                 requestCodeAddLog -> {
                     val title = data.getStringExtra("title")
                     val text = data.getStringExtra("text")
                     val mileage = data.getStringExtra("mileage").toLong()
-                    val id = dbUtil.insertLogData(title, text, time, mileage)
+                    val id = dbUtil.insertLogEntity(title, text, mileage, time)
                     if (id != -1L) {
                         items.add(LogData(id, time, title, text, mileage))
                         rvAdapter.refreshRecyclerView()
@@ -190,7 +189,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.O
                     item.title = title
                     item.text = text
                     item.mileage = mileage
-                    dbUtil.updateLogItem(item)
+                    dbUtil.updateLogData(item)
                     rvAdapter.refreshRecyclerView()
                 }
             }
@@ -223,8 +222,13 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.O
         items.clear()
         when (type) {
             DataType.LOG -> items.addAll(dbUtil.selectLogData())
-            DataType.FUEL -> items.addAll(dbUtil.selectFuelData())
+            DataType.FUEL -> items.addAll(dbUtil.selectFuelConsumptionData())
         }
         rvAdapter.refreshRecyclerView()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        database.close()
     }
 }

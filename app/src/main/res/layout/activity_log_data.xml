@@ -46,7 +46,7 @@
         <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="numberDecimal"
+                android:inputType="number"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_weight="1"
                 android:layout_marginTop="4dp"
@@ -60,7 +60,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/activity_log_mileage_hint"
                     android:drawableStart="@drawable/gauge_accent"
-                    android:inputType="numberDecimal"
+                    android:inputType="number"
                     android:drawablePadding="8dp" />
         </com.google.android.material.textfield.TextInputLayout>
 

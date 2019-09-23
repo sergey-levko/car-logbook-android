@@ -1,129 +1,124 @@
 package by.liauko.siarhei.fcc.database.util
 
-import android.content.ContentValues
-import android.database.sqlite.SQLiteDatabase
-import android.provider.BaseColumns._ID
-import by.liauko.siarhei.fcc.database.entry.FuelEntry
-import by.liauko.siarhei.fcc.database.entry.FuelEntry.columnNameConsumption
-import by.liauko.siarhei.fcc.database.entry.FuelEntry.columnNameDistance
-import by.liauko.siarhei.fcc.database.entry.FuelEntry.columnNameLitres
-import by.liauko.siarhei.fcc.database.entry.FuelEntry.fuelTableName
-import by.liauko.siarhei.fcc.database.entry.LogEntry
-import by.liauko.siarhei.fcc.database.entry.LogEntry.columnNameMileage
-import by.liauko.siarhei.fcc.database.entry.LogEntry.columnNameText
-import by.liauko.siarhei.fcc.database.entry.LogEntry.columnNameTime
-import by.liauko.siarhei.fcc.database.entry.LogEntry.columnNameTitle
-import by.liauko.siarhei.fcc.database.entry.LogEntry.logTableName
+import android.os.AsyncTask
+import by.liauko.siarhei.fcc.database.CarLogDatabase
+import by.liauko.siarhei.fcc.database.entity.FuelConsumptionEntity
+import by.liauko.siarhei.fcc.database.entity.LogEntity
 import by.liauko.siarhei.fcc.entity.FuelConsumptionData
 import by.liauko.siarhei.fcc.entity.LogData
 
-class CarLogDBUtil(private val database: SQLiteDatabase) {
-
-    fun selectFuelData(): List<FuelConsumptionData> {
-        val items = mutableListOf<FuelConsumptionData>() as ArrayList
-        database.query(fuelTableName, null, "", emptyArray(), null, null, null).use {
-            if (it.moveToFirst()) {
-                val idColumnIndex = it.getColumnIndex(_ID)
-                val litresColumnIndex = it.getColumnIndex(columnNameLitres)
-                val distanceColumnIndex = it.getColumnIndex(columnNameDistance)
-                val consumptionColumnIndex = it.getColumnIndex(columnNameConsumption)
-                val timeColumnIndex = it.getColumnIndex(FuelEntry.columnNameTime)
-
-                do {
-                    items.add(
-                        FuelConsumptionData(
-                            it.getLong(idColumnIndex),
-                            it.getLong(timeColumnIndex),
-                            it.getDouble(consumptionColumnIndex),
-                            it.getDouble(litresColumnIndex),
-                            it.getDouble(distanceColumnIndex)
-                        )
-                    )
-                } while (it.moveToNext())
-            }
-        }
-
-        return items
-    }
+class CarLogDBUtil(database: CarLogDatabase) {
+    private val logDao = database.logDao()
+    private val fuelConsumptionDao = database.fuelConsumptionDao()
 
     fun selectLogData(): List<LogData> {
+        class SelectAsyncTask: AsyncTask<Unit, Unit, List<LogEntity>>() {
+            override fun doInBackground(vararg params: Unit?): List<LogEntity> = logDao.findAll()
+        }
         val items = mutableListOf<LogData>() as ArrayList
-        database.query(logTableName, null, "", emptyArray(), null, null, null).use {
-            if (it.moveToFirst()) {
-                val idColumnIndex = it.getColumnIndex(_ID)
-                val titleColumnIndex = it.getColumnIndex(columnNameTitle)
-                val textColumnIndex = it.getColumnIndex(columnNameText)
-                val timeColumnIndex = it.getColumnIndex(LogEntry.columnNameTime)
-                val mileageColumnIndex = it.getColumnIndex(columnNameMileage)
-
-                do {
-                    items.add(
-                        LogData(
-                            it.getLong(idColumnIndex),
-                            it.getLong(timeColumnIndex),
-                            it.getString(titleColumnIndex),
-                            it.getString(textColumnIndex),
-                            it.getLong(mileageColumnIndex)
-                        )
-                    )
-                } while (it.moveToNext())
-            }
+        val entities = SelectAsyncTask().execute().get()
+        for (entity in entities) {
+            items.add(LogData(entity.id!!, entity.time, entity.title, entity.text, entity.mileage))
         }
 
         return items
     }
 
-    fun insertFuelData(litres: Double,
-                       distance: Double,
-                       fuelConsumption: Double,
-                       time: Long)
-            = database.insert(fuelTableName, null, fillFuelValues(litres, distance, fuelConsumption, time))
+    fun selectFuelConsumptionData(): List<FuelConsumptionData> {
+        class SelectAsyncTask: AsyncTask<Unit, Unit, List<FuelConsumptionEntity>>() {
+            override fun doInBackground(vararg params: Unit?): List<FuelConsumptionEntity> = fuelConsumptionDao.findAll()
+        }
+        val items = mutableListOf<FuelConsumptionData>() as ArrayList
+        val entities = SelectAsyncTask().execute().get()
+        for (entity in entities) {
+            items.add(FuelConsumptionData(entity.id!!, entity.time, entity.fuelConsumption, entity.litres, entity.distance))
+        }
 
-    fun insertLogData(title: String,
-                      text: String,
-                      time: Long,
-                      mileage: Long)
-            = database.insert(logTableName, null, fillLogValues(title, text, time, mileage))
-
-    fun updateFuelItem(item: FuelConsumptionData) {
-        database.update(fuelTableName,
-            fillFuelValues(item.litres, item.distance, item.fuelConsumption, item.time),
-            "$_ID LIKE ?",
-            arrayOf(item.id.toString()))
+        return items
     }
 
-    fun updateLogItem(item: LogData) {
-        database.update(logTableName,
-            fillLogValues(item.title, item.text, item.time, item.mileage),
-            "$_ID LIKE ?",
-            arrayOf(item.id.toString()))
+    fun insertLogEntity(title: String,
+                        text: String,
+                        mileage: Long,
+                        time: Long): Long {
+        class InsertAsyncTask: AsyncTask<LogEntity, Unit, Long>() {
+            override fun doInBackground(vararg params: LogEntity?): Long {
+                val param = params[0]
+                return if (param != null) logDao.insert(param) else -1L
+            }
+        }
+        return InsertAsyncTask().execute(LogEntity(null, title, text, mileage, time)).get()
     }
 
-    private fun fillFuelValues(litres: Double,
-                               distance: Double,
-                               fuelConsumption: Double,
-                               time: Long)
-            : ContentValues {
-
-        val values = ContentValues()
-        values.put(columnNameLitres, litres)
-        values.put(columnNameDistance, distance)
-        values.put(columnNameConsumption, fuelConsumption)
-        values.put(columnNameTime, time)
-        return values
+    fun insertFuelConsumptionEntity(fuelConsumption: Double,
+                                    litres: Double,
+                                    distance: Double,
+                                    time: Long): Long {
+        class InsertAsyncTask: AsyncTask<FuelConsumptionEntity, Unit, Long>() {
+            override fun doInBackground(vararg params: FuelConsumptionEntity?): Long {
+                val param = params[0]
+                return if (param != null) fuelConsumptionDao.insert(param) else -1L
+            }
+        }
+        return InsertAsyncTask().execute(FuelConsumptionEntity(null, fuelConsumption, litres, distance, time)).get()
     }
 
-    private fun fillLogValues(title: String,
-                              text: String,
-                              time: Long,
-                              mileage: Long)
-            : ContentValues {
+    fun updateLogData(logData: LogData) {
+        class UpdateAsyncTask: AsyncTask<LogData, Unit, Unit>() {
+            override fun doInBackground(vararg params: LogData?) {
+                logDao.update(LogEntity(logData.id, logData.title, logData.text, logData.mileage, logData.time))
+            }
+        }
+        UpdateAsyncTask().execute(logData)
+    }
 
-        val values = ContentValues()
-        values.put(columnNameTitle, title)
-        values.put(columnNameText, text)
-        values.put(columnNameTime, time)
-        values.put(columnNameMileage, mileage)
-        return values
+    fun updateFuelConsumptionData(fuelConsumptionData: FuelConsumptionData) {
+        class UpdateAsyncTask: AsyncTask<FuelConsumptionData, Unit, Unit>() {
+            override fun doInBackground(vararg params: FuelConsumptionData?) {
+                fuelConsumptionDao.update(FuelConsumptionEntity(fuelConsumptionData.id,
+                    fuelConsumptionData.fuelConsumption, fuelConsumptionData.litres, fuelConsumptionData.distance, fuelConsumptionData.time))
+            }
+        }
+        UpdateAsyncTask().execute(fuelConsumptionData)
+    }
+
+    fun deleteLogData(logData: LogData) {
+        class DeleteAsyncTask: AsyncTask<LogData, Unit, Unit>() {
+            override fun doInBackground(vararg params: LogData?) {
+                val param = params[0]
+                if (param != null) {
+                    logDao.delete(
+                        LogEntity(
+                            param.id,
+                            param.title,
+                            param.text,
+                            param.mileage,
+                            param.time
+                        )
+                    )
+                }
+            }
+        }
+        DeleteAsyncTask().execute(logData)
+    }
+
+    fun deleteFuelConsumptionData(fuelConsumptionData: FuelConsumptionData) {
+        class DeleteAsyncTask: AsyncTask<FuelConsumptionData, Unit, Unit>() {
+            override fun doInBackground(vararg params: FuelConsumptionData?) {
+                val param = params[0]
+                if (param != null) {
+                    fuelConsumptionDao.delete(
+                        FuelConsumptionEntity(
+                            param.id,
+                            param.fuelConsumption,
+                            param.litres,
+                            param.distance,
+                            param.time
+                        )
+                    )
+                }
+            }
+        }
+        DeleteAsyncTask().execute(fuelConsumptionData)
     }
 }

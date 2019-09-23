@@ -1,13 +1,13 @@
 package by.liauko.siarhei.fcc.recyclerview
 
 import android.content.res.Resources
-import android.database.sqlite.SQLiteDatabase
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import by.liauko.siarhei.fcc.R
+import by.liauko.siarhei.fcc.database.util.CarLogDBUtil
 import by.liauko.siarhei.fcc.entity.Data
 import by.liauko.siarhei.fcc.entity.FuelConsumptionData
 import by.liauko.siarhei.fcc.entity.LogData
@@ -16,7 +16,7 @@ import java.util.Calendar
 
 class RecyclerViewDataAdapter(val dataSet: ArrayList<Data>,
                               val resources: Resources,
-                              val database: SQLiteDatabase,
+                              val dbUtil: CarLogDBUtil,
                               private val listener: RecyclerViewOnItemClickListener)
     : RecyclerView.Adapter<DataViewHolder>() {
 

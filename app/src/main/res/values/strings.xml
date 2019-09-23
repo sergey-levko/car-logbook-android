@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Car logbook</string>
+    <string name="app_name">Fuel consumption calculator</string>
 
     <string name="activity_main_log_title">Log</string>
     <string name="activity_main_fuel_title">Fuel consumption</string>
