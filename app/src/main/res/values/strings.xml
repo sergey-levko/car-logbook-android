@@ -10,6 +10,7 @@
     <string name="activity_main_navigation_view_close">Close</string>
     <string name="activity_main_navigation_menu_log_item">Log</string>
     <string name="activity_main_navigation_menu_fuel_item">Fuel consumption</string>
+    <string name="activity_main_no_records">No records here</string>
 
     <string name="data_dialog_title_add">New fuel consumption record</string>
     <string name="data_dialog_title_edit">Edit fuel consumption record</string>

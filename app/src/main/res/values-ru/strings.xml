@@ -10,6 +10,7 @@
     <string name="activity_main_navigation_view_close">Закрыть</string>
     <string name="activity_main_navigation_menu_log_item">Бортовой журнал</string>
     <string name="activity_main_navigation_menu_fuel_item">Расход топлива</string>
+    <string name="activity_main_no_records">Здесь пока нет записей</string>
 
     <string name="data_dialog_title_add">Новая запись о расходе топлива</string>
     <string name="data_dialog_title_edit">Изменить запись о расходе топлива</string>
