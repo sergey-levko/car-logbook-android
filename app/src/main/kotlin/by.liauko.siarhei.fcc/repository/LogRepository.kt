@@ -38,26 +38,6 @@ class LogRepository(context: Context): Repository {
         DeleteAsyncTask(logDao).execute(convertToEntity(data as LogData))
     }
 
-    /*override fun insert(entity: LogEntity): Long {
-        return InsertAsyncTask(logDao).execute(entity).get()
-    }
-
-    override fun update(data: LogData) {
-        UpdateAsyncTask(logDao).execute(convertToEntity(data))
-    }
-
-    override fun delete(data: LogData) {
-        DeleteAsyncTask(logDao).execute(convertToEntity(data))
-    }*/
-
-/*    private fun convertToEntity(logData: LogData) =
-        LogEntity(
-            logData.title,
-            logData.text,
-            logData.mileage,
-            logData.time
-        ).also { it.id = logData.id }*/
-
     private fun convertToEntity(logData: LogData) =
         LogEntity(
             logData.id,

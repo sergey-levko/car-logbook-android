@@ -38,17 +38,6 @@ class FuelConsumptionRepository(context: Context): Repository {
         DeleteAsyncTask(fuelConsumptionDao).execute(convertToEntity(data as FuelConsumptionData))
     }
 
-    /*override fun insert(entity: FuelConsumptionEntity): Long =
-        InsertAsyncTask(fuelConsumptionDao).execute(entity).get()
-
-    override fun update(data: FuelConsumptionData) {
-        UpdateAsyncTask(fuelConsumptionDao).execute(convertToEntity(data))
-    }
-
-    override fun delete(data: FuelConsumptionData) {
-        DeleteAsyncTask(fuelConsumptionDao).execute(convertToEntity(data))
-    }*/
-
     private fun convertToEntity(fuelConsumptionData: FuelConsumptionData) =
         FuelConsumptionEntity(
             fuelConsumptionData.id,
