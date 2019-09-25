@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">Car logbook</string>
+
+    <string name="activity_main_log_title">Log</string>
+    <string name="activity_main_fuel_title">Fuel consumption</string>
+    <string name="activity_main_add_fab">Add record</string>
+    <string name="activity_main_snackbar_message">Record successfully removed</string>
+    <string name="activity_main_snackbar_undo">UNDO</string>
+    <string name="activity_main_navigation_view_open">Open</string>
+    <string name="activity_main_navigation_view_close">Close</string>
+    <string name="activity_main_navigation_menu_log_item">Log</string>
+    <string name="activity_main_navigation_menu_fuel_item">Fuel consumption</string>
+    <string name="activity_main_no_records">No records here</string>
+
+    <string name="data_dialog_title_add">New fuel consumption record</string>
+    <string name="data_dialog_title_edit">Edit fuel consumption record</string>
+    <string name="data_dialog_volume_parameter_hint">Volume (L)</string>
+    <string name="data_dialog_distance_parameter_hint">Distance (km)</string>
+    <string name="data_dialog_date_hint">Date</string>
+    <string name="data_dialog_positive_button_add">Add</string>
+    <string name="data_dialog_positive_button_edit">Save</string>
+    <string name="data_dialog_negative_button">Cancel</string>
+
+    <string name="activity_log_title_add">Add log record</string>
+    <string name="activity_log_title_edit">Edit log record</string>
+    <string name="activity_log_title_hint">Title</string>
+    <string name="activity_log_text_hint">Text</string>
+    <string name="activity_log_mileage_hint">Mileage (km)</string>
+    <string name="activity_log_save_button">Save</string>
+
+    <string name="km">km</string>
+    <string name="liters">L</string>
+    <string name="consumption_value">L/100km</string>
+</resources>
