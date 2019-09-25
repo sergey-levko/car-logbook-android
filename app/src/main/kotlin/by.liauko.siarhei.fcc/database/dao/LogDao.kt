@@ -14,11 +14,11 @@ interface LogDao {
     fun findAll(): List<LogEntity>
 
     @Insert
-    fun insert(logItem: LogEntity): Long
+    fun insert(item: LogEntity): Long
 
     @Update
-    fun update(logItem: LogEntity)
+    fun update(item: LogEntity)
 
     @Delete
-    fun delete(logItem: LogEntity)
+    fun delete(item: LogEntity)
 }

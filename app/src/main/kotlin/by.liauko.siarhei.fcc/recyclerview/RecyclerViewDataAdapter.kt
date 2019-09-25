@@ -7,16 +7,17 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import by.liauko.siarhei.fcc.R
-import by.liauko.siarhei.fcc.database.util.CarLogDBUtil
-import by.liauko.siarhei.fcc.entity.Data
+import by.liauko.siarhei.fcc.entity.AppData
 import by.liauko.siarhei.fcc.entity.FuelConsumptionData
 import by.liauko.siarhei.fcc.entity.LogData
+import by.liauko.siarhei.fcc.repository.AppRepositoryCollection
 import by.liauko.siarhei.fcc.util.DateConverter
 import java.util.Calendar
 
-class RecyclerViewDataAdapter(val dataSet: ArrayList<Data>,
+class RecyclerViewDataAdapter(val dataSet: ArrayList<AppData>,
                               val resources: Resources,
-                              val dbUtil: CarLogDBUtil,
+                              val repositoryCollection: AppRepositoryCollection,
+                              private val noDataTextView: TextView,
                               private val listener: RecyclerViewOnItemClickListener)
     : RecyclerView.Adapter<DataViewHolder>() {
 
@@ -40,7 +41,12 @@ class RecyclerViewDataAdapter(val dataSet: ArrayList<Data>,
     override fun getItemCount() = dataSet.size
 
     fun refreshRecyclerView() {
-        dataSet.sortByDescending { it.time }
+        if (dataSet.isEmpty()) {
+            showNoDataText()
+        } else {
+            hideNoDataText()
+            dataSet.sortByDescending { it.time }
+        }
         notifyDataSetChanged()
     }
 
@@ -48,11 +54,13 @@ class RecyclerViewDataAdapter(val dataSet: ArrayList<Data>,
         dataSet.removeAt(position)
         notifyItemRemoved(position)
         notifyItemRangeChanged(position, dataSet.size)
+        if (dataSet.isEmpty()) showNoDataText()
     }
 
-    fun restoreItem(data: Data, position: Int) {
+    fun restoreItem(data: AppData, position: Int) {
         dataSet.add(position, data)
         notifyItemInserted(position)
+        hideNoDataText()
     }
 
     private fun bindFuelItem(item: FuelConsumptionData, holder: DataViewHolder) {
@@ -67,10 +75,18 @@ class RecyclerViewDataAdapter(val dataSet: ArrayList<Data>,
         holder.details.text = item.text
         holder.parameters.text = String.format("%d %s", item.mileage, resources.getString(R.string.km))
     }
+
+    private fun showNoDataText() {
+        noDataTextView.visibility = View.VISIBLE
+    }
+
+    private fun hideNoDataText() {
+        noDataTextView.visibility = View.GONE
+    }
 }
 
 interface RecyclerViewOnItemClickListener {
-    fun onItemClick(item: Data)
+    fun onItemClick(item: AppData)
 }
 
 class DataViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
@@ -79,7 +95,7 @@ class DataViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
     val parameters: TextView = itemView.findViewById(R.id.parameters)
     val date: TextView = itemView.findViewById(R.id.date)
 
-    fun bind(item: Data, listener: RecyclerViewOnItemClickListener) {
+    fun bind(item: AppData, listener: RecyclerViewOnItemClickListener) {
         itemView.setOnClickListener { listener.onItemClick(item) }
     }
 }

@@ -6,8 +6,8 @@ import android.graphics.drawable.ColorDrawable
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import by.liauko.siarhei.fcc.R
+import by.liauko.siarhei.fcc.entity.DataType
 import by.liauko.siarhei.fcc.entity.FuelConsumptionData
-import by.liauko.siarhei.fcc.entity.LogData
 import com.google.android.material.snackbar.Snackbar
 
 class RecyclerViewSwipeController(private val adapter: RecyclerViewDataAdapter): ItemTouchHelper.Callback() {
@@ -37,11 +37,11 @@ class RecyclerViewSwipeController(private val adapter: RecyclerViewDataAdapter):
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                 super.onDismissed(transientBottomBar, event)
                 if (event != DISMISS_EVENT_ACTION) {
-                    if (deletedItem is LogData) {
-                        adapter.dbUtil.deleteLogData(deletedItem)
-                    } else if (deletedItem is FuelConsumptionData) {
-                        adapter.dbUtil.deleteFuelConsumptionData(deletedItem)
+                    var type = DataType.LOG
+                    if (deletedItem is FuelConsumptionData) {
+                        type = DataType.FUEL
                     }
+                    adapter.repositoryCollection.getRepository(type).delete(deletedItem)
                 }
             }
         })

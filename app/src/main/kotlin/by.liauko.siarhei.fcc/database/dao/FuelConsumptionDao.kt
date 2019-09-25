@@ -14,11 +14,11 @@ interface FuelConsumptionDao {
     fun findAll(): List<FuelConsumptionEntity>
 
     @Insert
-    fun insert(fuelItem: FuelConsumptionEntity): Long
+    fun insert(item: FuelConsumptionEntity): Long
 
     @Update
-    fun update(fuelItem: FuelConsumptionEntity)
+    fun update(item: FuelConsumptionEntity)
 
     @Delete
-    fun delete(fuelItem: FuelConsumptionEntity)
+    fun delete(item: FuelConsumptionEntity)
 }

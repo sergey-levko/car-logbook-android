@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -11,17 +12,18 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
 import by.liauko.siarhei.fcc.R
 import by.liauko.siarhei.fcc.database.CarLogDatabase
-import by.liauko.siarhei.fcc.database.util.CarLogDBUtil
-import by.liauko.siarhei.fcc.entity.Data
+import by.liauko.siarhei.fcc.database.entity.FuelConsumptionEntity
+import by.liauko.siarhei.fcc.database.entity.LogEntity
+import by.liauko.siarhei.fcc.entity.AppData
 import by.liauko.siarhei.fcc.entity.DataType
 import by.liauko.siarhei.fcc.entity.FuelConsumptionData
 import by.liauko.siarhei.fcc.entity.LogData
 import by.liauko.siarhei.fcc.recyclerview.RecyclerViewDataAdapter
 import by.liauko.siarhei.fcc.recyclerview.RecyclerViewOnItemClickListener
 import by.liauko.siarhei.fcc.recyclerview.RecyclerViewSwipeController
+import by.liauko.siarhei.fcc.repository.AppRepositoryCollection
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import java.util.Calendar
@@ -32,13 +34,13 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.O
     private val requestCodeAddLog = 3
     private val requestCodeEditLog = 4
 
-    private lateinit var items: ArrayList<Data>
+    private lateinit var items: ArrayList<AppData>
     private lateinit var rvAdapter: RecyclerViewDataAdapter
-    private lateinit var database: CarLogDatabase
-    private lateinit var dbUtil: CarLogDBUtil
+    private lateinit var repositoryCollection: AppRepositoryCollection
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var toolbar: Toolbar
     private lateinit var fab: FloatingActionButton
+    private lateinit var noDataTextView: TextView
 
     private var type = DataType.LOG
 
@@ -48,30 +50,45 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.O
 
         items = arrayListOf()
         initToolbar()
-        initDatabase()
         initRecyclerView()
         initNavigationView()
 
         fab = findViewById(R.id.add_fab)
         fab.setOnClickListener(this)
+    }
 
+    override fun onResume() {
+        super.onResume()
         select(type)
+        toolbar.setTitle(
+            when (type) {
+                DataType.LOG -> R.string.activity_main_log_title
+                DataType.FUEL -> R.string.activity_main_fuel_title
+            }
+        )
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putSerializable("type", type)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+        super.onRestoreInstanceState(savedInstanceState)
+        type = savedInstanceState!!.getSerializable("type") as DataType
     }
 
     private fun initToolbar() {
         toolbar = findViewById(R.id.toolbar)
-        toolbar.setTitle(R.string.activity_main_log_title)
         setSupportActionBar(toolbar)
     }
 
-    private fun initDatabase() {
-        database = Room.databaseBuilder(applicationContext, CarLogDatabase::class.java, "car-log").build()
-        dbUtil = CarLogDBUtil(database)
-    }
-
     private fun initRecyclerView() {
-        rvAdapter = RecyclerViewDataAdapter(items, resources, dbUtil, object: RecyclerViewOnItemClickListener {
-            override fun onItemClick(item: Data) {
+        repositoryCollection = AppRepositoryCollection(this)
+        noDataTextView = findViewById(R.id.no_data_text)
+
+        rvAdapter = RecyclerViewDataAdapter(items, resources, repositoryCollection, noDataTextView, object: RecyclerViewOnItemClickListener {
+            override fun onItemClick(item: AppData) {
                 if (item is LogData) {
                     callLogEditActivityForResult(LogDataActivity::class.java, item)
                 } else if (item is FuelConsumptionData) {
@@ -151,7 +168,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.O
                     val litres = data.getStringExtra("litres").toDouble()
                     val distance = data.getStringExtra("distance").toDouble()
                     val fuelConsumption = litres * 100 / distance
-                    val id = dbUtil.insertFuelConsumptionEntity(fuelConsumption, litres, distance, time)
+                    val id = repositoryCollection.getRepository(type).insert(
+                        FuelConsumptionEntity(null, fuelConsumption, litres, distance, time)
+                    )
                     if (id != -1L) {
                         items.add(FuelConsumptionData(id, time, fuelConsumption, litres, distance))
                         rvAdapter.refreshRecyclerView()
@@ -167,14 +186,16 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.O
                     item.distance = distance
                     item.fuelConsumption = fuelConsumption
                     item.time = time
-                    dbUtil.updateFuelConsumptionData(item)
+                    repositoryCollection.getRepository(type).update(item)
                     rvAdapter.refreshRecyclerView()
                 }
                 requestCodeAddLog -> {
                     val title = data.getStringExtra("title")
                     val text = data.getStringExtra("text")
                     val mileage = data.getStringExtra("mileage").toLong()
-                    val id = dbUtil.insertLogEntity(title, text, mileage, time)
+                    val id = repositoryCollection.getRepository(type).insert(
+                        LogEntity(null, title, text, mileage, time)
+                    )
                     if (id != -1L) {
                         items.add(LogData(id, time, title, text, mileage))
                         rvAdapter.refreshRecyclerView()
@@ -189,7 +210,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.O
                     item.title = title
                     item.text = text
                     item.mileage = mileage
-                    dbUtil.updateLogData(item)
+                    repositoryCollection.getRepository(type).update(item)
                     rvAdapter.refreshRecyclerView()
                 }
             }
@@ -220,15 +241,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.O
 
     private fun select(type: DataType) {
         items.clear()
-        when (type) {
-            DataType.LOG -> items.addAll(dbUtil.selectLogData())
-            DataType.FUEL -> items.addAll(dbUtil.selectFuelConsumptionData())
-        }
+        items.addAll(repositoryCollection.getRepository(type).selectAll())
         rvAdapter.refreshRecyclerView()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        database.close()
+        CarLogDatabase.closeDatabase()
     }
 }
