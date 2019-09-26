@@ -1,98 +1,74 @@
-package by.liauko.siarhei.fcc.activity
+package by.liauko.siarhei.fcc.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.MenuItem
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.liauko.siarhei.fcc.R
-import by.liauko.siarhei.fcc.database.CarLogDatabase
+import by.liauko.siarhei.fcc.activity.FuelDataDialogActivity
+import by.liauko.siarhei.fcc.activity.LogDataActivity
 import by.liauko.siarhei.fcc.database.entity.FuelConsumptionEntity
 import by.liauko.siarhei.fcc.database.entity.LogEntity
 import by.liauko.siarhei.fcc.entity.AppData
 import by.liauko.siarhei.fcc.entity.DataType
 import by.liauko.siarhei.fcc.entity.FuelConsumptionData
 import by.liauko.siarhei.fcc.entity.LogData
-import by.liauko.siarhei.fcc.fragment.DataFragment
-import by.liauko.siarhei.fcc.fragment.SettingsFragment
 import by.liauko.siarhei.fcc.recyclerview.RecyclerViewDataAdapter
 import by.liauko.siarhei.fcc.recyclerview.RecyclerViewOnItemClickListener
 import by.liauko.siarhei.fcc.recyclerview.RecyclerViewSwipeController
 import by.liauko.siarhei.fcc.repository.AppRepositoryCollection
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.navigation.NavigationView
 import java.util.Calendar
 
-class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemSelectedListener {
+class DataFragment(private val type: DataType): Fragment() {
     private val requestCodeAddFuelConsumption = 1
     private val requestCodeEditFuelConsumption = 2
     private val requestCodeAddLog = 3
     private val requestCodeEditLog = 4
 
+    private lateinit var fragmentView: View
     private lateinit var items: ArrayList<AppData>
     private lateinit var rvAdapter: RecyclerViewDataAdapter
     private lateinit var repositoryCollection: AppRepositoryCollection
-    private lateinit var drawerLayout: DrawerLayout
-    private lateinit var toolbar: Toolbar
     private lateinit var fab: FloatingActionButton
     private lateinit var noDataTextView: TextView
 
-    private var type = DataType.LOG
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        fragmentView = inflater.inflate(R.layout.data_fragment, container, false)
 
         items = arrayListOf()
-        initToolbar()
-//        initRecyclerView()
-        initNavigationView()
+        initRecyclerView()
 
-        loadFragment(DataFragment(type))
-/*
-        fab = findViewById(R.id.add_fab)
-        fab.setOnClickListener(this)*/
-    }
-
-    override fun onResume() {
-        super.onResume()
-//        select(type)
-        toolbar.setTitle(
+        fab = fragmentView.findViewById(R.id.add_fab)
+        fab.setOnClickListener {
             when (type) {
-                DataType.LOG -> R.string.data_fragment_log_title
-                DataType.FUEL -> R.string.data_fragment_fuel_title
+                DataType.LOG -> startActivityForResult(Intent(requireContext(), LogDataActivity::class.java), requestCodeAddLog)
+                DataType.FUEL -> startActivityForResult(Intent(requireContext(), FuelDataDialogActivity::class.java), requestCodeAddFuelConsumption)
             }
-        )
-    }
+        }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putSerializable("type", type)
-    }
+        select(type)
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
-        super.onRestoreInstanceState(savedInstanceState)
-        type = savedInstanceState!!.getSerializable("type") as DataType
-    }
-
-    private fun initToolbar() {
-        toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        return fragmentView
     }
 
     private fun initRecyclerView() {
-        repositoryCollection = AppRepositoryCollection(this)
-        noDataTextView = findViewById(R.id.no_data_text)
+        repositoryCollection = AppRepositoryCollection(requireContext())
+        noDataTextView = fragmentView.findViewById(R.id.no_data_text)
 
-        rvAdapter = RecyclerViewDataAdapter(items, resources, repositoryCollection, noDataTextView, object: RecyclerViewOnItemClickListener {
+        rvAdapter = RecyclerViewDataAdapter(items, resources, repositoryCollection, noDataTextView, object:
+            RecyclerViewOnItemClickListener {
             override fun onItemClick(item: AppData) {
                 if (item is LogData) {
                     callLogEditActivityForResult(LogDataActivity::class.java, item)
@@ -102,7 +78,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.O
             }
         })
 
-        val recyclerView = findViewById<RecyclerView>(R.id.recycler_view).apply {
+        val recyclerView = fragmentView.findViewById<RecyclerView>(R.id.recycler_view).apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
             adapter = rvAdapter
@@ -126,64 +102,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.O
         helper.attachToRecyclerView(recyclerView)
     }
 
-    private fun initNavigationView() {
-        /*drawerLayout = findViewById(R.id.drawer_layout)
-        val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.activity_main_navigation_view_open, R.string.activity_main_navigation_view_close)
-        drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
-
-        val navigationView = findViewById<NavigationView>(R.id.navigation_view)
-        navigationView.setNavigationItemSelectedListener(this)*/
-
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation_view)
-        bottomNavigationView.setOnNavigationItemSelectedListener(this)
-    }
-
-    override fun onClick(v: View?) {
-        when (type) {
-            DataType.LOG -> startActivityForResult(Intent(this, LogDataActivity::class.java), requestCodeAddLog)
-            DataType.FUEL -> startActivityForResult(Intent(this, FuelDataDialogActivity::class.java), requestCodeAddFuelConsumption)
-        }
-    }
-
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        var result = false
-
-        when (item.itemId) {
-            R.id.log_menu_item -> {
-                type = DataType.LOG
-                toolbar.setTitle(R.string.data_fragment_log_title)
-                loadFragment(DataFragment(type))
-                result = true
-            }
-            R.id.fuel_menu_item -> {
-                type = DataType.FUEL
-                toolbar.setTitle(R.string.data_fragment_fuel_title)
-                loadFragment(DataFragment(type))
-                result = true
-            }
-            R.id.settings_menu_item -> {
-                toolbar.setTitle(R.string.settings_fragment_title)
-                loadFragment(SettingsFragment())
-                result = true
-            }
-        }
-//        select(type)
-//        drawerLayout.closeDrawers()
-        return result
-    }
-
-    private fun loadFragment(fragment: Fragment) {
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.main_frame_container, fragment)
-        transaction.addToBackStack(null)
-        transaction.commit()
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (resultCode == RESULT_OK && data != null) {
+        if (resultCode == AppCompatActivity.RESULT_OK && data != null) {
             val time = data.getLongExtra("time", Calendar.getInstance().timeInMillis)
             when (requestCode) {
                 requestCodeAddFuelConsumption -> {
@@ -240,7 +162,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.O
     }
 
     private fun callLogEditActivityForResult(activityClass: Class<*>, item: LogData) {
-        val intent = Intent(this, activityClass)
+        val intent = Intent(requireContext(), activityClass)
         intent.putExtra("title", R.string.activity_log_title_edit)
         intent.putExtra("id", item.id)
         intent.putExtra("time", item.time)
@@ -251,7 +173,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.O
     }
 
     private fun callFuelConsumptionEditActivityForResult(activityClass: Class<*>, item: FuelConsumptionData) {
-        val intent = Intent(this, activityClass)
+        val intent = Intent(requireContext(), activityClass)
         intent.putExtra("title", R.string.data_dialog_title_edit)
         intent.putExtra("positive_button", R.string.data_dialog_positive_button_edit)
         intent.putExtra("id", item.id)
@@ -265,10 +187,5 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, NavigationView.O
         items.clear()
         items.addAll(repositoryCollection.getRepository(type).selectAll())
         rvAdapter.refreshRecyclerView()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        CarLogDatabase.closeDatabase()
     }
 }

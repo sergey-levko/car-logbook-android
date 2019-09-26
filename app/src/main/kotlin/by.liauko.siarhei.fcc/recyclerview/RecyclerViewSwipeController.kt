@@ -29,9 +29,9 @@ class RecyclerViewSwipeController(private val adapter: RecyclerViewDataAdapter):
         val position = viewHolder.adapterPosition
         val deletedItem = adapter.dataSet[position]
         adapter.removeItem(position)
-        val snackBar = Snackbar.make(viewHolder.itemView, R.string.activity_main_snackbar_message,
+        val snackBar = Snackbar.make(viewHolder.itemView, R.string.data_fragment_snackbar_message,
             Snackbar.LENGTH_LONG
-        ).setAction(R.string.activity_main_snackbar_undo) {
+        ).setAction(R.string.data_fragment_snackbar_undo) {
             adapter.restoreItem(deletedItem, position)
         }.addCallback(object: Snackbar.Callback() {
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {

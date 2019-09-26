@@ -1,16 +1,18 @@
 <resources>
     <string name="app_name">Бортжурнал</string>
 
-    <string name="activity_main_log_title">Бортовой журнал</string>
-    <string name="activity_main_fuel_title">Расход топлива</string>
-    <string name="activity_main_add_fab">Добавить запись</string>
-    <string name="activity_main_snackbar_message">Запись успешно удалена</string>
-    <string name="activity_main_snackbar_undo">ОТМЕНА</string>
     <string name="activity_main_navigation_view_open">Открыть</string>
     <string name="activity_main_navigation_view_close">Закрыть</string>
     <string name="activity_main_navigation_menu_log_item">Бортовой журнал</string>
     <string name="activity_main_navigation_menu_fuel_item">Расход топлива</string>
-    <string name="activity_main_no_records">Здесь пока нет записей</string>
+    <string name="activity_main_navigation_menu_settings_item">Настройки</string>
+
+    <string name="data_fragment_log_title">Бортовой журнал</string>
+    <string name="data_fragment_fuel_title">Расход топлива</string>
+    <string name="data_fragment_add_fab">Добавить запись</string>
+    <string name="data_fragment_snackbar_message">Запись успешно удалена</string>
+    <string name="data_fragment_snackbar_undo">ОТМЕНА</string>
+    <string name="data_fragment_no_records">Здесь пока нет записей</string>
 
     <string name="data_dialog_title_add">Новая запись о расходе топлива</string>
     <string name="data_dialog_title_edit">Изменить запись о расходе топлива</string>
@@ -27,6 +29,8 @@
     <string name="activity_log_text_hint">Текст</string>
     <string name="activity_log_mileage_hint">Пробег (км)</string>
     <string name="activity_log_save_button">Сохранить</string>
+
+    <string name="settings_fragment_title">Настройки</string>
 
     <string name="km">км</string>
     <string name="liters">л</string>
