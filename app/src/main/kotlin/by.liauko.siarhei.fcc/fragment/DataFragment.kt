@@ -17,17 +17,18 @@ import by.liauko.siarhei.fcc.activity.LogDataActivity
 import by.liauko.siarhei.fcc.database.entity.FuelConsumptionEntity
 import by.liauko.siarhei.fcc.database.entity.LogEntity
 import by.liauko.siarhei.fcc.entity.AppData
-import by.liauko.siarhei.fcc.entity.DataType
 import by.liauko.siarhei.fcc.entity.FuelConsumptionData
 import by.liauko.siarhei.fcc.entity.LogData
 import by.liauko.siarhei.fcc.recyclerview.RecyclerViewDataAdapter
 import by.liauko.siarhei.fcc.recyclerview.RecyclerViewOnItemClickListener
 import by.liauko.siarhei.fcc.recyclerview.RecyclerViewSwipeController
 import by.liauko.siarhei.fcc.repository.AppRepositoryCollection
+import by.liauko.siarhei.fcc.util.ApplicationUtil.type
+import by.liauko.siarhei.fcc.util.DataType
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.Calendar
 
-class DataFragment(private val type: DataType): Fragment() {
+class DataFragment: Fragment() {
     private val requestCodeAddFuelConsumption = 1
     private val requestCodeEditFuelConsumption = 2
     private val requestCodeAddLog = 3

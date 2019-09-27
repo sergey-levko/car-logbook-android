@@ -31,8 +31,23 @@
     <string name="activity_log_save_button">Save</string>
 
     <string name="settings_fragment_title">Settings</string>
+    <string name="settings_preference_general_group_title">General</string>
+    <string name="settings_preference_main_page_item">Main page</string>
+    <string name="settings_preference_about_group_title">About</string>
+    <string name="settings_preference_about_text">The application helps organize a convenient repository of records about the maintenance of your car and the fuel consumption in your device. Application developed by Sergey Levko. Minsk, Republic of Belarus.</string>
+    <string name="settings_preference_version_title">Version</string>
+    <string name="settings_preference_feedback_title">Send Feedback</string>
+    <string name="settings_preference_feedback_summary">Got any queries? We are happy to help!</string>
+    <string name="settings_feedback_email_subject">Car logbook feedback</string>
+    <string name="settings_feedback_email_client">Choose email client</string>
+    <string name="settings_feedback_email_dont_remove">Please don\'t remove this information</string>
+    <string name="settings_feedback_email_os">Device OS: Android</string>
+    <string name="settings_feedback_email_app_version">App version:</string>
+    <string name="settings_feedback_email_device">Device:</string>
 
     <string name="km">km</string>
     <string name="liters">L</string>
     <string name="consumption_value">L/100km</string>
+
+    <string name="shared_preferences_name" translatable="false">app_preferences</string>
 </resources>

@@ -31,6 +31,19 @@
     <string name="activity_log_save_button">Сохранить</string>
 
     <string name="settings_fragment_title">Настройки</string>
+    <string name="settings_preference_general_group_title">Общие</string>
+    <string name="settings_preference_main_page_item">Главный экран</string>
+    <string name="settings_preference_about_group_title">О программе</string>
+    <string name="settings_preference_about_text">Приложение помогает организовать удобное хранилище записей об обслуживании вашего автомобиля и о расходе топлива в вашем устройстве. Приложение разработано Левко Сергеем. Минск, Республика Беларусь.</string>
+    <string name="settings_preference_version_title">Версия</string>
+    <string name="settings_preference_feedback_title">Отправить отзыв</string>
+    <string name="settings_preference_feedback_summary">Есть какие-либо вопросы? Мы будем рады помочь!</string>
+    <string name="settings_feedback_email_subject">Бортжурнал, отзыв</string>
+    <string name="settings_feedback_email_client">Выберите почтовый клиент</string>
+    <string name="settings_feedback_email_dont_remove">Пожалуйста, не удаляйте информацию ниже</string>
+    <string name="settings_feedback_email_os">ОС устройства: Android</string>
+    <string name="settings_feedback_email_app_version">Версия приложения:</string>
+    <string name="settings_feedback_email_device">Устройство:</string>
 
     <string name="km">км</string>
     <string name="liters">л</string>
