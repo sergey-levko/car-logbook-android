@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory
+            android:title="@string/settings_preference_general_group_title">
+
+        <DropDownPreference
+            android:key="main_page"
+            android:defaultValue="LOG"
+            android:title="@string/settings_preference_main_page_item"
+            android:entries="@array/entries"
+            app:useSimpleSummaryProvider="true"
+            android:entryValues="@array/entry_values" />
+    </PreferenceCategory>
+    <PreferenceCategory
+            android:title="@string/settings_preference_about_group_title">
+
+        <Preference
+                android:selectable="false"
+                android:summary="@string/settings_preference_about_text" />
+
+        <Preference
+                android:key="version"
+                android:title="@string/settings_preference_version_title" />
+
+        <Preference
+                android:key="feedback"
+                android:title="@string/settings_preference_feedback_title"
+                android:summary="@string/settings_preference_feedback_summary" />
+    </PreferenceCategory>
+</PreferenceScreen>

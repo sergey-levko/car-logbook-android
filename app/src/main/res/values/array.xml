@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="entries">
+        <item>Log</item>
+        <item>Fuel consumption</item>
+    </string-array>
+
+    <string-array name="entry_values">
+        <item>LOG</item>
+        <item>FUEL</item>
+    </string-array>
+</resources>

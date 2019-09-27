@@ -1,7 +1,7 @@
 package by.liauko.siarhei.fcc.repository
 
 import android.content.Context
-import by.liauko.siarhei.fcc.entity.DataType
+import by.liauko.siarhei.fcc.util.DataType
 
 class AppRepositoryCollection(context: Context) {
     private val logRepository = LogRepository(context)
