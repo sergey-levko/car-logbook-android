@@ -3,16 +3,17 @@ package by.liauko.siarhei.fcc.recyclerview
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import by.liauko.siarhei.fcc.R
-import by.liauko.siarhei.fcc.entity.DataType
 import by.liauko.siarhei.fcc.entity.FuelConsumptionData
+import by.liauko.siarhei.fcc.util.DataType
 import com.google.android.material.snackbar.Snackbar
 
 class RecyclerViewSwipeController(private val adapter: RecyclerViewDataAdapter): ItemTouchHelper.Callback() {
     private val deleteBackground = ColorDrawable(Color.RED)
-    private val deleteIcon = adapter.resources.getDrawable(R.drawable.delete_white)
+    private val deleteIcon = ResourcesCompat.getDrawable(adapter.resources, R.drawable.delete_white, null)!!
 
     override fun getMovementFlags(
         recyclerView: RecyclerView,
@@ -29,9 +30,9 @@ class RecyclerViewSwipeController(private val adapter: RecyclerViewDataAdapter):
         val position = viewHolder.adapterPosition
         val deletedItem = adapter.dataSet[position]
         adapter.removeItem(position)
-        val snackBar = Snackbar.make(viewHolder.itemView, R.string.activity_main_snackbar_message,
+        val snackBar = Snackbar.make(viewHolder.itemView, R.string.data_fragment_snackbar_message,
             Snackbar.LENGTH_LONG
-        ).setAction(R.string.activity_main_snackbar_undo) {
+        ).setAction(R.string.data_fragment_snackbar_undo) {
             adapter.restoreItem(deletedItem, position)
         }.addCallback(object: Snackbar.Callback() {
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {

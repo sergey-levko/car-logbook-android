@@ -4,9 +4,12 @@
             android:id="@+id/log_menu_item"
             android:title="@string/activity_main_navigation_menu_log_item"
             android:icon="@drawable/book_open_black" />
-
     <item
             android:id="@+id/fuel_menu_item"
             android:title="@string/activity_main_navigation_menu_fuel_item"
             android:icon="@drawable/gas_station_black" />
+    <item
+            android:id="@+id/settings_menu_item"
+            android:title="@string/activity_main_navigation_menu_settings_item"
+            android:icon="@drawable/settings_black" />
 </menu>
