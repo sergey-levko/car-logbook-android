@@ -55,7 +55,7 @@ class SettingsFragment: PreferenceFragmentCompat() {
 
         val intent = Intent(Intent.ACTION_SEND)
         intent.type = "message/rfc822"
-        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("okvel.s@gmail.com"))
+        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("okvel.work@gmail.com"))
         intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.settings_feedback_email_subject))
         intent.putExtra(Intent.EXTRA_TEXT, body)
         startActivity(Intent.createChooser(intent, getString(R.string.settings_feedback_email_client)))
