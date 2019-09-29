@@ -47,7 +47,6 @@
     <string name="settings_terms_title">Terms &amp; Conditions</string>
     <string name="settings_terms_url" translatable="false">https://www.gnu.org/licenses/gpl-3.0.en.html</string>
     <string name="settings_theme_title">Theme</string>
-    <string name="settings_language_title">Language</string>
 
     <string name="km">km</string>
     <string name="liters">L</string>
