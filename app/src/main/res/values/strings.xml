@@ -44,10 +44,15 @@
     <string name="settings_feedback_email_os">Device OS: Android</string>
     <string name="settings_feedback_email_app_version">App version:</string>
     <string name="settings_feedback_email_device">Device:</string>
+    <string name="settings_terms_title">Terms &amp; Conditions</string>
+    <string name="settings_terms_url" translatable="false">https://www.gnu.org/licenses/gpl-3.0.en.html</string>
+    <string name="settings_theme_title">Theme</string>
 
     <string name="km">km</string>
     <string name="liters">L</string>
     <string name="consumption_value">L/100km</string>
 
     <string name="shared_preferences_name" translatable="false">app_preferences</string>
+    <string name="main_screen_key" translatable="false">main_screen</string>
+    <string name="theme_key" translatable="false">theme</string>
 </resources>

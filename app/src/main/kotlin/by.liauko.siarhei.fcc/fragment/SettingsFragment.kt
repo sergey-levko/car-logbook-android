@@ -11,11 +11,11 @@ import androidx.preference.PreferenceFragmentCompat
 import by.liauko.siarhei.fcc.R
 
 class SettingsFragment: PreferenceFragmentCompat() {
-    private val mainScreenKey = "type"
-
     private lateinit var appContext: Context
     private lateinit var appVersion: String
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var mainScreenKey: String
+    private lateinit var themeKey: String
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.app_preferences)
@@ -24,7 +24,11 @@ class SettingsFragment: PreferenceFragmentCompat() {
         appVersion = appContext.packageManager.getPackageInfo(appContext.packageName, 0).versionName
         sharedPreferences = appContext.getSharedPreferences(getString(R.string.shared_preferences_name), Context.MODE_PRIVATE)
 
-        findPreference<DropDownPreference>("main_page")!!.onPreferenceChangeListener = preferenceChangeListener
+        mainScreenKey = getString(R.string.main_screen_key)
+        themeKey = getString(R.string.theme_key)
+
+        findPreference<DropDownPreference>(mainScreenKey)!!.onPreferenceChangeListener = preferenceChangeListener
+        findPreference<DropDownPreference>(themeKey)!!.onPreferenceChangeListener = preferenceChangeListener
         findPreference<Preference>("version")!!.summary = appVersion
         findPreference<Preference>("feedback")!!.setOnPreferenceClickListener {
             sendFeedback()
@@ -33,11 +37,16 @@ class SettingsFragment: PreferenceFragmentCompat() {
     }
 
     private val preferenceChangeListener = Preference.OnPreferenceChangeListener { preference, newValue ->
-        val value = newValue.toString()
-        if (preference is DropDownPreference) {
+        if (preference.key == mainScreenKey) {
             sharedPreferences.edit()
-                .putString(mainScreenKey, value)
+                .putString(mainScreenKey, newValue.toString())
                 .apply()
+        } else if (preference.key == themeKey) {
+            sharedPreferences.edit()
+                .putString(themeKey, newValue.toString())
+                .apply()
+            requireActivity().finish()
+            startActivity(requireActivity().intent)
         }
 
         true

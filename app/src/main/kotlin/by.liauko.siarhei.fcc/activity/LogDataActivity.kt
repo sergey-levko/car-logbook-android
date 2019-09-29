@@ -10,6 +10,7 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import by.liauko.siarhei.fcc.R
+import by.liauko.siarhei.fcc.util.ApplicationUtil.appTheme
 import by.liauko.siarhei.fcc.util.DateConverter
 import java.util.Calendar
 import java.util.Calendar.DAY_OF_MONTH
@@ -29,6 +30,8 @@ class LogDataActivity : AppCompatActivity(), View.OnClickListener, DatePickerDia
     private var id = defaultId
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(appTheme.appId)
+        
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_log_data)
 
