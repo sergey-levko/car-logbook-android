@@ -32,6 +32,10 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
         bottomNavigationView = findViewById(R.id.bottom_navigation_view)
         bottomNavigationView.setOnNavigationItemSelectedListener(this)
+        bottomNavigationView.selectedItemId = when (type) {
+            DataType.LOG -> R.id.log_menu_item
+            DataType.FUEL -> R.id.fuel_menu_item
+        }
     }
 
     override fun onResume() {
@@ -41,6 +45,16 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             R.id.fuel_menu_item -> loadFragment(DataFragment(), R.string.data_fragment_fuel_title)
             R.id.settings_menu_item -> loadFragment(SettingsFragment(), R.string.settings_fragment_title)
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt("item_id", bottomNavigationView.selectedItemId)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+        super.onRestoreInstanceState(savedInstanceState)
+        bottomNavigationView.selectedItemId = savedInstanceState!!.getInt("item_id")
     }
 
     override fun onDestroy() {
