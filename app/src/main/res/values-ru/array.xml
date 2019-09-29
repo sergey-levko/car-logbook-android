@@ -4,4 +4,13 @@
         <item>Бортовой журнал</item>
         <item>Расход топлива</item>
     </string-array>
+
+    <string-array name="themes">
+        <item>Котёнок Валери (Сиреневая)</item>
+        <item>Синяя</item>
+        <item>Красная</item>
+        <item>Оранживая</item>
+        <item>Зелёная</item>
+        <item>Тёмная</item>
+    </string-array>
 </resources>

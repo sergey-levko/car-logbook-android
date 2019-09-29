@@ -44,6 +44,8 @@
     <string name="settings_feedback_email_os">ОС устройства: Android</string>
     <string name="settings_feedback_email_app_version">Версия приложения:</string>
     <string name="settings_feedback_email_device">Устройство:</string>
+    <string name="settings_terms_title">Условия использования</string>
+    <string name="settings_theme_title">Тема</string>
 
     <string name="km">км</string>
     <string name="liters">л</string>

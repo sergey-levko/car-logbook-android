@@ -9,6 +9,8 @@ import by.liauko.siarhei.fcc.R
 import by.liauko.siarhei.fcc.database.CarLogDatabase
 import by.liauko.siarhei.fcc.fragment.DataFragment
 import by.liauko.siarhei.fcc.fragment.SettingsFragment
+import by.liauko.siarhei.fcc.util.AppTheme
+import by.liauko.siarhei.fcc.util.ApplicationUtil.appTheme
 import by.liauko.siarhei.fcc.util.ApplicationUtil.type
 import by.liauko.siarhei.fcc.util.DataType
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -17,11 +19,14 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     private lateinit var bottomNavigationView: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val preferences =  getSharedPreferences(getString(R.string.shared_preferences_name), Context.MODE_PRIVATE)
+        type = DataType.valueOf(preferences.getString(getString(R.string.main_screen_key), "LOG")!!)
+        appTheme = AppTheme.valueOf(preferences.getString(getString(R.string.theme_key), "KITTY")!!)
+        setTheme(appTheme.appId)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val preferences =  getSharedPreferences(getString(R.string.shared_preferences_name), Context.MODE_PRIVATE)
-        type = DataType.valueOf(preferences.getString("type", "LOG")!!)
 
         setSupportActionBar(findViewById(R.id.toolbar))
 
@@ -36,16 +41,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             R.id.fuel_menu_item -> loadFragment(DataFragment(), R.string.data_fragment_fuel_title)
             R.id.settings_menu_item -> loadFragment(SettingsFragment(), R.string.settings_fragment_title)
         }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putSerializable("type", type)
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
-        super.onRestoreInstanceState(savedInstanceState)
-        type = savedInstanceState!!.getSerializable("type") as DataType
     }
 
     override fun onDestroy() {
