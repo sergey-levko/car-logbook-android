@@ -19,12 +19,22 @@
         <item>Dark</item>
     </string-array>
 
-    <string-array name="themes_value">
+    <string-array name="theme_values">
         <item>KITTY</item>
         <item>BLUE</item>
         <item>RED</item>
         <item>ORANGE</item>
         <item>GREEN</item>
         <item>DARK</item>
+    </string-array>
+
+    <string-array name="periods">
+        <item>Month</item>
+        <item>Year</item>
+    </string-array>
+
+    <string-array name="period_values">
+        <item>MONTH</item>
+        <item>YEAR</item>
     </string-array>
 </resources>

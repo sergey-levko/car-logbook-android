@@ -6,6 +6,7 @@
     <string name="activity_main_navigation_menu_log_item">Log</string>
     <string name="activity_main_navigation_menu_fuel_item">Fuel consumption</string>
     <string name="activity_main_navigation_menu_settings_item">Settings</string>
+    <string name="activity_main_period_select_menu_date">Period</string>
 
     <string name="data_fragment_log_title">Log</string>
     <string name="data_fragment_fuel_title">Fuel consumption</string>
@@ -44,9 +45,35 @@
     <string name="settings_feedback_email_os">Device OS: Android</string>
     <string name="settings_feedback_email_app_version">App version:</string>
     <string name="settings_feedback_email_device">Device:</string>
-    <string name="settings_terms_title">Terms &amp; Conditions</string>
-    <string name="settings_terms_url" translatable="false">https://www.gnu.org/licenses/gpl-3.0.en.html</string>
-    <string name="settings_theme_title">Theme</string>
+    <string name="settings_preference_terms_title">Terms &amp; Conditions</string>
+    <string name="settings_preference_terms_url" translatable="false">https://www.gnu.org/licenses/gpl-3.0.en.html</string>
+    <string name="settings_preference_theme_title">Theme</string>
+    <string name="settings_preference_period_title">Period</string>
+    <string name="settings_preference_interface_group_title">Interface</string>
+
+    <string name="period_dialog_jan">JAN</string>
+    <string name="period_dialog_feb">FEB</string>
+    <string name="period_dialog_mar">MAR</string>
+    <string name="period_dialog_apr">APR</string>
+    <string name="period_dialog_may">MAY</string>
+    <string name="period_dialog_jun">JUN</string>
+    <string name="period_dialog_jul">JUL</string>
+    <string name="period_dialog_aug">AUG</string>
+    <string name="period_dialog_sep">SEP</string>
+    <string name="period_dialog_oct">OCT</string>
+    <string name="period_dialog_nov">NOV</string>
+    <string name="period_dialog_dec">DEC</string>
+    <string name="period_dialog_positive_button_month">This month</string>
+    <string name="period_dialog_positive_button_year">Select</string>
+    <string name="period_dialog_negative_button">Cancel</string>
+    <string name="period_dialog_previous_year_button_content_description">Previous</string>
+    <string name="period_dialog_next_year_button_content_description">Next</string>
+
+    <string name="year_selector_dialog_title">Enter year</string>
+    <string name="year_selector_dialog_year_hint">Year</string>
+    <string name="year_selector_dialog_error_text">The year value must be between 1970 and</string>
+    <string name="year_selector_dialog_positive_button">Select</string>
+    <string name="year_selector_dialog_negative_button">Cancel</string>
 
     <string name="km">km</string>
     <string name="liters">L</string>
@@ -55,4 +82,5 @@
     <string name="shared_preferences_name" translatable="false">app_preferences</string>
     <string name="main_screen_key" translatable="false">main_screen</string>
     <string name="theme_key" translatable="false">theme</string>
+    <string name="period_key" translatable="false">period</string>
 </resources>

@@ -13,4 +13,9 @@
         <item>Зелёная</item>
         <item>Тёмная</item>
     </string-array>
+
+    <string-array name="periods">
+        <item>Месяц</item>
+        <item>Год</item>
+    </string-array>
 </resources>
