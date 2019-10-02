@@ -8,7 +8,7 @@ import by.liauko.siarhei.fcc.database.entity.AppEntity
 import by.liauko.siarhei.fcc.database.entity.LogEntity
 import by.liauko.siarhei.fcc.entity.AppData
 import by.liauko.siarhei.fcc.entity.LogData
-import java.util.Calendar
+import by.liauko.siarhei.fcc.util.ApplicationUtil.period
 
 class LogRepository(context: Context): Repository {
     private val logDao: LogDao
@@ -28,8 +28,8 @@ class LogRepository(context: Context): Repository {
         return items
     }
 
-    override fun selectAllByDate(calendar: Calendar): List<LogData> {
-        val timeBounds = RepositoryUtil.prepareDateRange(calendar)
+    override fun selectAllByPeriod(): List<LogData> {
+        val timeBounds = RepositoryUtil.prepareDateRange(period)
         val items = mutableListOf<LogData>() as ArrayList
         val entities = SelectByDateAsyncTask(logDao)
             .execute(timeBounds.first, timeBounds.second)

@@ -8,7 +8,7 @@ import by.liauko.siarhei.fcc.database.entity.AppEntity
 import by.liauko.siarhei.fcc.database.entity.FuelConsumptionEntity
 import by.liauko.siarhei.fcc.entity.AppData
 import by.liauko.siarhei.fcc.entity.FuelConsumptionData
-import java.util.Calendar
+import by.liauko.siarhei.fcc.util.ApplicationUtil.period
 
 class FuelConsumptionRepository(context: Context): Repository {
     private val fuelConsumptionDao: FuelConsumptionDao
@@ -28,8 +28,8 @@ class FuelConsumptionRepository(context: Context): Repository {
         return items
     }
 
-    override fun selectAllByDate(calendar: Calendar): List<FuelConsumptionData> {
-        val timeBounds = RepositoryUtil.prepareDateRange(calendar)
+    override fun selectAllByPeriod(): List<FuelConsumptionData> {
+        val timeBounds = RepositoryUtil.prepareDateRange(period)
         val items = mutableListOf<FuelConsumptionData>() as ArrayList
         val entities = SelectByDateAsyncTask(fuelConsumptionDao)
             .execute(timeBounds.first, timeBounds.second)

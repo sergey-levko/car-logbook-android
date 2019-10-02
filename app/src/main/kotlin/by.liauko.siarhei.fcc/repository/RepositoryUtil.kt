@@ -1,19 +1,21 @@
 package by.liauko.siarhei.fcc.repository
 
 import android.content.Context
-import by.liauko.siarhei.fcc.util.ApplicationUtil
+import by.liauko.siarhei.fcc.util.ApplicationUtil.dataPeriod
 import by.liauko.siarhei.fcc.util.DataPeriod
 import by.liauko.siarhei.fcc.util.DataType
 import java.util.Calendar
 
 object RepositoryUtil {
-    fun prepareDateRange(calendar: Calendar): Pair<Long, Long> {
+    fun prepareDateRange(time: Long): Pair<Long, Long> {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = time
         calendar.set(Calendar.HOUR_OF_DAY, 0)
         calendar.clear(Calendar.MINUTE)
         calendar.clear(Calendar.SECOND)
         calendar.clear(Calendar.MILLISECOND)
 
-        val dayType = when (ApplicationUtil.dataPeriod) {
+        val dayType = when (dataPeriod) {
             DataPeriod.MONTH -> Calendar.DAY_OF_MONTH
             DataPeriod.YEAR -> Calendar.DAY_OF_YEAR
         }
