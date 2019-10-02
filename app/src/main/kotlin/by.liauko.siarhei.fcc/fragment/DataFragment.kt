@@ -21,7 +21,7 @@ import by.liauko.siarhei.fcc.entity.FuelConsumptionData
 import by.liauko.siarhei.fcc.entity.LogData
 import by.liauko.siarhei.fcc.recyclerview.RecyclerViewDataAdapter
 import by.liauko.siarhei.fcc.recyclerview.RecyclerViewOnItemClickListener
-import by.liauko.siarhei.fcc.recyclerview.RecyclerViewRecordsSwipeController
+import by.liauko.siarhei.fcc.recyclerview.RecyclerViewSwipeController
 import by.liauko.siarhei.fcc.repository.AppRepositoryCollection
 import by.liauko.siarhei.fcc.util.ApplicationUtil.type
 import by.liauko.siarhei.fcc.util.DataType
@@ -96,7 +96,7 @@ class DataFragment: Fragment() {
         })
 
         val helper = ItemTouchHelper(
-            RecyclerViewRecordsSwipeController(
+            RecyclerViewSwipeController(
                 rvAdapter
             )
         )

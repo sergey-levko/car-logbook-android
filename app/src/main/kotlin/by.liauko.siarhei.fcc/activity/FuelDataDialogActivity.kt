@@ -25,7 +25,7 @@ class FuelDataDialogActivity : AppCompatActivity(), View.OnClickListener, DatePi
     private lateinit var dateButton: Button
     private lateinit var calendar: Calendar
 
-    private var id = -defaultId
+    private var id = defaultId
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(appTheme.dialogId)
@@ -40,8 +40,8 @@ class FuelDataDialogActivity : AppCompatActivity(), View.OnClickListener, DatePi
         calendar = Calendar.getInstance()
         initElements()
 
-        id = intent.getLongExtra("id", -defaultId)
-        if (id != -defaultId) {
+        id = intent.getLongExtra("id", defaultId)
+        if (id != defaultId) {
             fillData()
         }
         updateDateButtonText()

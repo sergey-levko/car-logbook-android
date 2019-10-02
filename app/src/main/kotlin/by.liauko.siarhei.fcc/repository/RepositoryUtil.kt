@@ -7,9 +7,7 @@ import by.liauko.siarhei.fcc.util.DataType
 import java.util.Calendar
 
 object RepositoryUtil {
-    fun prepareDateRange(time: Long): Pair<Long, Long> {
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = time
+    fun prepareDateRange(calendar: Calendar): Pair<Long, Long> {
         calendar.set(Calendar.HOUR_OF_DAY, 0)
         calendar.clear(Calendar.MINUTE)
         calendar.clear(Calendar.SECOND)

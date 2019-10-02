@@ -7,7 +7,7 @@ object ApplicationUtil {
     var type = DataType.LOG
     var appTheme = AppTheme.KITTY
     var dataPeriod = DataPeriod.MONTH
-    var period = Calendar.getInstance().timeInMillis
+    var periodCalendar = Calendar.getInstance()
 }
 
 enum class DataType {
