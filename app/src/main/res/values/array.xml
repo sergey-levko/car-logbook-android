@@ -31,10 +31,12 @@
     <string-array name="periods">
         <item>Month</item>
         <item>Year</item>
+        <item>All time</item>
     </string-array>
 
     <string-array name="period_values">
         <item>MONTH</item>
         <item>YEAR</item>
+        <item>ALL</item>
     </string-array>
 </resources>

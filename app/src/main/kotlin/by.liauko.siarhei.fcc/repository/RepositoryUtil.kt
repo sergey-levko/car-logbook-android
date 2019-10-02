@@ -16,6 +16,7 @@ object RepositoryUtil {
         val dayType = when (dataPeriod) {
             DataPeriod.MONTH -> Calendar.DAY_OF_MONTH
             DataPeriod.YEAR -> Calendar.DAY_OF_YEAR
+            DataPeriod.ALL -> 0
         }
 
         calendar.set(dayType, 1)

@@ -63,6 +63,14 @@ class MainActivity : AppCompatActivity(),
 
             return@setOnMenuItemClickListener result
         }
+        updateToolbarMenuState()
+    }
+
+    private fun updateToolbarMenuState() {
+        toolbar.menu.findItem(R.id.period_select_menu_date).isVisible = when (dataPeriod) {
+            DataPeriod.ALL -> false
+            else -> true
+        }
     }
 
     private fun initBottomNavigationView() {
@@ -100,13 +108,13 @@ class MainActivity : AppCompatActivity(),
 
         when (item.itemId) {
             R.id.log_menu_item -> {
-                toolbar.menu.findItem(R.id.period_select_menu_date).isVisible = true
+                updateToolbarMenuState()
                 type = DataType.LOG
                 loadFragment(DataFragment(), R.string.data_fragment_log_title)
                 result = true
             }
             R.id.fuel_menu_item -> {
-                toolbar.menu.findItem(R.id.period_select_menu_date).isVisible = true
+                updateToolbarMenuState()
                 type = DataType.FUEL
                 loadFragment(DataFragment(), R.string.data_fragment_fuel_title)
                 result = true

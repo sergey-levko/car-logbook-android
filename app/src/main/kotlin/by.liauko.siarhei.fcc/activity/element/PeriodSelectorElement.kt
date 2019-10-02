@@ -116,6 +116,7 @@ class PeriodSelectorElement(private val parent: MainActivity, private val rootVi
                 view!!.findViewById<GridLayout>(R.id.months_grid_layout).visibility = View.GONE
                 positiveButton.setText(R.string.period_dialog_positive_button_year)
             }
+            DataPeriod.ALL -> return
         }
     }
 
@@ -150,6 +151,7 @@ class PeriodSelectorElement(private val parent: MainActivity, private val rootVi
                             year = currentYear
                         }
                         DataPeriod.YEAR -> ApplicationUtil.periodCalendar.set(Calendar.YEAR, year)
+                        DataPeriod.ALL -> return
                     }
                     selectedMonth = currentMonth
                     selectedYear = year

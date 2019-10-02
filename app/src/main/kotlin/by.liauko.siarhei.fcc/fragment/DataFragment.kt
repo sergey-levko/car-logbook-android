@@ -23,7 +23,9 @@ import by.liauko.siarhei.fcc.recyclerview.RecyclerViewDataAdapter
 import by.liauko.siarhei.fcc.recyclerview.RecyclerViewOnItemClickListener
 import by.liauko.siarhei.fcc.recyclerview.RecyclerViewSwipeController
 import by.liauko.siarhei.fcc.repository.AppRepositoryCollection
+import by.liauko.siarhei.fcc.util.ApplicationUtil.dataPeriod
 import by.liauko.siarhei.fcc.util.ApplicationUtil.type
+import by.liauko.siarhei.fcc.util.DataPeriod
 import by.liauko.siarhei.fcc.util.DataType
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.Calendar
@@ -186,7 +188,10 @@ class DataFragment: Fragment() {
 
     private fun select(type: DataType) {
         items.clear()
-        items.addAll(repositoryCollection.getRepository(type).selectAllByPeriod())
+        when (dataPeriod) {
+            DataPeriod.ALL -> items.addAll(repositoryCollection.getRepository(type).selectAll())
+            else -> items.addAll(repositoryCollection.getRepository(type).selectAllByPeriod())
+        }
         rvAdapter.refreshRecyclerView()
     }
 }

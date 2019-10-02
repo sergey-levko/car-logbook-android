@@ -42,5 +42,5 @@ enum class AppTheme(val appId: Int, val dialogId: Int) {
 }
 
 enum class DataPeriod {
-    MONTH, YEAR
+    MONTH, YEAR, ALL
 }

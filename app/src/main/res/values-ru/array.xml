@@ -17,5 +17,6 @@
     <string-array name="periods">
         <item>Месяц</item>
         <item>Год</item>
+        <item>За всё время</item>
     </string-array>
 </resources>
