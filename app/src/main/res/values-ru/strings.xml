@@ -6,6 +6,7 @@
     <string name="activity_main_navigation_menu_log_item">Бортовой журнал</string>
     <string name="activity_main_navigation_menu_fuel_item">Расход топлива</string>
     <string name="activity_main_navigation_menu_settings_item">Настройки</string>
+    <string name="activity_main_period_select_menu_date">Периуд</string>
 
     <string name="data_fragment_log_title">Бортовой журнал</string>
     <string name="data_fragment_fuel_title">Расход топлива</string>
@@ -44,8 +45,34 @@
     <string name="settings_feedback_email_os">ОС устройства: Android</string>
     <string name="settings_feedback_email_app_version">Версия приложения:</string>
     <string name="settings_feedback_email_device">Устройство:</string>
-    <string name="settings_terms_title">Условия использования</string>
-    <string name="settings_theme_title">Тема</string>
+    <string name="settings_preference_terms_title">Условия использования</string>
+    <string name="settings_preference_theme_title">Тема</string>
+    <string name="settings_preference_period_title">Период</string>
+    <string name="settings_preference_interface_group_title">Интерфейс</string>
+
+    <string name="period_dialog_jan">ЯНВ</string>
+    <string name="period_dialog_feb">ФЕВ</string>
+    <string name="period_dialog_mar">МАР</string>
+    <string name="period_dialog_apr">АПР</string>
+    <string name="period_dialog_may">МАЙ</string>
+    <string name="period_dialog_jun">ИЮН</string>
+    <string name="period_dialog_jul">ИЮЛ</string>
+    <string name="period_dialog_aug">АВГ</string>
+    <string name="period_dialog_sep">СЕН</string>
+    <string name="period_dialog_oct">ОКТ</string>
+    <string name="period_dialog_nov">НОЯ</string>
+    <string name="period_dialog_dec">ДЕК</string>
+    <string name="period_dialog_positive_button_month">Текущий месяц</string>
+    <string name="period_dialog_positive_button_year">Выбрать</string>
+    <string name="period_dialog_negative_button">Отмена</string>
+    <string name="period_dialog_previous_year_button_content_description">Предыдущий</string>
+    <string name="period_dialog_next_year_button_content_description">Следующий</string>
+
+    <string name="year_selector_dialog_title">Введите год</string>
+    <string name="year_selector_dialog_year_hint">Год</string>
+    <string name="year_selector_dialog_error_text">Значение года должно быть между 1970 и</string>
+    <string name="year_selector_dialog_positive_button">Выбрать</string>
+    <string name="year_selector_dialog_negative_button">Отмена</string>
 
     <string name="km">км</string>
     <string name="liters">л</string>

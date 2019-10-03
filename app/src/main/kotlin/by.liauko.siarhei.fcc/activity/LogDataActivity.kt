@@ -91,6 +91,7 @@ class LogDataActivity : AppCompatActivity(), View.OnClickListener, DatePickerDia
         text = findViewById(R.id.log_text)
         mileage = findViewById(R.id.log_mileage)
         date = findViewById(R.id.log_date)
+        date.setOnClickListener(this)
     }
 
     private fun updateDateButtonText() {

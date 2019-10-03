@@ -8,6 +8,7 @@ import by.liauko.siarhei.fcc.database.entity.AppEntity
 import by.liauko.siarhei.fcc.database.entity.FuelConsumptionEntity
 import by.liauko.siarhei.fcc.entity.AppData
 import by.liauko.siarhei.fcc.entity.FuelConsumptionData
+import by.liauko.siarhei.fcc.util.ApplicationUtil.periodCalendar
 
 class FuelConsumptionRepository(context: Context): Repository {
     private val fuelConsumptionDao: FuelConsumptionDao
@@ -20,6 +21,19 @@ class FuelConsumptionRepository(context: Context): Repository {
     override fun selectAll(): List<FuelConsumptionData> {
         val items = mutableListOf<FuelConsumptionData>() as ArrayList
         val entities = SelectAsyncTask(fuelConsumptionDao).execute().get()
+        for (entity in entities) {
+            items.add(convertToData(entity))
+        }
+
+        return items
+    }
+
+    override fun selectAllByPeriod(): List<FuelConsumptionData> {
+        val timeBounds = RepositoryUtil.prepareDateRange(periodCalendar)
+        val items = mutableListOf<FuelConsumptionData>() as ArrayList
+        val entities = SelectByDateAsyncTask(fuelConsumptionDao)
+            .execute(timeBounds.first, timeBounds.second)
+            .get()
         for (entity in entities) {
             items.add(convertToData(entity))
         }
@@ -58,6 +72,10 @@ class FuelConsumptionRepository(context: Context): Repository {
 
     private class SelectAsyncTask(private val logDao: FuelConsumptionDao): AsyncTask<Unit, Unit, List<FuelConsumptionEntity>>() {
         override fun doInBackground(vararg params: Unit?): List<FuelConsumptionEntity> = logDao.findAll()
+    }
+
+    private class SelectByDateAsyncTask(private val fuelConsumptionDao: FuelConsumptionDao): AsyncTask<Long, Unit, List<FuelConsumptionEntity>>() {
+        override fun doInBackground(vararg params: Long?): List<FuelConsumptionEntity> = fuelConsumptionDao.findAllByDate(params[0]!!, params[1]!!)
     }
 
     private class InsertAsyncTask(private val logDao: FuelConsumptionDao): AsyncTask<FuelConsumptionEntity, Unit, Long>() {

@@ -8,6 +8,7 @@ import by.liauko.siarhei.fcc.database.entity.AppEntity
 import by.liauko.siarhei.fcc.database.entity.LogEntity
 import by.liauko.siarhei.fcc.entity.AppData
 import by.liauko.siarhei.fcc.entity.LogData
+import by.liauko.siarhei.fcc.util.ApplicationUtil.periodCalendar
 
 class LogRepository(context: Context): Repository {
     private val logDao: LogDao
@@ -20,6 +21,19 @@ class LogRepository(context: Context): Repository {
     override fun selectAll(): List<LogData> {
         val items = mutableListOf<LogData>() as ArrayList
         val entities = SelectAsyncTask(logDao).execute().get()
+        for (entity in entities) {
+            items.add(convertToData(entity))
+        }
+
+        return items
+    }
+
+    override fun selectAllByPeriod(): List<LogData> {
+        val timeBounds = RepositoryUtil.prepareDateRange(periodCalendar)
+        val items = mutableListOf<LogData>() as ArrayList
+        val entities = SelectByDateAsyncTask(logDao)
+            .execute(timeBounds.first, timeBounds.second)
+            .get()
         for (entity in entities) {
             items.add(convertToData(entity))
         }
@@ -58,6 +72,10 @@ class LogRepository(context: Context): Repository {
 
     private class SelectAsyncTask(private val logDao: LogDao): AsyncTask<Unit, Unit, List<LogEntity>>() {
         override fun doInBackground(vararg params: Unit?): List<LogEntity> = logDao.findAll()
+    }
+
+    private class SelectByDateAsyncTask(private val logDao: LogDao): AsyncTask<Long, Unit, List<LogEntity>>() {
+        override fun doInBackground(vararg params: Long?): List<LogEntity> = logDao.findAllByDate(params[0]!!, params[1]!!)
     }
 
     private class InsertAsyncTask(private val logDao: LogDao): AsyncTask<LogEntity, Unit, Long>() {

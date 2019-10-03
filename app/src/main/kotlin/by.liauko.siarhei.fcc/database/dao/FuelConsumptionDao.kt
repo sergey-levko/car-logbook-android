@@ -13,6 +13,9 @@ interface FuelConsumptionDao {
     @Query("SELECT id, fuel_consumption, litres, distance, time FROM fuel_consumption")
     fun findAll(): List<FuelConsumptionEntity>
 
+    @Query("SELECT id, fuel_consumption, litres, distance, time FROM fuel_consumption WHERE time BETWEEN :startTime AND :endTime")
+    fun findAllByDate(startTime: Long, endTime: Long): List<FuelConsumptionEntity>
+
     @Insert
     fun insert(item: FuelConsumptionEntity): Long
 

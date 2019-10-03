@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto">
-    <PreferenceCategory
-            android:title="@string/settings_preference_general_group_title">
+    <PreferenceCategory android:title="@string/settings_preference_general_group_title">
 
         <DropDownPreference
             android:key="@string/main_screen_key"
@@ -13,16 +12,28 @@
             android:entryValues="@array/entry_values" />
 
         <DropDownPreference
-                android:key="@string/theme_key"
-                android:defaultValue="KITTY"
-                android:title="@string/settings_theme_title"
-                android:entries="@array/themes"
-                app:useSimpleSummaryProvider="true"
-                android:entryValues="@array/themes_value" />
+            android:key="@string/period_key"
+            android:defaultValue="MONTH"
+            android:title="@string/settings_preference_period_title"
+            android:entries="@array/periods"
+            app:useSimpleSummaryProvider="true"
+            android:entryValues="@array/period_values" />
 
     </PreferenceCategory>
-    <PreferenceCategory
-            android:title="@string/settings_preference_about_group_title">
+
+    <PreferenceCategory android:title="@string/settings_preference_interface_group_title">
+
+        <DropDownPreference
+                android:key="@string/theme_key"
+                android:defaultValue="KITTY"
+                android:title="@string/settings_preference_theme_title"
+                android:entries="@array/themes"
+                app:useSimpleSummaryProvider="true"
+                android:entryValues="@array/theme_values" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/settings_preference_about_group_title">
 
         <Preference
                 android:selectable="false"
@@ -38,10 +49,10 @@
                 android:summary="@string/settings_preference_feedback_summary" />
 
         <Preference
-                android:title="@string/settings_terms_title">
+                android:title="@string/settings_preference_terms_title">
             <intent
                     android:action="android.intent.action.VIEW"
-                    android:data="@string/settings_terms_url" />
+                    android:data="@string/settings_preference_terms_url" />
         </Preference>
     </PreferenceCategory>
 </PreferenceScreen>
