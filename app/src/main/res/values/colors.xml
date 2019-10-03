@@ -26,4 +26,5 @@
 
     <color name="white">#fff</color>
     <color name="black">#000</color>
+    <color name="dialog_out_background">#6000</color>
 </resources>
