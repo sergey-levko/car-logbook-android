@@ -39,8 +39,8 @@ class YearSelectorDialogActivity: AppCompatActivity(), View.OnClickListener {
             when (v.id) {
                 R.id.year_dialog_positive_button -> {
                     val value = yearEditText.text.toString()
-                    if (!value.isEmpty()
-                        && (value.toInt() < minYear || value.toInt() > currentYear)) {
+                    if (value.isEmpty()
+                        || (value.toInt() < minYear || value.toInt() > currentYear)) {
                         yearEditText.error = "${getString(R.string.year_selector_dialog_error_text)} $currentYear"
                     } else {
                         val intent = Intent()
