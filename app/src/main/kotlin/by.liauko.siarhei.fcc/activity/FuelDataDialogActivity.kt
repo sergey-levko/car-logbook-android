@@ -25,7 +25,7 @@ class FuelDataDialogActivity : AppCompatActivity(), View.OnClickListener, DatePi
     private lateinit var dateButton: Button
     private lateinit var calendar: Calendar
 
-    private var id = -defaultId
+    private var id = defaultId
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(appTheme.dialogId)
@@ -40,8 +40,8 @@ class FuelDataDialogActivity : AppCompatActivity(), View.OnClickListener, DatePi
         calendar = Calendar.getInstance()
         initElements()
 
-        id = intent.getLongExtra("id", -defaultId)
-        if (id != -defaultId) {
+        id = intent.getLongExtra("id", defaultId)
+        if (id != defaultId) {
             fillData()
         }
         updateDateButtonText()
@@ -53,12 +53,11 @@ class FuelDataDialogActivity : AppCompatActivity(), View.OnClickListener, DatePi
         dateButton = findViewById(R.id.fuel_date)
         dateButton.setOnClickListener(this)
 
-        val positiveButton = findViewById<Button>(R.id.positive_button)
+        val positiveButton = findViewById<Button>(R.id.fuel_dialog_positive_button)
         positiveButton.setOnClickListener(this)
         positiveButton.setText(intent.getIntExtra("positive_button", R.string.data_dialog_positive_button_add))
 
-        val negativeButton = findViewById<Button>(R.id.negative_button)
-        negativeButton.setOnClickListener(this)
+        findViewById<Button>(R.id.fuel_dialog_negative_button).setOnClickListener(this)
     }
 
     private fun fillData() {
@@ -75,7 +74,7 @@ class FuelDataDialogActivity : AppCompatActivity(), View.OnClickListener, DatePi
                         calendar.get(YEAR), calendar.get(MONTH), calendar.get(DAY_OF_MONTH))
                         .show()
                 }
-                R.id.positive_button -> {
+                R.id.fuel_dialog_positive_button -> {
                     val intent = Intent()
                     intent.putExtra("id", id)
                     intent.putExtra("litres", litres.text.toString())
@@ -84,7 +83,7 @@ class FuelDataDialogActivity : AppCompatActivity(), View.OnClickListener, DatePi
                     setResult(RESULT_OK, intent)
                     finish()
                 }
-                R.id.negative_button -> {
+                R.id.fuel_dialog_negative_button -> {
                     setResult(RESULT_CANCELED)
                     finish()
                 }

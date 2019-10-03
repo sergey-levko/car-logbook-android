@@ -13,6 +13,9 @@ interface LogDao {
     @Query("SELECT id, title, text, mileage, time FROM log")
     fun findAll(): List<LogEntity>
 
+    @Query("SELECT id, title, text, mileage, time FROM log WHERE time BETWEEN :startTime AND :endTime")
+    fun findAllByDate(startTime: Long, endTime: Long): List<LogEntity>
+
     @Insert
     fun insert(item: LogEntity): Long
 

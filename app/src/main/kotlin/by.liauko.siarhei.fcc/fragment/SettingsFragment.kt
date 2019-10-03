@@ -9,6 +9,8 @@ import androidx.preference.DropDownPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import by.liauko.siarhei.fcc.R
+import by.liauko.siarhei.fcc.util.ApplicationUtil.dataPeriod
+import by.liauko.siarhei.fcc.util.DataPeriod
 
 class SettingsFragment: PreferenceFragmentCompat() {
     private lateinit var appContext: Context
@@ -16,6 +18,7 @@ class SettingsFragment: PreferenceFragmentCompat() {
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var mainScreenKey: String
     private lateinit var themeKey: String
+    private lateinit var periodKey: String
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.app_preferences)
@@ -26,9 +29,11 @@ class SettingsFragment: PreferenceFragmentCompat() {
 
         mainScreenKey = getString(R.string.main_screen_key)
         themeKey = getString(R.string.theme_key)
+        periodKey = getString(R.string.period_key)
 
         findPreference<DropDownPreference>(mainScreenKey)!!.onPreferenceChangeListener = preferenceChangeListener
         findPreference<DropDownPreference>(themeKey)!!.onPreferenceChangeListener = preferenceChangeListener
+        findPreference<DropDownPreference>(periodKey)!!.onPreferenceChangeListener = preferenceChangeListener
         findPreference<Preference>("version")!!.summary = appVersion
         findPreference<Preference>("feedback")!!.setOnPreferenceClickListener {
             sendFeedback()
@@ -47,6 +52,11 @@ class SettingsFragment: PreferenceFragmentCompat() {
                 .apply()
             requireActivity().finish()
             startActivity(requireActivity().intent)
+        } else if (preference.key == periodKey) {
+            sharedPreferences.edit()
+                .putString(periodKey, newValue.toString())
+                .apply()
+            dataPeriod = DataPeriod.valueOf(newValue.toString())
         }
 
         true

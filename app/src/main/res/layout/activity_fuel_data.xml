@@ -54,14 +54,14 @@
             android:layout_marginTop="8dp">
 
         <Button
-                android:id="@+id/negative_button"
+                android:id="@+id/fuel_dialog_negative_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/data_dialog_negative_button"
                 style="@style/Widget.AppCompat.Button.Borderless.Colored" />
 
         <Button
-                android:id="@+id/positive_button"
+                android:id="@+id/fuel_dialog_positive_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/Widget.AppCompat.Button.Borderless.Colored" />
