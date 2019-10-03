@@ -6,9 +6,12 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.TranslateAnimation
 import android.widget.Button
 import android.widget.GridLayout
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.TextView
 import by.liauko.siarhei.fcc.R
 import by.liauko.siarhei.fcc.activity.MainActivity
@@ -17,13 +20,16 @@ import by.liauko.siarhei.fcc.util.ApplicationUtil
 import by.liauko.siarhei.fcc.util.DataPeriod
 import java.util.Calendar
 
-class PeriodSelectorElement(private val parent: MainActivity, private val rootView: ViewGroup): View.OnClickListener {
+class PeriodSelectorElement(private val parent: MainActivity, private val rootView: ViewGroup)
+    : View.OnClickListener,
+    Animation.AnimationListener {
     private val layoutInflater = parent.applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     private var view: View? = null
     private val minYear = 1970
     private val currentYear = Calendar.getInstance()[Calendar.YEAR]
     private val currentMonth = Calendar.getInstance()[Calendar.MONTH]
 
+    private lateinit var periodSelector: LinearLayout
     private lateinit var yearTextView: TextView
     private lateinit var previousYearButton: ImageButton
     private lateinit var nextYearButton: ImageButton
@@ -55,11 +61,23 @@ class PeriodSelectorElement(private val parent: MainActivity, private val rootVi
 
     fun hide() {
         if (isShown) {
-            rootView.removeView(view)
-            view = null
-            isShown = false
+            val periodSelector = view!!.findViewById<LinearLayout>(R.id.period_selector)
+            val translateAnimation = TranslateAnimation(0f, 0f, 0f, -periodSelector.height.toFloat())
+            translateAnimation.duration = 500
+            translateAnimation.setAnimationListener(this)
+            periodSelector.startAnimation(translateAnimation)
         }
     }
+
+    override fun onAnimationEnd(animation: Animation?) {
+        rootView.removeView(view)
+        view = null
+        isShown = false
+    }
+
+    override fun onAnimationRepeat(animation: Animation?) {}
+
+    override fun onAnimationStart(animation: Animation?) {}
 
     fun updateYear(value: String) {
         yearTextView.text = value
@@ -86,6 +104,9 @@ class PeriodSelectorElement(private val parent: MainActivity, private val rootVi
     }
 
     private fun initPeriodSelector() {
+        periodSelector = view!!.findViewById(R.id.period_selector)
+        periodSelector.setOnClickListener{}
+
         selectedMonth = ApplicationUtil.periodCalendar[Calendar.MONTH]
         selectedYear = ApplicationUtil.periodCalendar[Calendar.YEAR]
 
@@ -118,6 +139,8 @@ class PeriodSelectorElement(private val parent: MainActivity, private val rootVi
             }
             DataPeriod.ALL -> return
         }
+
+        view!!.findViewById<View>(R.id.period_selector_cover_view).setOnClickListener { hide() }
     }
 
     private fun initMonthButtons() {

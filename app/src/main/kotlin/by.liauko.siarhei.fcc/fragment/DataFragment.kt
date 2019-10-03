@@ -157,6 +157,7 @@ class DataFragment: Fragment() {
                     item.title = title
                     item.text = text
                     item.mileage = mileage
+                    item.time = time
                     repositoryCollection.getRepository(type).update(item)
                     rvAdapter.refreshRecyclerView()
                 }
