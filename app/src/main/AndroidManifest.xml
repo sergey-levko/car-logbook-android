@@ -11,7 +11,8 @@
             android:theme="@style/AppDefault">
         <activity
                 android:name=".activity.YearSelectorDialogActivity"
-                android:theme="@style/DialogDefault" />
+                android:theme="@style/DialogDefault"
+                android:windowSoftInputMode="stateVisible" />
         <activity
                 android:name=".activity.LogDataActivity" />
         <activity

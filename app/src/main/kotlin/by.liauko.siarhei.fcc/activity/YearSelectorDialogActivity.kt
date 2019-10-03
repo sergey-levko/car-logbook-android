@@ -9,12 +9,14 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import by.liauko.siarhei.fcc.R
 import by.liauko.siarhei.fcc.util.ApplicationUtil.appTheme
+import com.google.android.material.textfield.TextInputLayout
 import java.util.Calendar
 
 class YearSelectorDialogActivity: AppCompatActivity(), View.OnClickListener {
     private val currentYear = Calendar.getInstance()[Calendar.YEAR]
     private val minYear = 1970
 
+    private lateinit var yearInputLayout: TextInputLayout
     private lateinit var yearEditText: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,8 +30,11 @@ class YearSelectorDialogActivity: AppCompatActivity(), View.OnClickListener {
 
         setTitle(R.string.year_selector_dialog_title)
 
-        yearEditText = findViewById(R.id.year_value)
+        yearInputLayout = findViewById(R.id.year_selector_input_layout)
+        yearInputLayout.isErrorEnabled = true
+        yearEditText = findViewById(R.id.year_selector_value)
         yearEditText.append(intent.getIntExtra("year", currentYear).toString())
+        yearEditText.requestFocus()
         findViewById<Button>(R.id.year_dialog_positive_button).setOnClickListener(this)
         findViewById<Button>(R.id.year_dialog_negative_button).setOnClickListener(this)
     }
@@ -41,7 +46,7 @@ class YearSelectorDialogActivity: AppCompatActivity(), View.OnClickListener {
                     val value = yearEditText.text.toString()
                     if (value.isEmpty()
                         || (value.toInt() < minYear || value.toInt() > currentYear)) {
-                        yearEditText.error = "${getString(R.string.year_selector_dialog_error_text)} $currentYear"
+                        yearInputLayout.error = "${getString(R.string.year_selector_dialog_error_text)} $currentYear"
                     } else {
                         val intent = Intent()
                         intent.putExtra("year", value)
