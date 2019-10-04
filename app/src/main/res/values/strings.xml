@@ -77,7 +77,7 @@
 
     <string name="km">km</string>
     <string name="liters">L</string>
-    <string name="consumption_value">L/100km</string>
+    <string name="consumption_value">L / 100km</string>
 
     <string name="shared_preferences_name" translatable="false">app_preferences</string>
     <string name="main_screen_key" translatable="false">main_screen</string>
