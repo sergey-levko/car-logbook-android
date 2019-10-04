@@ -12,11 +12,10 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="24dp"
+            android:padding="16dp"
             android:baselineAligned="false">
 
         <LinearLayout
-                android:id="@+id/content_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
@@ -24,16 +23,17 @@
                 android:gravity="start|center_vertical">
 
             <TextView
-                    android:id="@+id/result"
+                    android:id="@+id/log_item_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="24sp"
+                    android:textSize="21sp"
+                    android:textStyle="bold"
                     android:lines="1" />
             <TextView
-                    android:id="@+id/details"
+                    android:id="@+id/log_item_details"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:lines="1" />
+                    android:lines="2" />
 
         </LinearLayout>
 
@@ -41,17 +41,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:gravity="end|center_vertical"
-                android:layout_weight="1">
+                android:gravity="end"
+                android:layout_weight="4">
 
             <TextView
-                    android:id="@+id/parameters"
+                    android:id="@+id/log_item_mileage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp" />
 
             <TextView
-                    android:id="@+id/date"
+                    android:id="@+id/log_item_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"/>
@@ -59,4 +59,5 @@
         </LinearLayout>
 
     </LinearLayout>
+
 </androidx.cardview.widget.CardView>

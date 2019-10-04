@@ -20,7 +20,6 @@ import by.liauko.siarhei.fcc.entity.AppData
 import by.liauko.siarhei.fcc.entity.FuelConsumptionData
 import by.liauko.siarhei.fcc.entity.LogData
 import by.liauko.siarhei.fcc.recyclerview.RecyclerViewDataAdapter
-import by.liauko.siarhei.fcc.recyclerview.RecyclerViewOnItemClickListener
 import by.liauko.siarhei.fcc.recyclerview.RecyclerViewSwipeController
 import by.liauko.siarhei.fcc.repository.AppRepositoryCollection
 import by.liauko.siarhei.fcc.util.ApplicationUtil.dataPeriod
@@ -71,7 +70,7 @@ class DataFragment: Fragment() {
         noDataTextView = fragmentView.findViewById(R.id.no_data_text)
 
         rvAdapter = RecyclerViewDataAdapter(items, resources, repositoryCollection, noDataTextView, object:
-            RecyclerViewOnItemClickListener {
+            RecyclerViewDataAdapter.RecyclerViewOnItemClickListener {
             override fun onItemClick(item: AppData) {
                 if (item is LogData) {
                     callLogEditActivityForResult(LogDataActivity::class.java, item)

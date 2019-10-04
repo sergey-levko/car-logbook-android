@@ -76,5 +76,5 @@
 
     <string name="km">км</string>
     <string name="liters">л</string>
-    <string name="consumption_value">л/100км</string>
+    <string name="consumption_value">л / 100км</string>
 </resources>
