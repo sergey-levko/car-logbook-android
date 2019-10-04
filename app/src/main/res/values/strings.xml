@@ -4,7 +4,7 @@
     <string name="activity_main_navigation_view_open">Open</string>
     <string name="activity_main_navigation_view_close">Close</string>
     <string name="activity_main_navigation_menu_log_item">Log</string>
-    <string name="activity_main_navigation_menu_fuel_item">Fuel consumption</string>
+    <string name="activity_main_navigation_menu_fuel_item">Fuel</string>
     <string name="activity_main_navigation_menu_settings_item">Settings</string>
     <string name="activity_main_period_select_menu_date">Period</string>
 
