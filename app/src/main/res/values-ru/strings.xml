@@ -3,8 +3,8 @@
 
     <string name="activity_main_navigation_view_open">Открыть</string>
     <string name="activity_main_navigation_view_close">Закрыть</string>
-    <string name="activity_main_navigation_menu_log_item">Бортовой журнал</string>
-    <string name="activity_main_navigation_menu_fuel_item">Расход топлива</string>
+    <string name="activity_main_navigation_menu_log_item">Журнал</string>
+    <string name="activity_main_navigation_menu_fuel_item">Топливо</string>
     <string name="activity_main_navigation_menu_settings_item">Настройки</string>
     <string name="activity_main_period_select_menu_date">Периуд</string>
 
