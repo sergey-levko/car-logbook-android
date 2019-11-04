@@ -3,27 +3,48 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory android:title="@string/settings_preference_general_group_title">
 
-        <DropDownPreference
-            android:key="@string/main_screen_key"
-            android:defaultValue="LOG"
-            android:title="@string/settings_preference_main_page_item"
-            android:entries="@array/entries"
-            app:useSimpleSummaryProvider="true"
-            android:entryValues="@array/entry_values" />
+        <ListPreference
+                android:key="@string/main_screen_key"
+                android:defaultValue="LOG"
+                android:title="@string/settings_preference_main_page_item"
+                android:entries="@array/entries"
+                app:useSimpleSummaryProvider="true"
+                android:entryValues="@array/entry_values" />
 
-        <DropDownPreference
-            android:key="@string/period_key"
-            android:defaultValue="MONTH"
-            android:title="@string/settings_preference_period_title"
-            android:entries="@array/periods"
-            app:useSimpleSummaryProvider="true"
-            android:entryValues="@array/period_values" />
+        <ListPreference
+                android:key="@string/period_key"
+                android:defaultValue="MONTH"
+                android:title="@string/settings_preference_period_title"
+                android:entries="@array/periods"
+                app:useSimpleSummaryProvider="true"
+                android:entryValues="@array/period_values" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/settings_preference_backup_group_title">
+
+        <SwitchPreference
+                android:key="@string/backup_key"
+                android:title="@string/settings_preference_backup"
+                android:defaultValue="false" />
+
+        <ListPreference
+                android:defaultValue="OFF"
+                android:key="@string/backup_frequency_key"
+                android:title="@string/settings_preference_backup_frequency"
+                app:useSimpleSummaryProvider="true"
+                android:entries="@array/backup_frequencies"
+                android:entryValues="@array/backup_frequency_values" />
+
+        <Preference
+                android:key="@string/backup_account_key"
+                android:title="@string/settings_preference_backup_google_account" />
 
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/settings_preference_interface_group_title">
 
-        <DropDownPreference
+        <ListPreference
                 android:key="@string/theme_key"
                 android:defaultValue="KITTY"
                 android:title="@string/settings_preference_theme_title"

@@ -5,9 +5,10 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
-import androidx.preference.DropDownPreference
+import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.SwitchPreference
 import by.liauko.siarhei.fcc.R
 import by.liauko.siarhei.fcc.util.ApplicationUtil.dataPeriod
 import by.liauko.siarhei.fcc.util.DataPeriod
@@ -19,6 +20,10 @@ class SettingsFragment: PreferenceFragmentCompat() {
     private lateinit var mainScreenKey: String
     private lateinit var themeKey: String
     private lateinit var periodKey: String
+    private lateinit var backupSwitcherKey: String
+    private lateinit var backupSwitcher: SwitchPreference
+    private lateinit var backupFrequencyPreference: ListPreference
+    private lateinit var backupAccountPreference: Preference
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.app_preferences)
@@ -30,33 +35,47 @@ class SettingsFragment: PreferenceFragmentCompat() {
         mainScreenKey = getString(R.string.main_screen_key)
         themeKey = getString(R.string.theme_key)
         periodKey = getString(R.string.period_key)
+        backupSwitcherKey = getString(R.string.backup_key)
 
-        findPreference<DropDownPreference>(mainScreenKey)!!.onPreferenceChangeListener = preferenceChangeListener
-        findPreference<DropDownPreference>(themeKey)!!.onPreferenceChangeListener = preferenceChangeListener
-        findPreference<DropDownPreference>(periodKey)!!.onPreferenceChangeListener = preferenceChangeListener
+        findPreference<ListPreference>(mainScreenKey)!!.onPreferenceChangeListener = preferenceChangeListener
+        findPreference<ListPreference>(themeKey)!!.onPreferenceChangeListener = preferenceChangeListener
+        findPreference<ListPreference>(periodKey)!!.onPreferenceChangeListener = preferenceChangeListener
         findPreference<Preference>("version")!!.summary = appVersion
         findPreference<Preference>("feedback")!!.setOnPreferenceClickListener {
             sendFeedback()
             true
         }
+        backupSwitcher = findPreference(backupSwitcherKey)!!
+        backupSwitcher.onPreferenceChangeListener = preferenceChangeListener
+        backupFrequencyPreference = findPreference(getString(R.string.backup_frequency_key))!!
+        backupFrequencyPreference.isEnabled = backupSwitcher.isChecked
+        backupAccountPreference = findPreference(getString(R.string.backup_account_key))!!
+        backupAccountPreference.isEnabled = backupSwitcher.isChecked
     }
 
     private val preferenceChangeListener = Preference.OnPreferenceChangeListener { preference, newValue ->
-        if (preference.key == mainScreenKey) {
-            sharedPreferences.edit()
+        when {
+            preference.key == mainScreenKey -> sharedPreferences.edit()
                 .putString(mainScreenKey, newValue.toString())
                 .apply()
-        } else if (preference.key == themeKey) {
-            sharedPreferences.edit()
-                .putString(themeKey, newValue.toString())
-                .apply()
-            requireActivity().finish()
-            startActivity(requireActivity().intent)
-        } else if (preference.key == periodKey) {
-            sharedPreferences.edit()
-                .putString(periodKey, newValue.toString())
-                .apply()
-            dataPeriod = DataPeriod.valueOf(newValue.toString())
+            preference.key == themeKey -> {
+                sharedPreferences.edit()
+                    .putString(themeKey, newValue.toString())
+                    .apply()
+                requireActivity().finish()
+                startActivity(requireActivity().intent)
+            }
+            preference.key == periodKey -> {
+                sharedPreferences.edit()
+                    .putString(periodKey, newValue.toString())
+                    .apply()
+                dataPeriod = DataPeriod.valueOf(newValue.toString())
+            }
+            preference.key == backupSwitcherKey -> {
+                newValue as Boolean
+                backupFrequencyPreference.isEnabled = newValue
+                backupAccountPreference.isEnabled = newValue
+            }
         }
 
         true

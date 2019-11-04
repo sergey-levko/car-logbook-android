@@ -39,4 +39,18 @@
         <item>YEAR</item>
         <item>ALL</item>
     </string-array>
+
+    <string-array name="backup_frequencies">
+        <item>Off</item>
+        <item>Daily</item>
+        <item>Weekly</item>
+        <item>Monthly</item>
+    </string-array>
+
+    <string-array name="backup_frequency_values">
+        <item>OFF</item>
+        <item>DAILY</item>
+        <item>WEEKLY</item>
+        <item>MONTHLY</item>
+    </string-array>
 </resources>

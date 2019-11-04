@@ -49,6 +49,10 @@
     <string name="settings_preference_theme_title">Тема</string>
     <string name="settings_preference_period_title">Период</string>
     <string name="settings_preference_interface_group_title">Интерфейс</string>
+    <string name="settings_preference_backup_group_title">Резервное копирование</string>
+    <string name="settings_preference_backup">Резервное копирование в Google Drive</string>
+    <string name="settings_preference_backup_frequency">Частота резервного копирования</string>
+    <string name="settings_preference_backup_google_account">Google профиль</string>
 
     <string name="period_dialog_jan">ЯНВ</string>
     <string name="period_dialog_feb">ФЕВ</string>

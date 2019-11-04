@@ -50,6 +50,10 @@
     <string name="settings_preference_theme_title">Theme</string>
     <string name="settings_preference_period_title">Period</string>
     <string name="settings_preference_interface_group_title">Interface</string>
+    <string name="settings_preference_backup_group_title">Backup</string>
+    <string name="settings_preference_backup">Google Drive Automated Backup</string>
+    <string name="settings_preference_backup_frequency">Backup frequency</string>
+    <string name="settings_preference_backup_google_account">Google account</string>
 
     <string name="period_dialog_jan">JAN</string>
     <string name="period_dialog_feb">FEB</string>
@@ -83,4 +87,7 @@
     <string name="main_screen_key" translatable="false">main_screen</string>
     <string name="theme_key" translatable="false">theme</string>
     <string name="period_key" translatable="false">period</string>
+    <string name="backup_key" translatable="false">backup</string>
+    <string name="backup_frequency_key" translatable="false">backup_frequency</string>
+    <string name="backup_account_key" translatable="false">backup_account</string>
 </resources>
