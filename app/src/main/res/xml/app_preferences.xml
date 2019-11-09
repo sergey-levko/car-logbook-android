@@ -40,6 +40,14 @@
                 android:key="@string/backup_account_key"
                 android:title="@string/settings_preference_backup_google_account" />
 
+        <Preference
+                android:key="export_key"
+                android:title="Export data to file" />
+
+        <Preference
+                android:key="import_key"
+                android:title="Import data from file" />
+
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/settings_preference_interface_group_title">

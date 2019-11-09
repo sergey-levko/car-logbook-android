@@ -10,6 +10,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
 import by.liauko.siarhei.fcc.R
+import by.liauko.siarhei.fcc.synchronization.BackupUtil
 import by.liauko.siarhei.fcc.util.ApplicationUtil.dataPeriod
 import by.liauko.siarhei.fcc.util.DataPeriod
 
@@ -51,6 +52,9 @@ class SettingsFragment: PreferenceFragmentCompat() {
         backupFrequencyPreference.isEnabled = backupSwitcher.isChecked
         backupAccountPreference = findPreference(getString(R.string.backup_account_key))!!
         backupAccountPreference.isEnabled = backupSwitcher.isChecked
+
+        findPreference<Preference>("export_key")!!.onPreferenceClickListener = preferenceClickListener
+        findPreference<Preference>("import_key")!!.onPreferenceClickListener = preferenceClickListener
     }
 
     private val preferenceChangeListener = Preference.OnPreferenceChangeListener { preference, newValue ->
@@ -76,6 +80,15 @@ class SettingsFragment: PreferenceFragmentCompat() {
                 backupFrequencyPreference.isEnabled = newValue
                 backupAccountPreference.isEnabled = newValue
             }
+        }
+
+        true
+    }
+
+    private val preferenceClickListener = Preference.OnPreferenceClickListener {
+        when {
+            it.key == "export_key" -> BackupUtil.exportData(appContext)
+            it.key == "import_key" -> BackupUtil.importData(appContext)
         }
 
         true

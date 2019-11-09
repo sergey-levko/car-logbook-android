@@ -7,7 +7,8 @@ object ApplicationUtil {
     var type = DataType.LOG
     var appTheme = AppTheme.KITTY
     var dataPeriod = DataPeriod.MONTH
-    var periodCalendar = Calendar.getInstance()
+    var periodCalendar: Calendar = Calendar.getInstance()
+    var syncPeriod = SyncPeriod.OFF
 }
 
 enum class DataType {
@@ -43,4 +44,8 @@ enum class AppTheme(val appId: Int, val dialogId: Int) {
 
 enum class DataPeriod {
     MONTH, YEAR, ALL
+}
+
+enum class SyncPeriod {
+    OFF, DAILY, WEEKLY, MONTHLY
 }

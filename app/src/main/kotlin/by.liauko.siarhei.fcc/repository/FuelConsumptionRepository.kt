@@ -9,20 +9,17 @@ import by.liauko.siarhei.fcc.database.entity.FuelConsumptionEntity
 import by.liauko.siarhei.fcc.entity.AppData
 import by.liauko.siarhei.fcc.entity.FuelConsumptionData
 import by.liauko.siarhei.fcc.util.ApplicationUtil.periodCalendar
+import by.liauko.siarhei.fcc.util.DataType
 
 class FuelConsumptionRepository(context: Context): Repository {
-    private val fuelConsumptionDao: FuelConsumptionDao
-
-    init {
-        val database = CarLogDatabase(context)
-        fuelConsumptionDao = database.fuelConsumptionDao()
-    }
+    private val database = CarLogDatabase(context)
+    private val type = DataType.FUEL
 
     override fun selectAll(): List<FuelConsumptionData> {
         val items = mutableListOf<FuelConsumptionData>() as ArrayList
-        val entities = SelectAsyncTask(fuelConsumptionDao).execute().get()
+        val entities = SelectAsyncTask(type, database).execute().get()
         for (entity in entities) {
-            items.add(convertToData(entity))
+            items.add(convertToData(entity as FuelConsumptionEntity))
         }
 
         return items
@@ -31,25 +28,25 @@ class FuelConsumptionRepository(context: Context): Repository {
     override fun selectAllByPeriod(): List<FuelConsumptionData> {
         val timeBounds = RepositoryUtil.prepareDateRange(periodCalendar)
         val items = mutableListOf<FuelConsumptionData>() as ArrayList
-        val entities = SelectByDateAsyncTask(fuelConsumptionDao)
+        val entities = SelectByDateAsyncTask(type, database)
             .execute(timeBounds.first, timeBounds.second)
             .get()
         for (entity in entities) {
-            items.add(convertToData(entity))
+            items.add(convertToData(entity as FuelConsumptionEntity))
         }
 
         return items
     }
 
     override fun insert(entity: AppEntity) =
-        InsertAsyncTask(fuelConsumptionDao).execute(entity as FuelConsumptionEntity).get()
+        InsertAsyncTask(type, database).execute(entity as FuelConsumptionEntity).get()
 
     override fun update(data: AppData) {
-        UpdateAsyncTask(fuelConsumptionDao).execute(convertToEntity(data as FuelConsumptionData))
+        UpdateAsyncTask(type, database).execute(convertToEntity(data as FuelConsumptionData))
     }
 
     override fun delete(data: AppData) {
-        DeleteAsyncTask(fuelConsumptionDao).execute(convertToEntity(data as FuelConsumptionData))
+        DeleteAsyncTask(type, database).execute(convertToEntity(data as FuelConsumptionData))
     }
 
     private fun convertToEntity(fuelConsumptionData: FuelConsumptionData) =
@@ -69,28 +66,4 @@ class FuelConsumptionRepository(context: Context): Repository {
             fuelConsumptionEntity.litres,
             fuelConsumptionEntity.distance
         )
-
-    private class SelectAsyncTask(private val logDao: FuelConsumptionDao): AsyncTask<Unit, Unit, List<FuelConsumptionEntity>>() {
-        override fun doInBackground(vararg params: Unit?): List<FuelConsumptionEntity> = logDao.findAll()
-    }
-
-    private class SelectByDateAsyncTask(private val fuelConsumptionDao: FuelConsumptionDao): AsyncTask<Long, Unit, List<FuelConsumptionEntity>>() {
-        override fun doInBackground(vararg params: Long?): List<FuelConsumptionEntity> = fuelConsumptionDao.findAllByDate(params[0]!!, params[1]!!)
-    }
-
-    private class InsertAsyncTask(private val logDao: FuelConsumptionDao): AsyncTask<FuelConsumptionEntity, Unit, Long>() {
-        override fun doInBackground(vararg params: FuelConsumptionEntity?) = logDao.insert(params[0]!!)
-    }
-
-    private class UpdateAsyncTask(private val logDao: FuelConsumptionDao): AsyncTask<FuelConsumptionEntity, Unit, Unit>() {
-        override fun doInBackground(vararg params: FuelConsumptionEntity?) {
-            logDao.update(params[0]!!)
-        }
-    }
-
-    private class DeleteAsyncTask(private val logDao: FuelConsumptionDao): AsyncTask<FuelConsumptionEntity, Unit, Unit>() {
-        override fun doInBackground(vararg params: FuelConsumptionEntity?) {
-            logDao.delete(params[0]!!)
-        }
-    }
 }
