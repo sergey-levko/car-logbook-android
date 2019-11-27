@@ -79,6 +79,8 @@
     <string name="year_selector_dialog_positive_button">Select</string>
     <string name="year_selector_dialog_negative_button">Cancel</string>
 
+    <string name="dialog_progress_title">Please wait…</string>
+
     <string name="km">km</string>
     <string name="liters">L</string>
     <string name="consumption_value">L / 100km</string>
