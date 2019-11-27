@@ -16,6 +16,7 @@ import android.widget.TextView
 import by.liauko.siarhei.fcc.R
 import by.liauko.siarhei.fcc.activity.MainActivity
 import by.liauko.siarhei.fcc.activity.YearSelectorDialogActivity
+import by.liauko.siarhei.fcc.util.AppResultCodes.periodDialogResult
 import by.liauko.siarhei.fcc.util.ApplicationUtil
 import by.liauko.siarhei.fcc.util.DataPeriod
 import java.util.Calendar
@@ -40,8 +41,6 @@ class PeriodSelectorElement(private val parent: MainActivity, private val rootVi
     private var selectedYear = currentYear
     private var accentColorId = -1
     private var textColorId = -1
-
-    val requestCodePeriodDialog = 1
 
     var isShown = false
 
@@ -124,7 +123,7 @@ class PeriodSelectorElement(private val parent: MainActivity, private val rootVi
         yearTextView.setOnClickListener {
             val intent = Intent(parent.applicationContext, YearSelectorDialogActivity::class.java)
             intent.putExtra("year", year)
-            parent.startActivityForResult(intent, requestCodePeriodDialog)
+            parent.startActivityForResult(intent, periodDialogResult)
         }
         yearTextView.text = year.toString()
 

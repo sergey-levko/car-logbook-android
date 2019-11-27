@@ -1,21 +1,19 @@
 package by.liauko.siarhei.fcc.activity
 
-import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import by.liauko.siarhei.fcc.R
 import by.liauko.siarhei.fcc.activity.element.PeriodSelectorElement
 import by.liauko.siarhei.fcc.database.CarLogDatabase
 import by.liauko.siarhei.fcc.fragment.DataFragment
 import by.liauko.siarhei.fcc.fragment.SettingsFragment
+import by.liauko.siarhei.fcc.util.AppResultCodes.periodDialogResult
 import by.liauko.siarhei.fcc.util.AppTheme
 import by.liauko.siarhei.fcc.util.ApplicationUtil.appTheme
 import by.liauko.siarhei.fcc.util.ApplicationUtil.dataPeriod
@@ -46,34 +44,6 @@ class MainActivity : AppCompatActivity(),
         periodSelector = PeriodSelectorElement(this, findViewById(R.id.main_coordinator_layout))
         initToolbar()
         initBottomNavigationView()
-
-        val writePermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        val readPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-        if(writePermission != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                1
-            )
-        }
-        if (readPermission != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                2
-            )
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        when(requestCode) {
-
-        }
-        return
     }
 
     private fun initToolbar() {
@@ -180,7 +150,7 @@ class MainActivity : AppCompatActivity(),
 
         if (resultCode == Activity.RESULT_OK && data != null) {
             when (requestCode) {
-                periodSelector.requestCodePeriodDialog -> {
+                periodDialogResult -> {
                     periodSelector.updateYear(data.getStringExtra("year"))
                 }
             }
