@@ -21,6 +21,11 @@ object RepositoryUtil {
 
         calendar.set(dayType, 1)
         val startTime = calendar.timeInMillis
+
+        calendar.set(Calendar.HOUR_OF_DAY, calendar.getActualMaximum(Calendar.HOUR_OF_DAY))
+        calendar.set(Calendar.MINUTE, calendar.getActualMaximum(Calendar.MINUTE))
+        calendar.set(Calendar.SECOND, calendar.getActualMaximum(Calendar.SECOND))
+        calendar.set(Calendar.MILLISECOND, calendar.getActualMaximum(Calendar.MILLISECOND))
         calendar.set(dayType, calendar.getActualMaximum(dayType))
         val endTime = calendar.timeInMillis
 
