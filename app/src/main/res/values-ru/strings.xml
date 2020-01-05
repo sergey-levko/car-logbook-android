@@ -30,6 +30,7 @@
     <string name="activity_log_text_hint">Текст</string>
     <string name="activity_log_mileage_hint">Пробег (км)</string>
     <string name="activity_log_save_button">Сохранить</string>
+    <string name="activity_log_delete_button">Удалить</string>
 
     <string name="settings_fragment_title">Настройки</string>
     <string name="settings_preference_general_group_title">Общие</string>
