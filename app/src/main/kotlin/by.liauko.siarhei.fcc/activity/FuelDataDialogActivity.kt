@@ -66,6 +66,22 @@ class FuelDataDialogActivity : AppCompatActivity(), View.OnClickListener, DatePi
         calendar.timeInMillis = intent.getLongExtra("time", calendar.timeInMillis)
     }
 
+    private fun validateFields(): Boolean {
+        var result = true
+
+        if (litres.text.isNullOrEmpty() || litres.text.toString().toDouble() == 0.0) {
+            litres.error = getString(R.string.data_dialog_volume_parameter_error)
+            result = false
+        }
+
+        if (distance.text.isNullOrEmpty() || distance.text.toString().toDouble() == 0.0) {
+            distance.error = getString(R.string.data_dialog_distance_parameter_error)
+            result = false
+        }
+
+        return result
+    }
+
     override fun onClick(v: View?) {
         if (v != null) {
             when (v.id) {
@@ -75,13 +91,15 @@ class FuelDataDialogActivity : AppCompatActivity(), View.OnClickListener, DatePi
                         .show()
                 }
                 R.id.fuel_dialog_positive_button -> {
-                    val intent = Intent()
-                    intent.putExtra("id", id)
-                    intent.putExtra("litres", litres.text.toString())
-                    intent.putExtra("distance", distance.text.toString())
-                    intent.putExtra("time", calendar.timeInMillis)
-                    setResult(RESULT_OK, intent)
-                    finish()
+                    if (validateFields()) {
+                        val intent = Intent()
+                        intent.putExtra("id", id)
+                        intent.putExtra("litres", litres.text.toString())
+                        intent.putExtra("distance", distance.text.toString())
+                        intent.putExtra("time", calendar.timeInMillis)
+                        setResult(RESULT_OK, intent)
+                        finish()
+                    }
                 }
                 R.id.fuel_dialog_negative_button -> {
                     setResult(RESULT_CANCELED)
