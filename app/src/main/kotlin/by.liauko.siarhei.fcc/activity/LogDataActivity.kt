@@ -67,27 +67,40 @@ class LogDataActivity : AppCompatActivity(), View.OnClickListener, DatePickerDia
                 finish()
             }
         }
-        if (id == defaultId) {
-            toolbar.inflateMenu(R.menu.log_menu_save)
-            toolbar.setOnMenuItemClickListener {
-                var result = false
-                when (it.itemId) {
-                    R.id.log_menu_save -> {
-                        if (validateFields()) {
-                            val intent = Intent()
-                            intent.putExtra("title", title.text.toString())
-                            intent.putExtra("mileage", mileage.text.toString())
-                            intent.putExtra("text", text.text.toString())
-                            intent.putExtra("time", calendar.timeInMillis)
-                            setResult(RESULT_OK, intent)
-                            finish()
-                            result = true
-                        }
+        toolbar.inflateMenu(R.menu.log_menu_save)
+        toolbar.setOnMenuItemClickListener {
+            var result = false
+            when (it.itemId) {
+                R.id.log_menu_save -> {
+                    if (validateFields()) {
+                        val intent = Intent()
+                        intent.putExtra("title", title.text.toString())
+                        intent.putExtra("mileage", mileage.text.toString())
+                        intent.putExtra("text", text.text.toString())
+                        intent.putExtra("time", calendar.timeInMillis)
+                        setResult(RESULT_OK, intent)
+                        finish()
+                        result = true
                     }
                 }
-
-                return@setOnMenuItemClickListener result
+                R.id.log_menu_delete -> {
+                    val intent = Intent()
+                    intent.putExtra("remove", true)
+                    intent.putExtra("id", id)
+                    setResult(RESULT_OK, intent)
+                    finish()
+                    result = true
+                }
             }
+
+            return@setOnMenuItemClickListener result
+        }
+        if (id == defaultId) {
+            toolbar.menu.findItem(R.id.log_menu_save).isVisible = true
+            toolbar.menu.findItem(R.id.log_menu_delete).isVisible = false
+        } else {
+            toolbar.menu.findItem(R.id.log_menu_save).isVisible = false
+            toolbar.menu.findItem(R.id.log_menu_delete).isVisible = true
         }
     }
 

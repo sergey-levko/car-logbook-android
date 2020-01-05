@@ -32,6 +32,7 @@
     <string name="activity_log_text_hint">Текст</string>
     <string name="activity_log_mileage_hint">Пробег (км)</string>
     <string name="activity_log_save_button">Сохранить</string>
+    <string name="activity_log_delete_button">Удалить</string>
     <string name="activity_log_title_error">Поле заголовка обязательное</string>
     <string name="activity_log_mileage_error">Пробег - обязательное значение и не может быть 0</string>
 
