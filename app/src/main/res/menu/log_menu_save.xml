@@ -8,4 +8,11 @@
             android:title="@string/activity_log_save_button"
             android:icon="@drawable/check_white"
             app:showAsAction="ifRoom"/>
+
+    <item
+            android:id="@+id/log_menu_delete"
+            android:orderInCategory="1"
+            android:title="@string/activity_log_delete_button"
+            android:icon="@drawable/delete_white"
+            app:showAsAction="ifRoom"/>
 </menu>
