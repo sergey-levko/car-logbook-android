@@ -23,6 +23,8 @@
     <string name="data_dialog_positive_button_add">Add</string>
     <string name="data_dialog_positive_button_edit">Save</string>
     <string name="data_dialog_negative_button">Cancel</string>
+    <string name="data_dialog_volume_parameter_error">Volume value is required and can not be 0</string>
+    <string name="data_dialog_distance_parameter_error">Distance value is required and can not be 0</string>
 
     <string name="activity_log_title_add">Add log record</string>
     <string name="activity_log_title_edit">Edit log record</string>
@@ -31,6 +33,8 @@
     <string name="activity_log_mileage_hint">Mileage (km)</string>
     <string name="activity_log_save_button">Save</string>
     <string name="activity_log_delete_button">Delete</string>
+    <string name="activity_log_title_error">Title field is required</string>
+    <string name="activity_log_mileage_error">Mileage value is required and can not be 0</string>
 
     <string name="settings_fragment_title">Settings</string>
     <string name="settings_preference_general_group_title">General</string>

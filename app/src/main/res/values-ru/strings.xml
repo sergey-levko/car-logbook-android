@@ -23,6 +23,8 @@
     <string name="data_dialog_positive_button_add">Добавить</string>
     <string name="data_dialog_positive_button_edit">Сохранить</string>
     <string name="data_dialog_negative_button">Отмена</string>
+    <string name="data_dialog_volume_parameter_error">Объём - обязательное значение и не может быть 0</string>
+    <string name="data_dialog_distance_parameter_error">Расстояние - обязательное значение и не может быть 0</string>
 
     <string name="activity_log_title_add">Добавить запись журнала</string>
     <string name="activity_log_title_edit">Редактировать запись журнала</string>
@@ -31,6 +33,8 @@
     <string name="activity_log_mileage_hint">Пробег (км)</string>
     <string name="activity_log_save_button">Сохранить</string>
     <string name="activity_log_delete_button">Удалить</string>
+    <string name="activity_log_title_error">Поле заголовка обязательное</string>
+    <string name="activity_log_mileage_error">Пробег - обязательное значение и не может быть 0</string>
 
     <string name="settings_fragment_title">Настройки</string>
     <string name="settings_preference_general_group_title">Общие</string>
