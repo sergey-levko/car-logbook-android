@@ -136,8 +136,8 @@ class DataFragment: Fragment() {
                     rvAdapter.refreshRecyclerView()
                 }
                 requestCodeAddLog -> {
-                    val title = data.getStringExtra("title")
-                    val text = data.getStringExtra("text")
+                    val title = data.getStringExtra("title").trim()
+                    val text = data.getStringExtra("text").trim()
                     val mileage = data.getStringExtra("mileage").toLong()
                     val id = repositoryCollection.getRepository(type).insert(
                         LogEntity(null, title, text, mileage, time)
@@ -149,8 +149,8 @@ class DataFragment: Fragment() {
                 }
                 requestCodeEditLog -> {
                     val id = data.getLongExtra("id", -1L)
-                    val title = data.getStringExtra("title")
-                    val text = data.getStringExtra("text")
+                    val title = data.getStringExtra("title").trim()
+                    val text = data.getStringExtra("text").trim()
                     val mileage = data.getStringExtra("mileage").toLong()
                     val item = items.find { it.id == id } as LogData
                     item.title = title
