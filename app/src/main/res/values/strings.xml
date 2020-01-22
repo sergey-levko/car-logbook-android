@@ -50,10 +50,8 @@
     <string name="settings_preference_theme_title">Theme</string>
     <string name="settings_preference_period_title">Period</string>
     <string name="settings_preference_interface_group_title">Interface</string>
-    <string name="settings_preference_backup_group_title">Backup</string>
-    <string name="settings_preference_backup">Google Drive Automated Backup</string>
-    <string name="settings_preference_backup_frequency">Backup frequency</string>
-    <string name="settings_preference_backup_google_account">Google account</string>
+    <string name="settings_preference_backup_item_title">Backup</string>
+    <string name="settings_preference_backup_item_summary">Backup options</string>
 
     <string name="period_dialog_jan">JAN</string>
     <string name="period_dialog_feb">FEB</string>
@@ -79,7 +77,36 @@
     <string name="year_selector_dialog_positive_button">Select</string>
     <string name="year_selector_dialog_negative_button">Cancel</string>
 
-    <string name="dialog_progress_title">Please wait…</string>
+    <string name="dialog_backup_progress_export_text">Exporting data…</string>
+    <string name="dialog_backup_progress_import_text">Importing data…</string>
+    <string name="dialog_backup_progress_open_file_list">Reading data from Google Drive…</string>
+
+    <string name="dialog_backup_alert_title_success">Success</string>
+    <string name="dialog_backup_alert_title_fail">Warning</string>
+    <string name="dialog_backup_alert_export_success">Data was exported successfully</string>
+    <string name="dialog_backup_alert_export_fail">Data was not exported</string>
+    <string name="dialog_backup_alert_import_success">Data was imported successfully</string>
+    <string name="dialog_backup_alert_import_fail">Data was not imported</string>
+    <string name="dialog_backup_alert_ok_button" translatable="false">OK</string>
+
+    <string name="settings_preference_backup_title">Backup</string>
+    <string name="settings_preference_backup_automation_group_title">Automated backup</string>
+    <string name="settings_preference_backup_google">Google Drive automated backup</string>
+    <string name="settings_preference_backup_frequency">Backup frequency</string>
+    <string name="settings_preference_backup_manual_group_title">Manual backup</string>
+    <string name="settings_preference_backup_export_to_file">Export to file</string>
+    <string name="settings_preference_backup_export_to_file_summary">Export data from database to file</string>
+    <string name="settings_preference_backup_import_from_drive">Import from Google Drive</string>
+    <string name="settings_preference_backup_import_from_drive_summary">Import data from Google Drive file to database</string>
+    <string name="settings_preference_backup_import_from_file">Import data from file</string>
+    <string name="settings_preference_backup_import_from_file_summary">Import data from file to database</string>
+
+    <string name="dialog_drive_import_title">Import data from Google Drive</string>
+    <string name="dialog_drive_import_no_files">No files to import</string>
+    <string name="dialog_drive_import_recycler_view_item_remove_button_content_description">Remove</string>
+    <string name="dialog_drive_import_negative_button">Cancel</string>
+
+    <string name="dialog_progress_delete_file">Deleting file…</string>
 
     <string name="km">km</string>
     <string name="liters">L</string>
@@ -91,5 +118,7 @@
     <string name="period_key" translatable="false">period</string>
     <string name="backup_key" translatable="false">backup</string>
     <string name="backup_frequency_key" translatable="false">backup_frequency</string>
-    <string name="backup_account_key" translatable="false">backup_account</string>
+    <string name="backup_export_key" translatable="false">backup_export</string>
+    <string name="backup_file_import" translatable="false">backup_file_import</string>
+    <string name="backup_drive_import" translatable="false">backup_drive_import</string>
 </resources>

@@ -1,6 +1,9 @@
 package by.liauko.siarhei.fcc.util
 
+import android.app.AlertDialog
+import android.content.Context
 import by.liauko.siarhei.fcc.R
+import by.liauko.siarhei.fcc.activity.dialog.ProgressDialog
 import java.util.Calendar
 
 object ApplicationUtil {
@@ -9,6 +12,18 @@ object ApplicationUtil {
     var dataPeriod = DataPeriod.MONTH
     var periodCalendar: Calendar = Calendar.getInstance()
     var syncPeriod = SyncPeriod.OFF
+
+    fun createProgressDialog(context: Context, messageId: Int)
+            = ProgressDialog(context, context.getString(messageId))
+
+    fun createAlertDialog(context: Context, titleId: Int, messageId: Int)
+            = AlertDialog.Builder(context)
+        .setTitle(titleId)
+        .setMessage(messageId)
+        .setNeutralButton(
+            context.getString(R.string.dialog_backup_alert_ok_button)
+        ) { dialog, _ -> dialog.dismiss() }
+        .create()
 }
 
 enum class DataType {

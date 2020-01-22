@@ -19,30 +19,10 @@
                 app:useSimpleSummaryProvider="true"
                 android:entryValues="@array/period_values" />
 
-    </PreferenceCategory>
-
-    <PreferenceCategory android:title="@string/settings_preference_backup_group_title">
-
-        <SwitchPreference
-                android:key="@string/backup_key"
-                android:title="@string/settings_preference_backup"
-                android:defaultValue="false" />
-
-        <ListPreference
-                android:defaultValue="OFF"
-                android:key="@string/backup_frequency_key"
-                android:title="@string/settings_preference_backup_frequency"
-                app:useSimpleSummaryProvider="true"
-                android:entries="@array/backup_frequencies"
-                android:entryValues="@array/backup_frequency_values" />
-
         <Preference
-                android:key="export_key"
-                android:title="Export data to file" />
-
-        <Preference
-                android:key="import_key"
-                android:title="Import data from file" />
+                app:fragment="by.liauko.siarhei.fcc.fragment.BackupSettingsFragment"
+                android:title="@string/settings_preference_backup_item_title"
+                android:summary="@string/settings_preference_backup_item_summary" />
 
     </PreferenceCategory>
 

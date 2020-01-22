@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -47,6 +48,12 @@ class DataFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val toolbar = (container!!.parent as ViewGroup).getChildAt(0) as Toolbar
+        toolbar.title = when(type) {
+            DataType.LOG -> getString(R.string.data_fragment_log_title)
+            DataType.FUEL -> getString(R.string.data_fragment_fuel_title)
+        }
+
         fragmentView = inflater.inflate(R.layout.fragment_data, container, false)
 
         items = arrayListOf()
@@ -73,16 +80,16 @@ class DataFragment: Fragment() {
         repositoryCollection = AppRepositoryCollection(requireContext())
         noDataTextView = fragmentView.findViewById(R.id.no_data_text)
 
-        rvAdapter = RecyclerViewDataAdapter(items, resources, repositoryCollection, noDataTextView, object:
-            RecyclerViewDataAdapter.RecyclerViewOnItemClickListener {
-            override fun onItemClick(item: AppData) {
-                if (item is LogData) {
-                    callLogEditActivityForResult(LogDataActivity::class.java, item)
-                } else if (item is FuelConsumptionData) {
-                    callFuelConsumptionEditActivityForResult(FuelDataDialogActivity::class.java, item)
+        rvAdapter = RecyclerViewDataAdapter(items, resources, repositoryCollection, noDataTextView,
+            object: RecyclerViewDataAdapter.RecyclerViewOnItemClickListener {
+                override fun onItemClick(item: AppData) {
+                    if (item is LogData) {
+                        callLogEditActivityForResult(LogDataActivity::class.java, item)
+                    } else if (item is FuelConsumptionData) {
+                        callFuelConsumptionEditActivityForResult(FuelDataDialogActivity::class.java, item)
+                    }
                 }
-            }
-        })
+            })
 
         val recyclerView = fragmentView.findViewById<RecyclerView>(R.id.recycler_view).apply {
             setHasFixedSize(true)
