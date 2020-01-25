@@ -1,11 +1,14 @@
 package by.liauko.siarhei.fcc.backup
 
 import android.content.Context
-import android.os.Environment
+import android.net.Uri
+import androidx.documentfile.provider.DocumentFile
 import by.liauko.siarhei.fcc.R
+import by.liauko.siarhei.fcc.activity.dialog.ProgressDialog
 import by.liauko.siarhei.fcc.database.CarLogDatabase
 import by.liauko.siarhei.fcc.database.entity.FuelConsumptionEntity
 import by.liauko.siarhei.fcc.database.entity.LogEntity
+import by.liauko.siarhei.fcc.drive.DriveMimeTypes
 import by.liauko.siarhei.fcc.drive.DriveServiceHelper
 import by.liauko.siarhei.fcc.repository.DeleteAllAsyncTask
 import by.liauko.siarhei.fcc.repository.InsertAllAsyncTask
@@ -13,9 +16,6 @@ import by.liauko.siarhei.fcc.repository.SelectAsyncTask
 import by.liauko.siarhei.fcc.util.ApplicationUtil
 import by.liauko.siarhei.fcc.util.DataType
 import com.google.gson.Gson
-import java.io.BufferedReader
-import java.io.File
-import java.io.FileReader
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -47,14 +47,14 @@ object BackupUtil {
                     context,
                     R.string.dialog_backup_alert_title_success,
                     R.string.dialog_backup_alert_export_success
-                )
+                ).show()
             }.addOnFailureListener {
                 progressDialog.dismiss()
                 ApplicationUtil.createAlertDialog(
                     context,
                     R.string.dialog_backup_alert_title_fail,
                     R.string.dialog_backup_alert_export_fail
-                )
+                ).show()
             }
         }
     }
@@ -94,13 +94,40 @@ object BackupUtil {
             }
     }
 
-    fun importData(context: Context) {
-        val backupFile = File(Environment.getExternalStorageDirectory(), "car-logdir/car-logbook.clbdata")
-        val inputStream = BufferedReader(FileReader(backupFile))
-        val backupData = Gson().fromJson<BackupEntity>(inputStream.readLine(), BackupEntity::class.java)
-        inputStream.close()
+    fun exportDataToFile(directoryUri: Uri, context: Context, progressDialog: ProgressDialog) {
+        val logEntities = SelectAsyncTask(DataType.LOG, CarLogDatabase.invoke(context)).execute().get() as List<LogEntity>
+        val fuelConsumptionEntities = SelectAsyncTask(DataType.FUEL, CarLogDatabase.invoke(context)).execute().get() as List<FuelConsumptionEntity>
+        val backUpData = BackupEntity(logEntities, fuelConsumptionEntities)
 
-        restoreData(CarLogDatabase.invoke(context), backupData)
+        val file = DocumentFile.fromTreeUri(context, directoryUri)!!.createFile(
+            DriveMimeTypes.TYPE_JSON_FILE.mimeType,
+            "car-logbook-${SimpleDateFormat("yyyy-MM-dd-HH-mm", Locale.getDefault()).format(Date())}.clbdata"
+        )!!
+        context.contentResolver.openOutputStream(file.uri)!!.use {
+            it.write(Gson().toJson(backUpData).toByteArray())
+            it.flush()
+        }
+        progressDialog.dismiss()
+        ApplicationUtil.createAlertDialog(
+            context,
+            R.string.dialog_backup_alert_title_success,
+            R.string.dialog_backup_alert_export_success
+        ).show()
+    }
+
+    fun importDataFromFile(fileUri: Uri, context: Context, progressDialog: ProgressDialog) {
+        context.contentResolver.openInputStream(fileUri)!!.bufferedReader().use {
+            restoreData(
+                CarLogDatabase.invoke(context),
+                Gson().fromJson<BackupEntity>(it.readLine(), BackupEntity::class.java)
+            )
+        }
+        progressDialog.dismiss()
+        ApplicationUtil.createAlertDialog(
+            context,
+            R.string.dialog_backup_alert_title_success,
+            R.string.dialog_backup_alert_import_success
+        ).show()
     }
     
     private fun prepareBackupData(database: CarLogDatabase): BackupEntity {

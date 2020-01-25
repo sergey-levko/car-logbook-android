@@ -129,11 +129,12 @@ class DriveServiceHelper(private val mDriveService: Drive) {
      */
     fun readBackupFile(fileId: String): Task<BackupEntity> {
         return Tasks.call(mExecutor, Callable {
-            val inputStream = mDriveService.files().get(fileId).executeMediaAsInputStream().bufferedReader()
-            val data = Gson().fromJson<BackupEntity>(inputStream.readLine(), BackupEntity::class.java)
-            inputStream.close()
-
-            return@Callable data
+            mDriveService.files().get(fileId)
+                .executeMediaAsInputStream()
+                .bufferedReader()
+                .use {
+                    return@Callable Gson().fromJson<BackupEntity>(it.readLine(), BackupEntity::class.java)
+                }
         })
     }
 

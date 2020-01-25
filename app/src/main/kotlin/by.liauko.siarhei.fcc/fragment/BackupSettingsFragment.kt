@@ -72,6 +72,8 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
         backupSwitcher.onPreferenceChangeListener = preferenceChangeListener
         backupFrequencyPreference = findPreference(getString(R.string.backup_frequency_key))!!
         backupFrequencyPreference.isEnabled = backupSwitcher.isChecked
+        findPreference<Preference>(getString(R.string.backup_export_key))!!.onPreferenceClickListener = preferenceClickListener
+        findPreference<Preference>(getString(R.string.backup_file_import))!!.onPreferenceClickListener = preferenceClickListener
         findPreference<Preference>(getString(R.string.backup_drive_import))!!.onPreferenceClickListener = preferenceClickListener
     }
 
@@ -106,7 +108,6 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
                     startActivityForResult(e.intent, AppResultCodes.userRecoverableAuth)
                 }
             }
-            "import_key" -> BackupUtil.importData(appContext)
             getString(R.string.backup_drive_import) -> {
                 val progressDialog = ApplicationUtil.createProgressDialog(
                     appContext,
@@ -138,6 +139,15 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
                     progressDialog.dismiss()
                     startActivityForResult(e.intent, AppResultCodes.userRecoverableAuth)
                 }
+            }
+            getString(R.string.backup_export_key) -> {
+                startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), AppResultCodes.backupOpenDocumentTree)
+            }
+            getString(R.string.backup_file_import) -> {
+                val openDocumentIntent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+                openDocumentIntent.addCategory(Intent.CATEGORY_OPENABLE)
+                openDocumentIntent.type = "application/*"
+                startActivityForResult(openDocumentIntent, AppResultCodes.backupOpenDocument)
             }
         }
 
@@ -178,10 +188,34 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == AppResultCodes.googleSignIn && resultCode == Activity.RESULT_OK) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            task.addOnSuccessListener {
-                driveServiceHelper = initDriveServiceHelper(it.account)
+        when(requestCode) {
+            AppResultCodes.googleSignIn -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+                    task.addOnSuccessListener {
+                        driveServiceHelper = initDriveServiceHelper(it.account)
+                    }
+                }
+            }
+            AppResultCodes.backupOpenDocumentTree -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    val progressDialog = ApplicationUtil.createProgressDialog(
+                        appContext,
+                        R.string.dialog_backup_progress_export_text
+                    )
+                    progressDialog.show()
+                    BackupUtil.exportDataToFile(data!!.data!!, appContext, progressDialog)
+                }
+            }
+            AppResultCodes.backupOpenDocument -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    val progressDialog = ApplicationUtil.createProgressDialog(
+                        appContext,
+                        R.string.dialog_backup_progress_import_text
+                    )
+                    progressDialog.show()
+                    BackupUtil.importDataFromFile(data!!.data!!, appContext, progressDialog)
+                }
             }
         }
     }
