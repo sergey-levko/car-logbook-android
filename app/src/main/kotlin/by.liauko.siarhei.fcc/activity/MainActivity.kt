@@ -13,8 +13,8 @@ import androidx.preference.PreferenceFragmentCompat
 import by.liauko.siarhei.fcc.R
 import by.liauko.siarhei.fcc.activity.element.PeriodSelectorElement
 import by.liauko.siarhei.fcc.database.CarLogDatabase
-import by.liauko.siarhei.fcc.fragment.DataFragment
-import by.liauko.siarhei.fcc.fragment.SettingsFragment
+import by.liauko.siarhei.fcc.activity.fragment.DataFragment
+import by.liauko.siarhei.fcc.activity.fragment.SettingsFragment
 import by.liauko.siarhei.fcc.util.AppResultCodes.periodDialogResult
 import by.liauko.siarhei.fcc.util.AppTheme
 import by.liauko.siarhei.fcc.util.ApplicationUtil.appTheme

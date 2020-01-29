@@ -1,4 +1,4 @@
-package by.liauko.siarhei.fcc.fragment
+package by.liauko.siarhei.fcc.activity.fragment
 
 import android.Manifest
 import android.accounts.Account
