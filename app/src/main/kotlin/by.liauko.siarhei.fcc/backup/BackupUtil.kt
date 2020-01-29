@@ -22,40 +22,31 @@ import java.util.Locale
 
 object BackupUtil {
 
+    private const val maxFileCount = 16
+
     const val driveRootFolderId = "root"
 
     fun exportDataToDrive(context: Context, driveServiceHelper: DriveServiceHelper) {
-        val progressDialog = ApplicationUtil.createProgressDialog(
-            context,
-            R.string.dialog_backup_progress_export_text
-        )
-        progressDialog.show()
-
         val backupData = prepareBackupData(CarLogDatabase.invoke(context))
 
         var folderId = driveRootFolderId
         driveServiceHelper.createFolderIfNotExist("car-logbook-backup").addOnCompleteListener {
             folderId = it.result ?: driveRootFolderId
         }.continueWithTask {
+            driveServiceHelper.getAllFilesInFolder(folderId).addOnCompleteListener {
+                val files = it.result!!.sortedBy { item -> item.first }
+                if (files.size >= maxFileCount) {
+                    for (item in files.subList(0, files.size - maxFileCount + 1)) {
+                        driveServiceHelper.deleteFile(item.second)
+                    }
+                }
+            }
+        }.continueWithTask {
             driveServiceHelper.createFile(
                 folderId,
                 "car-logbook-${SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())}.clbdata",
                 Gson().toJson(backupData)
-            ).addOnCompleteListener {
-                progressDialog.dismiss()
-                ApplicationUtil.createAlertDialog(
-                    context,
-                    R.string.dialog_backup_alert_title_success,
-                    R.string.dialog_backup_alert_export_success
-                ).show()
-            }.addOnFailureListener {
-                progressDialog.dismiss()
-                ApplicationUtil.createAlertDialog(
-                    context,
-                    R.string.dialog_backup_alert_title_fail,
-                    R.string.dialog_backup_alert_export_fail
-                ).show()
-            }
+            )
         }
     }
 

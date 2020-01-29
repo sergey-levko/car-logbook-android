@@ -25,7 +25,7 @@ class RecyclerViewImportFileAdapter(private val context: Context,
             showNoFileText()
         } else {
             hideNoFileText()
-//            dataSet.sortByDescending { it.time }
+            dataSet.sortByDescending { it.first }
         }
 
         return RecyclerViewImportFileViewHolder(

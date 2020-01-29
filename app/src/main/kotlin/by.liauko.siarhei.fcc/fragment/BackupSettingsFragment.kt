@@ -46,18 +46,17 @@ import java.util.concurrent.TimeUnit
 
 class BackupSettingsFragment: PreferenceFragmentCompat() {
 
-    companion object {
-        var driveServiceHelper: DriveServiceHelper? = null
-    }
-
     private val workRequestIdKey = "work_request_id"
-    private val backupSwitcherKey = getString(R.string.backup_switcher_key)
-    private val backupFrequencyKey = getString(R.string.backup_frequency_key)
-    private val backupFileExportKey = getString(R.string.backup_file_export_key)
-    private val backupFileImportKey = getString(R.string.backup_file_import_key)
-    private val backupDriveImportKey = getString(R.string.backup_drive_import_key)
+
+    private var driveServiceHelper: DriveServiceHelper? = null
+    private var backupTask = BackupTask.IMPORT
 
     private lateinit var appContext: Context
+    private lateinit var backupSwitcherKey: String
+    private lateinit var backupFrequencyKey: String
+    private lateinit var backupFileExportKey: String
+    private lateinit var backupFileImportKey: String
+    private lateinit var backupDriveImportKey: String
     private lateinit var backupSwitcher: SwitchPreference
     private lateinit var backupFrequencyPreference: ListPreference
     private lateinit var sharedPreferences: SharedPreferences
@@ -83,10 +82,17 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
         appContext = requireContext()
         sharedPreferences = appContext.getSharedPreferences(getString(R.string.shared_preferences_name), Context.MODE_PRIVATE)
 
+        backupSwitcherKey = getString(R.string.backup_switcher_key)
+        backupFrequencyKey = getString(R.string.backup_frequency_key)
+        backupFileExportKey = getString(R.string.backup_file_export_key)
+        backupFileImportKey = getString(R.string.backup_file_import_key)
+        backupDriveImportKey = getString(R.string.backup_drive_import_key)
+
         backupSwitcher = findPreference(backupSwitcherKey)!!
         backupSwitcher.onPreferenceChangeListener = preferenceChangeListener
         backupFrequencyPreference = findPreference(backupFrequencyKey)!!
         backupFrequencyPreference.isEnabled = backupSwitcher.isChecked
+        backupFrequencyPreference.onPreferenceChangeListener = preferenceChangeListener
         findPreference<Preference>(backupFileExportKey)!!.onPreferenceClickListener = preferenceClickListener
         findPreference<Preference>(backupFileImportKey)!!.onPreferenceClickListener = preferenceClickListener
         findPreference<Preference>(backupDriveImportKey)!!.onPreferenceClickListener = preferenceClickListener
@@ -99,11 +105,8 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
                 backupFrequencyPreference.isEnabled = newValue
 
                 if (newValue) {
+                    backupTask = BackupTask.EXPORT
                     googleAuth()
-                    val repeatInterval = backupFrequencyPreference.value.toLong()
-                    if (repeatInterval != 0L) {
-                        startBackupWorker(repeatInterval)
-                    }
                 } else {
                     cancelWorkIfExist()
                     getGoogleSignInClient().signOut().addOnSuccessListener {
@@ -112,7 +115,7 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
                 }
             }
             backupFrequencyKey -> {
-                val repeatInterval = newValue as Long
+                val repeatInterval = newValue.toString().toLong()
                 if (repeatInterval != 0L) {
                     startBackupWorker(repeatInterval)
                 }
@@ -125,34 +128,14 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
     private val preferenceClickListener = Preference.OnPreferenceClickListener {
         when (it.key) {
             backupDriveImportKey -> {
-                val progressDialog = ApplicationUtil.createProgressDialog(
-                    appContext,
-                    R.string.dialog_backup_progress_open_file_list
-                )
-                progressDialog.show()
                 try {
                     if (driveServiceHelper == null) {
+                        backupTask = BackupTask.IMPORT
                         googleAuth()
+                    } else {
+                        importDataFromDrive()
                     }
-                    var folderId = BackupUtil.driveRootFolderId
-                    driveServiceHelper!!.getFolderIdByName("car-logbook-backup")
-                        .addOnCompleteListener { searchResult ->
-                            folderId = searchResult.result ?: folderId
-                        }.continueWithTask {
-                            driveServiceHelper!!.getAllFilesInFolder(folderId)
-                                .addOnCompleteListener { fileList ->
-                                    val files = fileList.result ?: ArrayList()
-                                    val driveImportDialog = DriveImportDialog(appContext, driveServiceHelper!!, files)
-                                    val layoutParams = WindowManager.LayoutParams()
-                                    layoutParams.copyFrom(driveImportDialog.window!!.attributes)
-                                    layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT
-                                    progressDialog.dismiss()
-                                    driveImportDialog.show()
-                                    driveImportDialog.window!!.attributes = layoutParams
-                                }
-                        }
                 } catch (e: UserRecoverableAuthIOException) {
-                    progressDialog.dismiss()
                     startActivityForResult(e.intent, AppResultCodes.userRecoverableAuth)
                 }
             }
@@ -199,6 +182,10 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
             )
         } else {
             driveServiceHelper = initDriveServiceHelper(googleSignInAccount.account)
+            when (backupTask) {
+                BackupTask.IMPORT -> importDataFromDrive()
+                BackupTask.EXPORT -> exportDataToDrive()
+            }
         }
     }
 
@@ -210,7 +197,13 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
                     val task = GoogleSignIn.getSignedInAccountFromIntent(data)
                     task.addOnSuccessListener {
                         driveServiceHelper = initDriveServiceHelper(it.account)
+                        when (backupTask) {
+                            BackupTask.IMPORT -> importDataFromDrive()
+                            BackupTask.EXPORT -> exportDataToDrive()
+                        }
                     }
+                } else {
+                    disableSyncPreferenceItems()
                 }
             }
             AppResultCodes.backupOpenDocumentTree -> {
@@ -293,6 +286,39 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
         return GoogleSignIn.getClient(appContext, googleSignInOptions)
     }
 
+    private fun exportDataToDrive() {
+        val repeatInterval = backupFrequencyPreference.value.toLong()
+        if (repeatInterval != 0L) {
+            startBackupWorker(repeatInterval)
+        }
+    }
+
+    private fun importDataFromDrive() {
+        val progressDialog = ApplicationUtil.createProgressDialog(
+            appContext,
+            R.string.dialog_backup_progress_open_file_list
+        )
+        progressDialog.show()
+
+        var folderId = BackupUtil.driveRootFolderId
+        driveServiceHelper!!.getFolderIdByName("car-logbook-backup")
+            .addOnCompleteListener { searchResult ->
+                folderId = searchResult.result ?: folderId
+            }.continueWithTask {
+                driveServiceHelper!!.getAllFilesInFolder(folderId)
+                    .addOnCompleteListener { fileList ->
+                        val files = fileList.result ?: ArrayList()
+                        val driveImportDialog = DriveImportDialog(appContext, driveServiceHelper!!, files)
+                        val layoutParams = WindowManager.LayoutParams()
+                        layoutParams.copyFrom(driveImportDialog.window!!.attributes)
+                        layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT
+                        progressDialog.dismiss()
+                        driveImportDialog.show()
+                        driveImportDialog.window!!.attributes = layoutParams
+                    }
+            }
+    }
+
     private fun startBackupWorker(repeatInterval: Long) {
         cancelWorkIfExist()
 
@@ -300,7 +326,7 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
-        val workRequest = PeriodicWorkRequestBuilder<CoroutineBackupWorker>(repeatInterval, TimeUnit.DAYS)
+        val workRequest = PeriodicWorkRequestBuilder<CoroutineBackupWorker>(repeatInterval, TimeUnit.MINUTES)
             .setConstraints(constraints)
             .build()
         WorkManager.getInstance(appContext)
@@ -317,4 +343,8 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
                 .cancelWorkById(UUID.fromString(workRequestId))
         }
     }
+}
+
+enum class BackupTask {
+    IMPORT, EXPORT
 }

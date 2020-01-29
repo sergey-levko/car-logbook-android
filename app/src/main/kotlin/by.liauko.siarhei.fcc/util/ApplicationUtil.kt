@@ -11,7 +11,6 @@ object ApplicationUtil {
     var appTheme = AppTheme.KITTY
     var dataPeriod = DataPeriod.MONTH
     var periodCalendar: Calendar = Calendar.getInstance()
-    var syncPeriod = 0L
 
     fun createProgressDialog(context: Context, messageId: Int)
             = ProgressDialog(context, context.getString(messageId))
