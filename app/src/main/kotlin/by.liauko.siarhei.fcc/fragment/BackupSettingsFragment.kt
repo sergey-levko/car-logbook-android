@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -89,6 +90,7 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
         backupDriveImportKey = getString(R.string.backup_drive_import_key)
 
         backupSwitcher = findPreference(backupSwitcherKey)!!
+        backupSwitcher.onPreferenceClickListener = preferenceClickListener
         backupSwitcher.onPreferenceChangeListener = preferenceChangeListener
         backupFrequencyPreference = findPreference(backupFrequencyKey)!!
         backupFrequencyPreference.isEnabled = backupSwitcher.isChecked
@@ -105,8 +107,10 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
                 backupFrequencyPreference.isEnabled = newValue
 
                 if (newValue) {
-                    backupTask = BackupTask.EXPORT
-                    googleAuth()
+                    if (checkInternetConnection()) {
+                        backupTask = BackupTask.EXPORT
+                        googleAuth()
+                    }
                 } else {
                     cancelWorkIfExist()
                     getGoogleSignInClient().signOut().addOnSuccessListener {
@@ -127,9 +131,25 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
 
     private val preferenceClickListener = Preference.OnPreferenceClickListener {
         when (it.key) {
+            backupSwitcherKey -> {
+                if (!checkInternetConnection()) {
+                    Toast.makeText(
+                        appContext,
+                        R.string.settings_preference_backup_internet_access_toast_text,
+                        Toast.LENGTH_LONG
+                    ).show()
+                    disableSyncPreferenceItems()
+                }
+            }
             backupDriveImportKey -> {
                 try {
-                    if (driveServiceHelper == null) {
+                    if (!checkInternetConnection()) {
+                        Toast.makeText(
+                            appContext,
+                            R.string.settings_preference_backup_internet_access_toast_text,
+                            Toast.LENGTH_LONG
+                        ).show()
+                    } else if (driveServiceHelper == null) {
                         backupTask = BackupTask.IMPORT
                         googleAuth()
                     } else {
@@ -342,6 +362,12 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
             WorkManager.getInstance(appContext)
                 .cancelWorkById(UUID.fromString(workRequestId))
         }
+    }
+
+    // NetworkInfo class is deprecated in Android 10
+    private fun checkInternetConnection(): Boolean {
+        val connectivityManager = appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        return connectivityManager.activeNetworkInfo?.isConnectedOrConnecting == true
     }
 }
 

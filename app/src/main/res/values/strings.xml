@@ -107,6 +107,7 @@
     <string name="settings_preference_backup_import_from_file_summary">Import data from file to database</string>
     <string name="settings_preference_backup_internet_permission_toast_text">Access to the internet is required</string>
     <string name="settings_preference_backup_account_permission_toast_text">Access to the accounts is required</string>
+    <string name="settings_preference_backup_internet_access_toast_text">Network connection required</string>
 
     <string name="dialog_drive_import_title">Import data from Google Drive</string>
     <string name="dialog_drive_import_no_files">No files to import</string>
