@@ -326,7 +326,7 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
-        val workRequest = PeriodicWorkRequestBuilder<CoroutineBackupWorker>(repeatInterval, TimeUnit.MINUTES)
+        val workRequest = PeriodicWorkRequestBuilder<CoroutineBackupWorker>(repeatInterval, TimeUnit.DAYS)
             .setConstraints(constraints)
             .build()
         WorkManager.getInstance(appContext)
