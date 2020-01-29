@@ -344,6 +344,7 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
 
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
+            .setRequiresDeviceIdle(true)
             .build()
 
         val workRequest = PeriodicWorkRequestBuilder<CoroutineBackupWorker>(repeatInterval, TimeUnit.DAYS)
