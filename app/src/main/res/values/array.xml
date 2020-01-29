@@ -48,9 +48,9 @@
     </string-array>
 
     <string-array name="backup_frequency_values">
-        <item>OFF</item>
-        <item>DAILY</item>
-        <item>WEEKLY</item>
-        <item>MONTHLY</item>
+        <item>0</item>
+        <item>1</item>
+        <item>7</item>
+        <item>30</item>
     </string-array>
 </resources>

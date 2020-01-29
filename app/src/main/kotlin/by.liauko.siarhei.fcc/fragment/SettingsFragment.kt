@@ -24,9 +24,6 @@ class SettingsFragment: PreferenceFragmentCompat() {
     private lateinit var mainScreenKey: String
     private lateinit var themeKey: String
     private lateinit var periodKey: String
-    private lateinit var exportFilePreference: Preference
-    private lateinit var importFilePreference: Preference
-    private lateinit var backupAccountPreference: Preference
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,11 +56,6 @@ class SettingsFragment: PreferenceFragmentCompat() {
             sendFeedback()
             true
         }
-//        backupAccountPreference = findPreference(getString(R.string.backup_account_key))!!
-//        backupAccountPreference.isEnabled = backupSwitcher.isChecked
-
-//        findPreference<Preference>("export_key")!!.onPreferenceClickListener = preferenceClickListener
-//        findPreference<Preference>("import_key")!!.onPreferenceClickListener = preferenceClickListener
     }
 
     private val preferenceChangeListener = Preference.OnPreferenceChangeListener { preference, newValue ->

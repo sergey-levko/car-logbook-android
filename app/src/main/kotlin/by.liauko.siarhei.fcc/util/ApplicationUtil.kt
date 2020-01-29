@@ -11,12 +11,12 @@ object ApplicationUtil {
     var appTheme = AppTheme.KITTY
     var dataPeriod = DataPeriod.MONTH
     var periodCalendar: Calendar = Calendar.getInstance()
-    var syncPeriod = SyncPeriod.OFF
+    var syncPeriod = 0L
 
     fun createProgressDialog(context: Context, messageId: Int)
             = ProgressDialog(context, context.getString(messageId))
 
-    fun createAlertDialog(context: Context, titleId: Int, messageId: Int)
+    fun createAlertDialog(context: Context, titleId: Int, messageId: Int): AlertDialog
             = AlertDialog.Builder(context)
         .setTitle(titleId)
         .setMessage(messageId)
@@ -59,8 +59,4 @@ enum class AppTheme(val appId: Int, val dialogId: Int) {
 
 enum class DataPeriod {
     MONTH, YEAR, ALL
-}
-
-enum class SyncPeriod {
-    OFF, DAILY, WEEKLY, MONTHLY
 }

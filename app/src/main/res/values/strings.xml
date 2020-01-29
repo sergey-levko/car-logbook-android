@@ -100,6 +100,8 @@
     <string name="settings_preference_backup_import_from_drive_summary">Import data from Google Drive file to database</string>
     <string name="settings_preference_backup_import_from_file">Import data from file</string>
     <string name="settings_preference_backup_import_from_file_summary">Import data from file to database</string>
+    <string name="settings_preference_backup_internet_permission_toast_text">Access to the internet is required</string>
+    <string name="settings_preference_backup_account_permission_toast_text">Access to the accounts is required</string>
 
     <string name="dialog_drive_import_title">Import data from Google Drive</string>
     <string name="dialog_drive_import_no_files">No files to import</string>
@@ -116,9 +118,9 @@
     <string name="main_screen_key" translatable="false">main_screen</string>
     <string name="theme_key" translatable="false">theme</string>
     <string name="period_key" translatable="false">period</string>
-    <string name="backup_key" translatable="false">backup</string>
+    <string name="backup_switcher_key" translatable="false">backup_switcher</string>
     <string name="backup_frequency_key" translatable="false">backup_frequency</string>
-    <string name="backup_export_key" translatable="false">backup_export</string>
-    <string name="backup_file_import" translatable="false">backup_file_import</string>
-    <string name="backup_drive_import" translatable="false">backup_drive_import</string>
+    <string name="backup_file_export_key" translatable="false">backup_file_export</string>
+    <string name="backup_file_import_key" translatable="false">backup_file_import</string>
+    <string name="backup_drive_import_key" translatable="false">backup_drive_import</string>
 </resources>

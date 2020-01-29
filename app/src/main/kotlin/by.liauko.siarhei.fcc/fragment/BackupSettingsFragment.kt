@@ -5,6 +5,7 @@ import android.accounts.Account
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,9 +19,14 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import by.liauko.siarhei.fcc.R
 import by.liauko.siarhei.fcc.activity.dialog.DriveImportDialog
 import by.liauko.siarhei.fcc.backup.BackupUtil
+import by.liauko.siarhei.fcc.backup.CoroutineBackupWorker
 import by.liauko.siarhei.fcc.drive.DriveServiceHelper
 import by.liauko.siarhei.fcc.util.AppResultCodes
 import by.liauko.siarhei.fcc.util.ApplicationUtil
@@ -35,6 +41,8 @@ import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecovera
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
+import java.util.UUID
+import java.util.concurrent.TimeUnit
 
 class BackupSettingsFragment: PreferenceFragmentCompat() {
 
@@ -42,10 +50,17 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
         var driveServiceHelper: DriveServiceHelper? = null
     }
 
+    private val workRequestIdKey = "work_request_id"
+    private val backupSwitcherKey = getString(R.string.backup_switcher_key)
+    private val backupFrequencyKey = getString(R.string.backup_frequency_key)
+    private val backupFileExportKey = getString(R.string.backup_file_export_key)
+    private val backupFileImportKey = getString(R.string.backup_file_import_key)
+    private val backupDriveImportKey = getString(R.string.backup_drive_import_key)
+
     private lateinit var appContext: Context
-    private lateinit var backupSwitcherKey: String
     private lateinit var backupSwitcher: SwitchPreference
     private lateinit var backupFrequencyPreference: ListPreference
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -66,15 +81,15 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
         addPreferencesFromResource(R.xml.backup_preference)
 
         appContext = requireContext()
+        sharedPreferences = appContext.getSharedPreferences(getString(R.string.shared_preferences_name), Context.MODE_PRIVATE)
 
-        backupSwitcherKey = getString(R.string.backup_key)
         backupSwitcher = findPreference(backupSwitcherKey)!!
         backupSwitcher.onPreferenceChangeListener = preferenceChangeListener
-        backupFrequencyPreference = findPreference(getString(R.string.backup_frequency_key))!!
+        backupFrequencyPreference = findPreference(backupFrequencyKey)!!
         backupFrequencyPreference.isEnabled = backupSwitcher.isChecked
-        findPreference<Preference>(getString(R.string.backup_export_key))!!.onPreferenceClickListener = preferenceClickListener
-        findPreference<Preference>(getString(R.string.backup_file_import))!!.onPreferenceClickListener = preferenceClickListener
-        findPreference<Preference>(getString(R.string.backup_drive_import))!!.onPreferenceClickListener = preferenceClickListener
+        findPreference<Preference>(backupFileExportKey)!!.onPreferenceClickListener = preferenceClickListener
+        findPreference<Preference>(backupFileImportKey)!!.onPreferenceClickListener = preferenceClickListener
+        findPreference<Preference>(backupDriveImportKey)!!.onPreferenceClickListener = preferenceClickListener
     }
 
     private val preferenceChangeListener = Preference.OnPreferenceChangeListener { preference, newValue ->
@@ -85,10 +100,21 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
 
                 if (newValue) {
                     googleAuth()
+                    val repeatInterval = backupFrequencyPreference.value.toLong()
+                    if (repeatInterval != 0L) {
+                        startBackupWorker(repeatInterval)
+                    }
                 } else {
+                    cancelWorkIfExist()
                     getGoogleSignInClient().signOut().addOnSuccessListener {
                         driveServiceHelper = null
                     }
+                }
+            }
+            backupFrequencyKey -> {
+                val repeatInterval = newValue as Long
+                if (repeatInterval != 0L) {
+                    startBackupWorker(repeatInterval)
                 }
             }
         }
@@ -98,17 +124,7 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
 
     private val preferenceClickListener = Preference.OnPreferenceClickListener {
         when (it.key) {
-            "export_key" -> {
-                try {
-                    if (driveServiceHelper == null) {
-                        googleAuth()
-                    }
-                    BackupUtil.exportDataToDrive(appContext, driveServiceHelper!!)
-                } catch (e: UserRecoverableAuthIOException) {
-                    startActivityForResult(e.intent, AppResultCodes.userRecoverableAuth)
-                }
-            }
-            getString(R.string.backup_drive_import) -> {
+            backupDriveImportKey -> {
                 val progressDialog = ApplicationUtil.createProgressDialog(
                     appContext,
                     R.string.dialog_backup_progress_open_file_list
@@ -140,10 +156,10 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
                     startActivityForResult(e.intent, AppResultCodes.userRecoverableAuth)
                 }
             }
-            getString(R.string.backup_export_key) -> {
+            backupFileExportKey -> {
                 startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), AppResultCodes.backupOpenDocumentTree)
             }
-            getString(R.string.backup_file_import) -> {
+            backupFileImportKey -> {
                 val openDocumentIntent = Intent(Intent.ACTION_OPEN_DOCUMENT)
                 openDocumentIntent.addCategory(Intent.CATEGORY_OPENABLE)
                 openDocumentIntent.type = "application/*"
@@ -228,13 +244,21 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
         when(requestCode) {
             AppResultCodes.internetPermission -> {
                 if (grantResults.isEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    Toast.makeText(appContext, "Access to the internet is required", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        appContext,
+                        getString(R.string.settings_preference_backup_internet_permission_toast_text),
+                        Toast.LENGTH_LONG
+                    ).show()
                     disableSyncPreferenceItems()
                 }
             }
             AppResultCodes.getAccountsPermission -> {
                 if (grantResults.isEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    Toast.makeText(appContext, "Access to the accounts is required", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        appContext,
+                        getString(R.string.settings_preference_backup_account_permission_toast_text),
+                        Toast.LENGTH_LONG
+                    ).show()
                     disableSyncPreferenceItems()
                 }
             }
@@ -267,5 +291,30 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
                 )
                 .build()
         return GoogleSignIn.getClient(appContext, googleSignInOptions)
+    }
+
+    private fun startBackupWorker(repeatInterval: Long) {
+        cancelWorkIfExist()
+
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val workRequest = PeriodicWorkRequestBuilder<CoroutineBackupWorker>(repeatInterval, TimeUnit.DAYS)
+            .setConstraints(constraints)
+            .build()
+        WorkManager.getInstance(appContext)
+            .enqueue(workRequest)
+        sharedPreferences.edit()
+            .putString(workRequestIdKey, workRequest.id.toString())
+            .apply()
+    }
+
+    private fun cancelWorkIfExist() {
+        val workRequestId = sharedPreferences.getString(workRequestIdKey, "")!!
+        if (workRequestId.isNotEmpty()) {
+            WorkManager.getInstance(appContext)
+                .cancelWorkById(UUID.fromString(workRequestId))
+        }
     }
 }
