@@ -51,25 +51,14 @@ class LogDataActivity : AppCompatActivity(), View.OnClickListener, DatePickerDia
         toolbar.setTitle(intent.getIntExtra("title", R.string.activity_log_title_add))
         toolbar.setNavigationIcon(R.drawable.arrow_left_white)
         toolbar.setNavigationOnClickListener {
-            if (id != defaultId) {
-                intent.putExtra("id", id)
-                intent.putExtra("title", title.text.toString())
-                intent.putExtra("mileage", mileage.text.toString())
-                intent.putExtra("text", text.text.toString())
-                intent.putExtra("time", calendar.timeInMillis)
-                setResult(RESULT_OK, intent)
-                finish()
-            } else {
-                setResult(RESULT_CANCELED)
-                finish()
-            }
+            handleBackAction()
         }
-        if (id == defaultId) {
-            toolbar.inflateMenu(R.menu.log_menu_save)
-            toolbar.setOnMenuItemClickListener {
-                var result = false
-                when (it.itemId) {
-                    R.id.log_menu_save -> {
+        toolbar.inflateMenu(R.menu.log_menu_save)
+        toolbar.setOnMenuItemClickListener {
+            var result = false
+            when (it.itemId) {
+                R.id.log_menu_save -> {
+                    if (validateFields()) {
                         val intent = Intent()
                         intent.putExtra("title", title.text.toString())
                         intent.putExtra("mileage", mileage.text.toString())
@@ -80,9 +69,24 @@ class LogDataActivity : AppCompatActivity(), View.OnClickListener, DatePickerDia
                         result = true
                     }
                 }
-
-                return@setOnMenuItemClickListener result
+                R.id.log_menu_delete -> {
+                    val intent = Intent()
+                    intent.putExtra("remove", true)
+                    intent.putExtra("id", id)
+                    setResult(RESULT_OK, intent)
+                    finish()
+                    result = true
+                }
             }
+
+            return@setOnMenuItemClickListener result
+        }
+        if (id == defaultId) {
+            toolbar.menu.findItem(R.id.log_menu_save).isVisible = true
+            toolbar.menu.findItem(R.id.log_menu_delete).isVisible = false
+        } else {
+            toolbar.menu.findItem(R.id.log_menu_save).isVisible = false
+            toolbar.menu.findItem(R.id.log_menu_delete).isVisible = true
         }
     }
 
@@ -105,6 +109,41 @@ class LogDataActivity : AppCompatActivity(), View.OnClickListener, DatePickerDia
         text.text.append(intent.getStringExtra("text"))
     }
 
+    private fun validateFields(): Boolean {
+        var result = true
+
+        val text = title.text.trim()
+        if (text.isEmpty()) {
+            title.error = getString(R.string.activity_log_title_error)
+            result = false
+        }
+
+        if (mileage.text.isNullOrEmpty() || mileage.text.toString().toLong() == 0L) {
+            mileage.error = getString(R.string.activity_log_mileage_error)
+            result = false
+        }
+
+        return result
+    }
+
+    private fun handleBackAction() {
+        if (id != defaultId) {
+            if (validateFields()) {
+                val intent = Intent()
+                intent.putExtra("id", id)
+                intent.putExtra("title", title.text.toString())
+                intent.putExtra("mileage", mileage.text.toString())
+                intent.putExtra("text", text.text.toString())
+                intent.putExtra("time", calendar.timeInMillis)
+                setResult(RESULT_OK, intent)
+                finish()
+            }
+        } else {
+            setResult(RESULT_CANCELED)
+            finish()
+        }
+    }
+
     override fun onClick(v: View?) {
         if (v != null) {
             when (v.id) {
@@ -122,5 +161,9 @@ class LogDataActivity : AppCompatActivity(), View.OnClickListener, DatePickerDia
         calendar.set(MONTH, month)
         calendar.set(DAY_OF_MONTH, dayOfMonth)
         updateDateButtonText()
+    }
+
+    override fun onBackPressed() {
+        handleBackAction()
     }
 }

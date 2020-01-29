@@ -147,8 +147,8 @@ class DataFragment: Fragment() {
                     rvAdapter.refreshRecyclerView()
                 }
                 addLog -> {
-                    val title = data.getStringExtra("title")
-                    val text = data.getStringExtra("text")
+                    val title = data.getStringExtra("title").trim()
+                    val text = data.getStringExtra("text").trim()
                     val mileage = data.getStringExtra("mileage").toLong()
                     val id = repositoryCollection.getRepository(type).insert(
                         LogEntity(null, title, text, mileage, time)
@@ -160,16 +160,23 @@ class DataFragment: Fragment() {
                 }
                 editLog -> {
                     val id = data.getLongExtra("id", -1L)
-                    val title = data.getStringExtra("title")
-                    val text = data.getStringExtra("text")
-                    val mileage = data.getStringExtra("mileage").toLong()
                     val item = items.find { it.id == id } as LogData
-                    item.title = title
-                    item.text = text
-                    item.mileage = mileage
-                    item.time = time
-                    repositoryCollection.getRepository(type).update(item)
-                    rvAdapter.refreshRecyclerView()
+
+                    if (data.getBooleanExtra("remove", false)) {
+                        val position = items.indexOf(item)
+                        rvAdapter.removeItem(position)
+                        repositoryCollection.getRepository(type).delete(item)
+                    } else {
+                        val title = data.getStringExtra("title")
+                        val text = data.getStringExtra("text")
+                        val mileage = data.getStringExtra("mileage").toLong()
+                        item.title = title
+                        item.text = text
+                        item.mileage = mileage
+                        item.time = time
+                        repositoryCollection.getRepository(type).update(item)
+                        rvAdapter.refreshRecyclerView()
+                    }
                 }
             }
         }

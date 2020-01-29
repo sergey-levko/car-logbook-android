@@ -208,10 +208,10 @@ class PeriodSelectorElement(private val parent: MainActivity, private val rootVi
         if (year == minYear) {
             previousYearButton.isEnabled = false
         }
-        if (year == selectedYear - 1) {
+        if (year == selectedYear - 1 && DataPeriod.MONTH == ApplicationUtil.dataPeriod) {
             months[selectedMonth].setTextColor(textColorId)
         }
-        if (year == selectedYear) {
+        if (year == selectedYear && DataPeriod.MONTH == ApplicationUtil.dataPeriod) {
             months[selectedMonth].setTextColor(accentColorId)
         }
         if (!nextYearButton.isEnabled) {
@@ -225,10 +225,10 @@ class PeriodSelectorElement(private val parent: MainActivity, private val rootVi
         if (year == currentYear) {
             nextYearButton.isEnabled = false
         }
-        if (year == selectedYear + 1) {
+        if (year == selectedYear + 1 && DataPeriod.MONTH == ApplicationUtil.dataPeriod) {
             months[selectedMonth].setTextColor(textColorId)
         }
-        if (year == selectedYear) {
+        if (year == selectedYear && DataPeriod.MONTH == ApplicationUtil.dataPeriod) {
             months[selectedMonth].setTextColor(accentColorId)
         }
         if (!previousYearButton.isEnabled) {
