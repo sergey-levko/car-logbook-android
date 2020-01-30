@@ -120,6 +120,12 @@ object BackupUtil {
             R.string.dialog_backup_alert_import_success
         ).show()
     }
+
+    fun eraseAllData(context: Context) {
+        val database = CarLogDatabase.invoke(context)
+        DeleteAllAsyncTask(DataType.LOG, database).execute()
+        DeleteAllAsyncTask(DataType.FUEL, database).execute()
+    }
     
     private fun prepareBackupData(database: CarLogDatabase): BackupEntity {
         val logEntities = SelectAsyncTask(DataType.LOG, database).execute().get() as List<LogEntity>
