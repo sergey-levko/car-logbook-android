@@ -20,7 +20,7 @@
                 android:entryValues="@array/period_values" />
 
         <Preference
-                app:fragment="by.liauko.siarhei.fcc.fragment.BackupSettingsFragment"
+                app:fragment="by.liauko.siarhei.fcc.activity.fragment.BackupSettingsFragment"
                 android:title="@string/settings_preference_backup_item_title"
                 android:summary="@string/settings_preference_backup_item_summary" />
 
