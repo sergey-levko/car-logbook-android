@@ -6,8 +6,9 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import by.liauko.siarhei.fcc.R
 
-class ProgressDialog(context: Context,
-                     private val message: String
+class ProgressDialog(
+    context: Context,
+    private val message: String
 ): AlertDialog(context) {
 
     override fun onCreate(savedInstanceState: Bundle?) {

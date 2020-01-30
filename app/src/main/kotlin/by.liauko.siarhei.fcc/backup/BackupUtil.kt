@@ -22,21 +22,21 @@ import java.util.Locale
 
 object BackupUtil {
 
-    private const val maxFileCount = 16
+    private const val MAX_FILE_COUNT = 16
 
-    const val driveRootFolderId = "root"
+    const val DRIVE_ROOT_FOLDER_ID = "root"
 
     fun exportDataToDrive(context: Context, driveServiceHelper: DriveServiceHelper) {
         val backupData = prepareBackupData(CarLogDatabase.invoke(context))
 
-        var folderId = driveRootFolderId
+        var folderId = DRIVE_ROOT_FOLDER_ID
         driveServiceHelper.createFolderIfNotExist("car-logbook-backup").addOnCompleteListener {
-            folderId = it.result ?: driveRootFolderId
+            folderId = it.result ?: DRIVE_ROOT_FOLDER_ID
         }.continueWithTask {
             driveServiceHelper.getAllFilesInFolder(folderId).addOnCompleteListener {
                 val files = it.result!!.sortedBy { item -> item.first }
-                if (files.size >= maxFileCount) {
-                    for (item in files.subList(0, files.size - maxFileCount + 1)) {
+                if (files.size >= MAX_FILE_COUNT) {
+                    for (item in files.subList(0, files.size - MAX_FILE_COUNT + 1)) {
                         driveServiceHelper.deleteFile(item.second)
                     }
                 }
@@ -91,7 +91,7 @@ object BackupUtil {
         val backUpData = BackupEntity(logEntities, fuelConsumptionEntities)
 
         val file = DocumentFile.fromTreeUri(context, directoryUri)!!.createFile(
-            DriveMimeTypes.TYPE_JSON_FILE.mimeType,
+            DriveMimeTypes.TYPE_JSON_FILE,
             "car-logbook-${SimpleDateFormat("yyyy-MM-dd-HH-mm", Locale.getDefault()).format(Date())}.clbdata"
         )!!
         context.contentResolver.openOutputStream(file.uri)!!.use {

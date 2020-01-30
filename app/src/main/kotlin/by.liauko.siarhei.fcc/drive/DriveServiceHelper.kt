@@ -1,7 +1,7 @@
 package by.liauko.siarhei.fcc.drive
 
 import by.liauko.siarhei.fcc.backup.BackupEntity
-import by.liauko.siarhei.fcc.backup.BackupUtil.driveRootFolderId
+import by.liauko.siarhei.fcc.backup.BackupUtil.DRIVE_ROOT_FOLDER_ID
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.api.client.http.ByteArrayContent
@@ -34,9 +34,9 @@ class DriveServiceHelper(private val mDriveService: Drive) {
         return Tasks.call(mExecutor, Callable {
             val metadata = File()
                 .setParents(listOf(folderId))
-                .setMimeType(DriveMimeTypes.TYPE_JSON_FILE.mimeType)
+                .setMimeType(DriveMimeTypes.TYPE_JSON_FILE)
                 .setName(title)
-            val content = ByteArrayContent.fromString(DriveMimeTypes.TYPE_JSON_FILE.mimeType, data)
+            val content = ByteArrayContent.fromString(DriveMimeTypes.TYPE_JSON_FILE, data)
 
             val googleFile = mDriveService.files().create(metadata, content).execute()
                 ?: throw IOException("Null result when requesting file creation.")
@@ -64,7 +64,7 @@ class DriveServiceHelper(private val mDriveService: Drive) {
 
             val metadata = File()
                 .setParents(listOf("root"))
-                .setMimeType(DriveMimeTypes.TYPE_GOOGLE_DRIVE_FOLDER.mimeType)
+                .setMimeType(DriveMimeTypes.TYPE_GOOGLE_DRIVE_FOLDER)
                 .setName(name)
 
             val googleFile = mDriveService.files().create(metadata).execute()
@@ -86,7 +86,7 @@ class DriveServiceHelper(private val mDriveService: Drive) {
     fun getFolderIdByName(name: String): Task<String> {
         return Tasks.call(mExecutor, Callable {
             val fileList = findFolderByName(name)
-            return@Callable if (fileList.isNotEmpty()) fileList[0].id else driveRootFolderId
+            return@Callable if (fileList.isNotEmpty()) fileList[0].id else DRIVE_ROOT_FOLDER_ID
         })
     }
 
@@ -102,9 +102,9 @@ class DriveServiceHelper(private val mDriveService: Drive) {
     fun getAllFilesInFolder(folderId: String): Task<ArrayList<Pair<String, String>>> {
         return Tasks.call(mExecutor, Callable {
             val filesData = ArrayList<Pair<String, String>>()
-            if (folderId != driveRootFolderId) {
+            if (folderId != DRIVE_ROOT_FOLDER_ID) {
                 val files = mDriveService.files().list()
-                    .setQ("mimeType = '${DriveMimeTypes.TYPE_JSON_FILE.mimeType}' and '$folderId' in parents")
+                    .setQ("mimeType = '${DriveMimeTypes.TYPE_JSON_FILE}' and '$folderId' in parents")
                     .setSpaces("drive")
                     .execute()
                     .files
@@ -152,7 +152,7 @@ class DriveServiceHelper(private val mDriveService: Drive) {
     }
 
     private fun findFolderByName(name: String) = mDriveService.files().list()
-        .setQ("mimeType = '${DriveMimeTypes.TYPE_GOOGLE_DRIVE_FOLDER.mimeType}' and name = '$name'")
+        .setQ("mimeType = '${DriveMimeTypes.TYPE_GOOGLE_DRIVE_FOLDER}' and name = '$name'")
         .setSpaces("drive")
         .execute()
         .files

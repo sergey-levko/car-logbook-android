@@ -11,7 +11,8 @@ import by.liauko.siarhei.fcc.entity.LogData
 import by.liauko.siarhei.fcc.util.ApplicationUtil.periodCalendar
 import by.liauko.siarhei.fcc.util.DataType
 
-class LogRepository(context: Context): Repository {
+class LogRepository(context: Context) : Repository {
+
     private val database = CarLogDatabase(context)
     private val type = DataType.LOG
 
@@ -38,7 +39,7 @@ class LogRepository(context: Context): Repository {
         return items
     }
 
-    override fun insert(entity: AppEntity) =
+    override fun insert(entity: AppEntity): Long =
         InsertAsyncTask(type, database).execute(entity as LogEntity).get()
 
     override fun update(data: AppData) {

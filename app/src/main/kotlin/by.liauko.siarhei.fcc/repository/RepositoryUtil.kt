@@ -12,6 +12,7 @@ import by.liauko.siarhei.fcc.util.DataType
 import java.util.Calendar
 
 object RepositoryUtil {
+
     fun prepareDateRange(calendar: Calendar): Pair<Long, Long> {
         calendar.set(Calendar.HOUR_OF_DAY, 0)
         calendar.clear(Calendar.MINUTE)
@@ -39,6 +40,7 @@ object RepositoryUtil {
 }
 
 class AppRepositoryCollection(context: Context) {
+
     private val logRepository = LogRepository(context)
     private val fuelConsumptionRepository = FuelConsumptionRepository(context)
 
@@ -50,7 +52,8 @@ class AppRepositoryCollection(context: Context) {
     }
 }
 
-class SelectAsyncTask(private val dataType: DataType, private val db: CarLogDatabase): AsyncTask<Unit, Unit, List<AppEntity>>() {
+class SelectAsyncTask(private val dataType: DataType, private val db: CarLogDatabase) : AsyncTask<Unit, Unit, List<AppEntity>>() {
+
     override fun doInBackground(vararg params: Unit?): List<AppEntity> {
         return when (dataType) {
             DataType.LOG -> db.logDao().findAll()
@@ -59,7 +62,8 @@ class SelectAsyncTask(private val dataType: DataType, private val db: CarLogData
     }
 }
 
-class SelectByDateAsyncTask(private val dataType: DataType, private val db: CarLogDatabase): AsyncTask<Long, Unit, List<AppEntity>>() {
+class SelectByDateAsyncTask(private val dataType: DataType, private val db: CarLogDatabase) : AsyncTask<Long, Unit, List<AppEntity>>() {
+
     override fun doInBackground(vararg params: Long?): List<AppEntity> {
         return when (dataType) {
             DataType.LOG -> db.logDao().findAllByDate(params[0]!!, params[1]!!)
@@ -68,7 +72,8 @@ class SelectByDateAsyncTask(private val dataType: DataType, private val db: CarL
     }
 }
 
-class InsertAsyncTask(private val dataType: DataType, private val db: CarLogDatabase): AsyncTask<AppEntity, Unit, Long>() {
+class InsertAsyncTask(private val dataType: DataType, private val db: CarLogDatabase) : AsyncTask<AppEntity, Unit, Long>() {
+
     override fun doInBackground(vararg params: AppEntity?): Long {
         return when (dataType) {
             DataType.LOG -> db.logDao().insert(params[0]!! as LogEntity)
@@ -77,7 +82,8 @@ class InsertAsyncTask(private val dataType: DataType, private val db: CarLogData
     }
 }
 
-class InsertAllAsyncTask(private val dataType: DataType, private val db: CarLogDatabase): AsyncTask<List<AppEntity>, Unit, Unit>() {
+class InsertAllAsyncTask(private val dataType: DataType, private val db: CarLogDatabase) : AsyncTask<List<AppEntity>, Unit, Unit>() {
+
     override fun doInBackground(vararg params: List<AppEntity>?) {
         return when (dataType) {
             DataType.LOG -> db.logDao().insertAll(params[0]!! as List<LogEntity>)
@@ -86,7 +92,8 @@ class InsertAllAsyncTask(private val dataType: DataType, private val db: CarLogD
     }
 }
 
-class UpdateAsyncTask(private val dataType: DataType, private val db: CarLogDatabase): AsyncTask<AppEntity, Unit, Unit>() {
+class UpdateAsyncTask(private val dataType: DataType, private val db: CarLogDatabase) : AsyncTask<AppEntity, Unit, Unit>() {
+
     override fun doInBackground(vararg params: AppEntity?) {
         when (dataType) {
             DataType.LOG -> db.logDao().update(params[0]!! as LogEntity)
@@ -95,7 +102,8 @@ class UpdateAsyncTask(private val dataType: DataType, private val db: CarLogData
     }
 }
 
-class DeleteAsyncTask(private val dataType: DataType, private val db: CarLogDatabase): AsyncTask<AppEntity, Unit, Unit>() {
+class DeleteAsyncTask(private val dataType: DataType, private val db: CarLogDatabase) : AsyncTask<AppEntity, Unit, Unit>() {
+
     override fun doInBackground(vararg params: AppEntity?) {
         when (dataType) {
             DataType.LOG -> db.logDao().delete(params[0]!! as LogEntity)
@@ -104,7 +112,8 @@ class DeleteAsyncTask(private val dataType: DataType, private val db: CarLogData
     }
 }
 
-class DeleteAllAsyncTask(private val dataType: DataType, private val db: CarLogDatabase): AsyncTask<Unit, Unit, Unit>() {
+class DeleteAllAsyncTask(private val dataType: DataType, private val db: CarLogDatabase) : AsyncTask<Unit, Unit, Unit>() {
+
     override fun doInBackground(vararg params: Unit?) {
         when (dataType) {
             DataType.LOG -> db.logDao().deleteAll()

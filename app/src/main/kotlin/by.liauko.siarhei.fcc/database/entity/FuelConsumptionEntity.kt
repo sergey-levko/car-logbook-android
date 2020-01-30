@@ -11,4 +11,4 @@ data class FuelConsumptionEntity(
     val litres: Double,
     val distance: Double,
     val time: Long
-): AppEntity()
+) : AppEntity()

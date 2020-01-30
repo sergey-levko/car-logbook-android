@@ -15,7 +15,7 @@ import by.liauko.siarhei.fcc.activity.element.PeriodSelectorElement
 import by.liauko.siarhei.fcc.database.CarLogDatabase
 import by.liauko.siarhei.fcc.activity.fragment.DataFragment
 import by.liauko.siarhei.fcc.activity.fragment.SettingsFragment
-import by.liauko.siarhei.fcc.util.AppResultCodes.periodDialogResult
+import by.liauko.siarhei.fcc.util.AppResultCodes.PERIOD_DIALOG_RESULT
 import by.liauko.siarhei.fcc.util.AppTheme
 import by.liauko.siarhei.fcc.util.ApplicationUtil.appTheme
 import by.liauko.siarhei.fcc.util.ApplicationUtil.dataPeriod
@@ -29,6 +29,7 @@ import java.util.Calendar
 class MainActivity : AppCompatActivity(),
     BottomNavigationView.OnNavigationItemSelectedListener,
     PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
+
     private lateinit var toolbar: Toolbar
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var periodSelector: PeriodSelectorElement
@@ -147,7 +148,7 @@ class MainActivity : AppCompatActivity(),
 
         if (resultCode == Activity.RESULT_OK && data != null) {
             when (requestCode) {
-                periodDialogResult -> {
+                PERIOD_DIALOG_RESULT -> {
                     periodSelector.updateYear(data.getStringExtra("year"))
                 }
             }

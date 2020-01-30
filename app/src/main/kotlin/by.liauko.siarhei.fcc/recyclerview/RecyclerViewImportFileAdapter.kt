@@ -10,12 +10,13 @@ import by.liauko.siarhei.fcc.R
 import by.liauko.siarhei.fcc.drive.DriveServiceHelper
 import by.liauko.siarhei.fcc.util.ApplicationUtil
 
-class RecyclerViewImportFileAdapter(private val context: Context,
-                                    private val dataSet: ArrayList<Pair<String, String>>,
-                                    private val noFileTextView: TextView,
-                                    private val driveServiceHelper: DriveServiceHelper,
-                                    private val listener: RecyclerViewOnItemClickListener)
-    : RecyclerView.Adapter<RecyclerViewImportFileViewHolder>() {
+class RecyclerViewImportFileAdapter(
+    private val context: Context,
+    private val dataSet: ArrayList<Pair<String, String>>,
+    private val noFileTextView: TextView,
+    private val driveServiceHelper: DriveServiceHelper,
+    private val listener: RecyclerViewOnItemClickListener
+) : RecyclerView.Adapter<RecyclerViewImportFileViewHolder>() {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -64,7 +65,7 @@ class RecyclerViewImportFileAdapter(private val context: Context,
         noFileTextView.visibility = View.GONE
     }
 
-    fun removeItem(position: Int) {
+    private fun removeItem(position: Int) {
         dataSet.removeAt(position)
         notifyItemRemoved(position)
         notifyItemRangeChanged(position, dataSet.size)

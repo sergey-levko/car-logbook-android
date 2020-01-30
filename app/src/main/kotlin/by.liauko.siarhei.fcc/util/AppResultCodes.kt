@@ -1,15 +1,15 @@
 package by.liauko.siarhei.fcc.util
 
 object AppResultCodes {
-    const val addLog = 0x000
-    const val editLog = 0x001
-    const val addFuelConsumption = 0x100
-    const val editFuelConsumption = 0x101
-    const val periodDialogResult = 0x200
-    const val googleSignIn = 0x300
-    const val internetPermission = 0x301
-    const val getAccountsPermission = 0x302
-    const val userRecoverableAuth = 0x303
-    const val backupOpenDocumentTree = 0x400
-    const val backupOpenDocument = 0x401
+    const val ADD_LOG = 0x000
+    const val EDIT_LOG = 0x001
+    const val ADD_FUEL_CONSUMPTION = 0x100
+    const val EDIT_FUEL_CONSUMPTION = 0x101
+    const val PERIOD_DIALOG_RESULT = 0x200
+    const val GOOGLE_SIGN_IN = 0x300
+    const val INTERNET_PERMISSION = 0x301
+    const val GET_ACCOUNT_PERMISSION = 0x302
+    const val USER_RECOVERABLE_AUTH = 0x303
+    const val BACKUP_OPEN_DOCUMENT_TREE = 0x400
+    const val BACKUP_OPEN_DOCUMENT = 0x401
 }

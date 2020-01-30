@@ -7,6 +7,7 @@ import by.liauko.siarhei.fcc.activity.dialog.ProgressDialog
 import java.util.Calendar
 
 object ApplicationUtil {
+
     var type = DataType.LOG
     var appTheme = AppTheme.KITTY
     var dataPeriod = DataPeriod.MONTH

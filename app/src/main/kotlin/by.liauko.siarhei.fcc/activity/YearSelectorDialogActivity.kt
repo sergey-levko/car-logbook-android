@@ -12,7 +12,8 @@ import by.liauko.siarhei.fcc.util.ApplicationUtil.appTheme
 import com.google.android.material.textfield.TextInputLayout
 import java.util.Calendar
 
-class YearSelectorDialogActivity: AppCompatActivity(), View.OnClickListener {
+class YearSelectorDialogActivity : AppCompatActivity(), View.OnClickListener {
+
     private val currentYear = Calendar.getInstance()[Calendar.YEAR]
     private val minYear = 1970
 

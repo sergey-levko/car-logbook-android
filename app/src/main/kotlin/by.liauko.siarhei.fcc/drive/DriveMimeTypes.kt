@@ -1,6 +1,7 @@
 package by.liauko.siarhei.fcc.drive
 
-enum class DriveMimeTypes(val mimeType: String) {
-    TYPE_JSON_FILE("application/json"),
-    TYPE_GOOGLE_DRIVE_FOLDER("application/vnd.google-apps.folder")
+object DriveMimeTypes {
+
+    const val TYPE_JSON_FILE = "application/json"
+    const val TYPE_GOOGLE_DRIVE_FOLDER = "application/vnd.google-apps.folder"
 }

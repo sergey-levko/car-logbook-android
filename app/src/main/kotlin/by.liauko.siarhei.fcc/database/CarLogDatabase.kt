@@ -11,7 +11,8 @@ import by.liauko.siarhei.fcc.database.entity.FuelConsumptionEntity
 import by.liauko.siarhei.fcc.database.entity.LogEntity
 
 @Database(entities = [LogEntity::class, FuelConsumptionEntity::class], version = 1)
-abstract class CarLogDatabase: RoomDatabase() {
+abstract class CarLogDatabase : RoomDatabase() {
+
     abstract fun logDao(): LogDao
     abstract fun fuelConsumptionDao(): FuelConsumptionDao
 

@@ -12,10 +12,11 @@ import by.liauko.siarhei.fcc.backup.BackupUtil
 import by.liauko.siarhei.fcc.drive.DriveServiceHelper
 import by.liauko.siarhei.fcc.recyclerview.RecyclerViewImportFileAdapter
 
-class DriveImportDialog(private val appContext: Context,
-                        private val driveServiceHelper: DriveServiceHelper,
-                        private val files: ArrayList<Pair<String, String>>
-): AlertDialog(appContext) {
+class DriveImportDialog(
+    private val appContext: Context,
+    private val driveServiceHelper: DriveServiceHelper,
+    private val files: ArrayList<Pair<String, String>>
+) : AlertDialog(appContext) {
 
     private lateinit var rvAdapter: RecyclerViewImportFileAdapter
     private lateinit var noFileTextView: TextView

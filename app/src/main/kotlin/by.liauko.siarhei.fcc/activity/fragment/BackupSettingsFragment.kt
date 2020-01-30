@@ -45,7 +45,7 @@ import com.google.api.services.drive.DriveScopes
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 
-class BackupSettingsFragment: PreferenceFragmentCompat() {
+class BackupSettingsFragment : PreferenceFragmentCompat() {
 
     private val workRequestIdKey = "work_request_id"
 
@@ -156,17 +156,17 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
                         importDataFromDrive()
                     }
                 } catch (e: UserRecoverableAuthIOException) {
-                    startActivityForResult(e.intent, AppResultCodes.userRecoverableAuth)
+                    startActivityForResult(e.intent, AppResultCodes.USER_RECOVERABLE_AUTH)
                 }
             }
             backupFileExportKey -> {
-                startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), AppResultCodes.backupOpenDocumentTree)
+                startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), AppResultCodes.BACKUP_OPEN_DOCUMENT_TREE)
             }
             backupFileImportKey -> {
                 val openDocumentIntent = Intent(Intent.ACTION_OPEN_DOCUMENT)
                 openDocumentIntent.addCategory(Intent.CATEGORY_OPENABLE)
                 openDocumentIntent.type = "application/*"
-                startActivityForResult(openDocumentIntent, AppResultCodes.backupOpenDocument)
+                startActivityForResult(openDocumentIntent, AppResultCodes.BACKUP_OPEN_DOCUMENT)
             }
         }
 
@@ -187,7 +187,7 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
             ActivityCompat.requestPermissions(
                 this.requireActivity(),
                 arrayOf(Manifest.permission.GET_ACCOUNTS),
-                AppResultCodes.getAccountsPermission
+                AppResultCodes.GET_ACCOUNT_PERMISSION
             )
         }
     }
@@ -198,7 +198,7 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
         val googleSignInAccount = GoogleSignIn.getLastSignedInAccount(appContext)
         if (googleSignInAccount == null) {
             startActivityForResult(getGoogleSignInClient().signInIntent,
-                AppResultCodes.googleSignIn
+                AppResultCodes.GOOGLE_SIGN_IN
             )
         } else {
             driveServiceHelper = initDriveServiceHelper(googleSignInAccount.account)
@@ -212,7 +212,7 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when(requestCode) {
-            AppResultCodes.googleSignIn -> {
+            AppResultCodes.GOOGLE_SIGN_IN -> {
                 if (resultCode == Activity.RESULT_OK) {
                     val task = GoogleSignIn.getSignedInAccountFromIntent(data)
                     task.addOnSuccessListener {
@@ -226,7 +226,7 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
                     disableSyncPreferenceItems()
                 }
             }
-            AppResultCodes.backupOpenDocumentTree -> {
+            AppResultCodes.BACKUP_OPEN_DOCUMENT_TREE -> {
                 if (resultCode == Activity.RESULT_OK) {
                     val progressDialog = ApplicationUtil.createProgressDialog(
                         appContext,
@@ -236,7 +236,7 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
                     BackupUtil.exportDataToFile(data!!.data!!, appContext, progressDialog)
                 }
             }
-            AppResultCodes.backupOpenDocument -> {
+            AppResultCodes.BACKUP_OPEN_DOCUMENT -> {
                 if (resultCode == Activity.RESULT_OK) {
                     val progressDialog = ApplicationUtil.createProgressDialog(
                         appContext,
@@ -255,7 +255,7 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
         grantResults: IntArray
     ) {
         when(requestCode) {
-            AppResultCodes.internetPermission -> {
+            AppResultCodes.INTERNET_PERMISSION -> {
                 if (grantResults.isEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED) {
                     Toast.makeText(
                         appContext,
@@ -265,7 +265,7 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
                     disableSyncPreferenceItems()
                 }
             }
-            AppResultCodes.getAccountsPermission -> {
+            AppResultCodes.GET_ACCOUNT_PERMISSION -> {
                 if (grantResults.isEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED) {
                     Toast.makeText(
                         appContext,
@@ -320,7 +320,7 @@ class BackupSettingsFragment: PreferenceFragmentCompat() {
         )
         progressDialog.show()
 
-        var folderId = BackupUtil.driveRootFolderId
+        var folderId = BackupUtil.DRIVE_ROOT_FOLDER_ID
         driveServiceHelper!!.getFolderIdByName("car-logbook-backup")
             .addOnCompleteListener { searchResult ->
                 folderId = searchResult.result ?: folderId

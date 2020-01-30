@@ -1,7 +1,9 @@
 package by.liauko.siarhei.fcc.entity
 
-class LogData(id: Long,
-              time: Long,
-              var title: String,
-              var text: String,
-              var mileage: Long): AppData (id, time)
+class LogData(
+    id: Long,
+    time: Long,
+    var title: String,
+    var text: String,
+    var mileage: Long
+) : AppData (id, time)

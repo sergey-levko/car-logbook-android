@@ -16,7 +16,7 @@ import by.liauko.siarhei.fcc.R
 import by.liauko.siarhei.fcc.util.ApplicationUtil.dataPeriod
 import by.liauko.siarhei.fcc.util.DataPeriod
 
-class SettingsFragment: PreferenceFragmentCompat() {
+class SettingsFragment : PreferenceFragmentCompat() {
 
     private lateinit var appContext: Context
     private lateinit var appVersion: String

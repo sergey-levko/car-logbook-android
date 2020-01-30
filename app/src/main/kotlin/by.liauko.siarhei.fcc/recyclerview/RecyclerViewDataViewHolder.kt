@@ -6,7 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import by.liauko.siarhei.fcc.R
 import by.liauko.siarhei.fcc.entity.AppData
 
-abstract class RecyclerViewDataViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+abstract class RecyclerViewDataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
     abstract val date: TextView
 
     fun bind(item: AppData, listener: RecyclerViewDataAdapter.RecyclerViewOnItemClickListener) {
@@ -14,14 +15,16 @@ abstract class RecyclerViewDataViewHolder(itemView: View): RecyclerView.ViewHold
     }
 }
 
-class LogDataViewHolder(itemView: View): RecyclerViewDataViewHolder(itemView) {
+class LogDataViewHolder(itemView: View) : RecyclerViewDataViewHolder(itemView) {
+
     val title: TextView = itemView.findViewById(R.id.log_item_title)
     val details: TextView = itemView.findViewById(R.id.log_item_details)
     val mileage: TextView = itemView.findViewById(R.id.log_item_mileage)
     override val date: TextView = itemView.findViewById(R.id.log_item_date)
 }
 
-class FuelDataViewHolder(itemView: View): RecyclerViewDataViewHolder(itemView) {
+class FuelDataViewHolder(itemView: View) : RecyclerViewDataViewHolder(itemView) {
+
     val result: TextView = itemView.findViewById(R.id.fuel_item_result)
     val parameters: TextView = itemView.findViewById(R.id.fuel_item_parameters)
     override val date: TextView = itemView.findViewById(R.id.fuel_item_date)

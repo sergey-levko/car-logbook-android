@@ -10,4 +10,4 @@ data class LogEntity(
     val text: String,
     val mileage: Long,
     val time: Long
-): AppEntity()
+) : AppEntity()

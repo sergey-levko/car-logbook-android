@@ -23,10 +23,10 @@ import by.liauko.siarhei.fcc.entity.LogData
 import by.liauko.siarhei.fcc.recyclerview.RecyclerViewDataAdapter
 import by.liauko.siarhei.fcc.recyclerview.RecyclerViewSwipeController
 import by.liauko.siarhei.fcc.repository.AppRepositoryCollection
-import by.liauko.siarhei.fcc.util.AppResultCodes.addFuelConsumption
-import by.liauko.siarhei.fcc.util.AppResultCodes.addLog
-import by.liauko.siarhei.fcc.util.AppResultCodes.editFuelConsumption
-import by.liauko.siarhei.fcc.util.AppResultCodes.editLog
+import by.liauko.siarhei.fcc.util.AppResultCodes.ADD_FUEL_CONSUMPTION
+import by.liauko.siarhei.fcc.util.AppResultCodes.ADD_LOG
+import by.liauko.siarhei.fcc.util.AppResultCodes.EDIT_FUEL_CONSUMPTION
+import by.liauko.siarhei.fcc.util.AppResultCodes.EDIT_LOG
 import by.liauko.siarhei.fcc.util.ApplicationUtil.dataPeriod
 import by.liauko.siarhei.fcc.util.ApplicationUtil.type
 import by.liauko.siarhei.fcc.util.DataPeriod
@@ -34,7 +34,7 @@ import by.liauko.siarhei.fcc.util.DataType
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.Calendar
 
-class DataFragment: Fragment() {
+class DataFragment : Fragment() {
 
     private lateinit var fragmentView: View
     private lateinit var items: ArrayList<AppData>
@@ -63,10 +63,10 @@ class DataFragment: Fragment() {
         fab.setOnClickListener {
             when (type) {
                 DataType.LOG -> startActivityForResult(Intent(requireContext(), LogDataActivity::class.java),
-                    addLog
+                    ADD_LOG
                 )
                 DataType.FUEL -> startActivityForResult(Intent(requireContext(), FuelDataDialogActivity::class.java),
-                    addFuelConsumption
+                    ADD_FUEL_CONSUMPTION
                 )
             }
         }
@@ -121,7 +121,7 @@ class DataFragment: Fragment() {
         if (resultCode == AppCompatActivity.RESULT_OK && data != null) {
             val time = data.getLongExtra("time", Calendar.getInstance().timeInMillis)
             when (requestCode) {
-                addFuelConsumption -> {
+                ADD_FUEL_CONSUMPTION -> {
                     val litres = data.getStringExtra("litres").toDouble()
                     val distance = data.getStringExtra("distance").toDouble()
                     val fuelConsumption = litres * 100 / distance
@@ -133,7 +133,7 @@ class DataFragment: Fragment() {
                         rvAdapter.refreshRecyclerView()
                     }
                 }
-                editFuelConsumption -> {
+                EDIT_FUEL_CONSUMPTION -> {
                     val id = data.getLongExtra("id", -1L)
                     val litres = data.getStringExtra("litres").toDouble()
                     val distance = data.getStringExtra("distance").toDouble()
@@ -146,7 +146,7 @@ class DataFragment: Fragment() {
                     repositoryCollection.getRepository(type).update(item)
                     rvAdapter.refreshRecyclerView()
                 }
-                addLog -> {
+                ADD_LOG -> {
                     val title = data.getStringExtra("title").trim()
                     val text = data.getStringExtra("text").trim()
                     val mileage = data.getStringExtra("mileage").toLong()
@@ -158,7 +158,7 @@ class DataFragment: Fragment() {
                         rvAdapter.refreshRecyclerView()
                     }
                 }
-                editLog -> {
+                EDIT_LOG -> {
                     val id = data.getLongExtra("id", -1L)
                     val item = items.find { it.id == id } as LogData
 
@@ -190,7 +190,7 @@ class DataFragment: Fragment() {
         intent.putExtra("log_title", item.title)
         intent.putExtra("mileage", item.mileage)
         intent.putExtra("text", item.text)
-        startActivityForResult(intent, editLog)
+        startActivityForResult(intent, EDIT_LOG)
     }
 
     private fun callFuelConsumptionEditActivityForResult(activityClass: Class<*>, item: FuelConsumptionData) {
@@ -201,7 +201,7 @@ class DataFragment: Fragment() {
         intent.putExtra("time", item.time)
         intent.putExtra("litres", item.litres)
         intent.putExtra("distance", item.distance)
-        startActivityForResult(intent, editFuelConsumption)
+        startActivityForResult(intent, EDIT_FUEL_CONSUMPTION)
     }
 
     private fun select(type: DataType) {
