@@ -11,32 +11,29 @@ import by.liauko.siarhei.fcc.util.DataPeriod
 import by.liauko.siarhei.fcc.util.DataType
 import java.util.Calendar
 
-object RepositoryUtil {
+fun prepareDateRange(calendar: Calendar): Pair<Long, Long> {
+    calendar.set(Calendar.HOUR_OF_DAY, 0)
+    calendar.clear(Calendar.MINUTE)
+    calendar.clear(Calendar.SECOND)
+    calendar.clear(Calendar.MILLISECOND)
 
-    fun prepareDateRange(calendar: Calendar): Pair<Long, Long> {
-        calendar.set(Calendar.HOUR_OF_DAY, 0)
-        calendar.clear(Calendar.MINUTE)
-        calendar.clear(Calendar.SECOND)
-        calendar.clear(Calendar.MILLISECOND)
-
-        val dayType = when (dataPeriod) {
-            DataPeriod.MONTH -> Calendar.DAY_OF_MONTH
-            DataPeriod.YEAR -> Calendar.DAY_OF_YEAR
-            DataPeriod.ALL -> 0
-        }
-
-        calendar.set(dayType, 1)
-        val startTime = calendar.timeInMillis
-
-        calendar.set(Calendar.HOUR_OF_DAY, calendar.getActualMaximum(Calendar.HOUR_OF_DAY))
-        calendar.set(Calendar.MINUTE, calendar.getActualMaximum(Calendar.MINUTE))
-        calendar.set(Calendar.SECOND, calendar.getActualMaximum(Calendar.SECOND))
-        calendar.set(Calendar.MILLISECOND, calendar.getActualMaximum(Calendar.MILLISECOND))
-        calendar.set(dayType, calendar.getActualMaximum(dayType))
-        val endTime = calendar.timeInMillis
-
-        return Pair(startTime, endTime)
+    val dayType = when (dataPeriod) {
+        DataPeriod.MONTH -> Calendar.DAY_OF_MONTH
+        DataPeriod.YEAR -> Calendar.DAY_OF_YEAR
+        DataPeriod.ALL -> 0
     }
+
+    calendar.set(dayType, 1)
+    val startTime = calendar.timeInMillis
+
+    calendar.set(Calendar.HOUR_OF_DAY, calendar.getActualMaximum(Calendar.HOUR_OF_DAY))
+    calendar.set(Calendar.MINUTE, calendar.getActualMaximum(Calendar.MINUTE))
+    calendar.set(Calendar.SECOND, calendar.getActualMaximum(Calendar.SECOND))
+    calendar.set(Calendar.MILLISECOND, calendar.getActualMaximum(Calendar.MILLISECOND))
+    calendar.set(dayType, calendar.getActualMaximum(dayType))
+    val endTime = calendar.timeInMillis
+
+    return Pair(startTime, endTime)
 }
 
 class AppRepositoryCollection(context: Context) {

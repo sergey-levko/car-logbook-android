@@ -26,7 +26,7 @@ abstract class CarLogDatabase : RoomDatabase() {
 
         private fun buildDatabase(context: Context) =
             Room.databaseBuilder(context, CarLogDatabase::class.java, "car-log")
-                .addCallback(object: Callback() {
+                .addCallback(object : Callback() {
                     override fun onCreate(db: SupportSQLiteDatabase) {
                         super.onCreate(db)
                         Thread(Runnable {  })

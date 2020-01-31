@@ -26,7 +26,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import by.liauko.siarhei.fcc.R
 import by.liauko.siarhei.fcc.activity.dialog.DriveImportDialog
-import by.liauko.siarhei.fcc.backup.BackupUtil
+import by.liauko.siarhei.fcc.backup.BackupService
 import by.liauko.siarhei.fcc.backup.CoroutineBackupWorker
 import by.liauko.siarhei.fcc.drive.DriveServiceHelper
 import by.liauko.siarhei.fcc.util.AppResultCodes
@@ -197,15 +197,12 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
 
         val googleSignInAccount = GoogleSignIn.getLastSignedInAccount(appContext)
         if (googleSignInAccount == null) {
-            startActivityForResult(getGoogleSignInClient().signInIntent,
+            startActivityForResult(
+                getGoogleSignInClient().signInIntent,
                 AppResultCodes.GOOGLE_SIGN_IN
             )
         } else {
-            driveServiceHelper = initDriveServiceHelper(googleSignInAccount.account)
-            when (backupTask) {
-                BackupTask.IMPORT -> importDataFromDrive()
-                BackupTask.EXPORT -> exportDataToDrive()
-            }
+            executeBackupTask(googleSignInAccount.account)
         }
     }
 
@@ -216,11 +213,7 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
                 if (resultCode == Activity.RESULT_OK) {
                     val task = GoogleSignIn.getSignedInAccountFromIntent(data)
                     task.addOnSuccessListener {
-                        driveServiceHelper = initDriveServiceHelper(it.account)
-                        when (backupTask) {
-                            BackupTask.IMPORT -> importDataFromDrive()
-                            BackupTask.EXPORT -> exportDataToDrive()
-                        }
+                        executeBackupTask(it.account)
                     }
                 } else {
                     disableSyncPreferenceItems()
@@ -233,7 +226,7 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
                         R.string.dialog_backup_progress_export_text
                     )
                     progressDialog.show()
-                    BackupUtil.exportDataToFile(data!!.data!!, appContext, progressDialog)
+                    BackupService.exportDataToFile(data!!.data!!, appContext, progressDialog)
                 }
             }
             AppResultCodes.BACKUP_OPEN_DOCUMENT -> {
@@ -243,7 +236,7 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
                         R.string.dialog_backup_progress_import_text
                     )
                     progressDialog.show()
-                    BackupUtil.importDataFromFile(data!!.data!!, appContext, progressDialog)
+                    BackupService.importDataFromFile(data!!.data!!, appContext, progressDialog)
                 }
             }
         }
@@ -287,7 +280,8 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
         val credential = GoogleAccountCredential.usingOAuth2(appContext, listOf(DriveScopes.DRIVE))
         credential.selectedAccount = account
         val googleDriveService = Drive.Builder(
-            AndroidHttp.newCompatibleTransport(), GsonFactory(),
+            AndroidHttp.newCompatibleTransport(),
+            GsonFactory(),
             credential
         ).setApplicationName(appContext.getString(R.string.app_name)).build()
 
@@ -320,7 +314,7 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
         )
         progressDialog.show()
 
-        var folderId = BackupUtil.DRIVE_ROOT_FOLDER_ID
+        var folderId = BackupService.DRIVE_ROOT_FOLDER_ID
         driveServiceHelper!!.getFolderIdByName("car-logbook-backup")
             .addOnCompleteListener { searchResult ->
                 folderId = searchResult.result ?: folderId
@@ -360,8 +354,7 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
     private fun cancelWorkIfExist() {
         val workRequestId = sharedPreferences.getString(workRequestIdKey, "")!!
         if (workRequestId.isNotEmpty()) {
-            WorkManager.getInstance(appContext)
-                .cancelWorkById(UUID.fromString(workRequestId))
+            WorkManager.getInstance(appContext).cancelWorkById(UUID.fromString(workRequestId))
         }
     }
 
@@ -369,6 +362,14 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
     private fun checkInternetConnection(): Boolean {
         val connectivityManager = appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         return connectivityManager.activeNetworkInfo?.isConnectedOrConnecting == true
+    }
+
+    private fun executeBackupTask(account: Account?) {
+        driveServiceHelper = initDriveServiceHelper(account)
+        when (backupTask) {
+            BackupTask.IMPORT -> importDataFromDrive()
+            BackupTask.EXPORT -> exportDataToDrive()
+        }
     }
 }
 

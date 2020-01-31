@@ -16,27 +16,15 @@ class FuelConsumptionRepository(context: Context) : Repository {
     private val database = CarLogDatabase(context)
     private val type = DataType.FUEL
 
-    override fun selectAll(): List<FuelConsumptionData> {
-        val items = mutableListOf<FuelConsumptionData>() as ArrayList
-        val entities = SelectAsyncTask(type, database).execute().get()
-        for (entity in entities) {
-            items.add(convertToData(entity as FuelConsumptionEntity))
-        }
-
-        return items
-    }
+    override fun selectAll() =
+        SelectAsyncTask(type, database).execute().get().map { convertToData(it as FuelConsumptionEntity) }
 
     override fun selectAllByPeriod(): List<FuelConsumptionData> {
-        val timeBounds = RepositoryUtil.prepareDateRange(periodCalendar)
-        val items = mutableListOf<FuelConsumptionData>() as ArrayList
-        val entities = SelectByDateAsyncTask(type, database)
+        val timeBounds = prepareDateRange(periodCalendar)
+        return SelectByDateAsyncTask(type, database)
             .execute(timeBounds.first, timeBounds.second)
             .get()
-        for (entity in entities) {
-            items.add(convertToData(entity as FuelConsumptionEntity))
-        }
-
-        return items
+            .map { convertToData(it as FuelConsumptionEntity) }
     }
 
     override fun insert(entity: AppEntity): Long =

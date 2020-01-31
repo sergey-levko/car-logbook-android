@@ -146,12 +146,8 @@ class MainActivity : AppCompatActivity(),
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (resultCode == Activity.RESULT_OK && data != null) {
-            when (requestCode) {
-                PERIOD_DIALOG_RESULT -> {
-                    periodSelector.updateYear(data.getStringExtra("year"))
-                }
-            }
+        if (resultCode == Activity.RESULT_OK && data != null && requestCode == PERIOD_DIALOG_RESULT) {
+            periodSelector.updateYear(data.getStringExtra("year"))
         }
     }
 

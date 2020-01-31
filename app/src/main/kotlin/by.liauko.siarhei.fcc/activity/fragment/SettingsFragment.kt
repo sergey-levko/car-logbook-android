@@ -63,6 +63,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             mainScreenKey -> sharedPreferences.edit()
                 .putString(mainScreenKey, newValue.toString())
                 .apply()
+
             themeKey -> {
                 sharedPreferences.edit()
                     .putString(themeKey, newValue.toString())

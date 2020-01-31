@@ -8,14 +8,15 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.liauko.siarhei.fcc.R
-import by.liauko.siarhei.fcc.backup.BackupUtil
+import by.liauko.siarhei.fcc.backup.BackupService
+import by.liauko.siarhei.fcc.drive.DriveFileInfoList
 import by.liauko.siarhei.fcc.drive.DriveServiceHelper
 import by.liauko.siarhei.fcc.recyclerview.RecyclerViewImportFileAdapter
 
 class DriveImportDialog(
     private val appContext: Context,
     private val driveServiceHelper: DriveServiceHelper,
-    private val files: ArrayList<Pair<String, String>>
+    private val files: DriveFileInfoList
 ) : AlertDialog(appContext) {
 
     private lateinit var rvAdapter: RecyclerViewImportFileAdapter
@@ -32,10 +33,10 @@ class DriveImportDialog(
         noFileTextView = findViewById(R.id.no_files_for_import)!!
 
         rvAdapter = RecyclerViewImportFileAdapter(appContext, files, noFileTextView, driveServiceHelper,
-            object: RecyclerViewImportFileAdapter.RecyclerViewOnItemClickListener {
+            object : RecyclerViewImportFileAdapter.RecyclerViewOnItemClickListener {
                 override fun onItemClick(item: Pair<String, String>) {
                     dismiss()
-                    BackupUtil.importDataFromDrive(
+                    BackupService.importDataFromDrive(
                         item.second,
                         context,
                         driveServiceHelper

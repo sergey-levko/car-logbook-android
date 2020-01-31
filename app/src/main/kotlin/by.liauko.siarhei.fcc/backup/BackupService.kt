@@ -20,7 +20,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-object BackupUtil {
+object BackupService {
 
     private const val MAX_FILE_COUNT = 16
 
@@ -30,24 +30,25 @@ object BackupUtil {
         val backupData = prepareBackupData(CarLogDatabase.invoke(context))
 
         var folderId = DRIVE_ROOT_FOLDER_ID
-        driveServiceHelper.createFolderIfNotExist("car-logbook-backup").addOnCompleteListener {
-            folderId = it.result ?: DRIVE_ROOT_FOLDER_ID
-        }.continueWithTask {
-            driveServiceHelper.getAllFilesInFolder(folderId).addOnCompleteListener {
-                val files = it.result!!.sortedBy { item -> item.first }
-                if (files.size >= MAX_FILE_COUNT) {
-                    for (item in files.subList(0, files.size - MAX_FILE_COUNT + 1)) {
-                        driveServiceHelper.deleteFile(item.second)
+        driveServiceHelper.createFolderIfNotExist("car-logbook-backup")
+            .addOnCompleteListener {
+                folderId = it.result ?: DRIVE_ROOT_FOLDER_ID
+            }.continueWithTask {
+                driveServiceHelper.getAllFilesInFolder(folderId).addOnCompleteListener {
+                    val files = it.result!!.sortedBy { item -> item.first }
+                    if (files.size >= MAX_FILE_COUNT) {
+                        for (item in files.subList(0, files.size - MAX_FILE_COUNT + 1)) {
+                            driveServiceHelper.deleteFile(item.second)
+                        }
                     }
                 }
+            }.continueWithTask {
+                driveServiceHelper.createFile(
+                    folderId,
+                    "car-logbook-${SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())}.clbdata",
+                    Gson().toJson(backupData)
+                )
             }
-        }.continueWithTask {
-            driveServiceHelper.createFile(
-                folderId,
-                "car-logbook-${SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())}.clbdata",
-                Gson().toJson(backupData)
-            )
-        }
     }
 
     fun importDataFromDrive(fileId: String, context: Context, driveServiceHelper: DriveServiceHelper) {

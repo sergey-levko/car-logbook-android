@@ -62,10 +62,12 @@ class DataFragment : Fragment() {
         fab = fragmentView.findViewById(R.id.add_fab)
         fab.setOnClickListener {
             when (type) {
-                DataType.LOG -> startActivityForResult(Intent(requireContext(), LogDataActivity::class.java),
+                DataType.LOG -> startActivityForResult(
+                    Intent(requireContext(), LogDataActivity::class.java),
                     ADD_LOG
                 )
-                DataType.FUEL -> startActivityForResult(Intent(requireContext(), FuelDataDialogActivity::class.java),
+                DataType.FUEL -> startActivityForResult(
+                    Intent(requireContext(), FuelDataDialogActivity::class.java),
                     ADD_FUEL_CONSUMPTION
                 )
             }
@@ -81,7 +83,7 @@ class DataFragment : Fragment() {
         noDataTextView = fragmentView.findViewById(R.id.no_data_text)
 
         rvAdapter = RecyclerViewDataAdapter(items, resources, repositoryCollection, noDataTextView,
-            object: RecyclerViewDataAdapter.RecyclerViewOnItemClickListener {
+            object : RecyclerViewDataAdapter.RecyclerViewOnItemClickListener {
                 override fun onItemClick(item: AppData) {
                     if (item is LogData) {
                         callLogEditActivityForResult(LogDataActivity::class.java, item)
@@ -96,7 +98,7 @@ class DataFragment : Fragment() {
             layoutManager = LinearLayoutManager(context)
             adapter = rvAdapter
         }
-        recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener(){
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (dy > 0) {
