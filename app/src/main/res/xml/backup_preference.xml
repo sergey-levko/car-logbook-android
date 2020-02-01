@@ -40,4 +40,13 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="@string/settings_preference_backup_reset_group_title">
+
+        <Preference
+                android:key="@string/backup_reset_key"
+                android:title="@string/settings_preference_backup_reset_title"
+                android:summary="@string/settings_preference_backup_reset_summary" />
+
+    </PreferenceCategory>
+
 </PreferenceScreen>

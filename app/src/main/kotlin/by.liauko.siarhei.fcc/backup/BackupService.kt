@@ -87,6 +87,7 @@ object BackupService {
             }
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun exportToFile(directoryUri: Uri, context: Context, progressDialog: ProgressDialog) {
         val logEntities = SelectAsyncTask(DataType.LOG, CarLogDatabase.invoke(context)).execute().get() as List<LogEntity>
         val fuelConsumptionEntities = SelectAsyncTask(DataType.FUEL, CarLogDatabase.invoke(context)).execute().get() as List<FuelConsumptionEntity>
@@ -124,7 +125,14 @@ object BackupService {
             R.string.dialog_backup_alert_import_success
         ).show()
     }
-    
+
+    fun eraseAllData(context: Context) {
+        val database = CarLogDatabase.invoke(context)
+        DeleteAllAsyncTask(DataType.LOG, database).execute()
+        DeleteAllAsyncTask(DataType.FUEL, database).execute()
+    }
+
+    @Suppress("UNCHECKED_CAST")
     private fun prepareBackupData(database: CarLogDatabase): BackupEntity {
         val logEntities = SelectAsyncTask(DataType.LOG, database).execute().get() as List<LogEntity>
         val fuelConsumptionEntities = SelectAsyncTask(DataType.FUEL, database).execute().get() as List<FuelConsumptionEntity>

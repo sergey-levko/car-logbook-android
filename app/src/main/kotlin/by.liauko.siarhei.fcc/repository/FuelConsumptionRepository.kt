@@ -1,9 +1,7 @@
 package by.liauko.siarhei.fcc.repository
 
 import android.content.Context
-import android.os.AsyncTask
 import by.liauko.siarhei.fcc.database.CarLogDatabase
-import by.liauko.siarhei.fcc.database.dao.FuelConsumptionDao
 import by.liauko.siarhei.fcc.database.entity.AppEntity
 import by.liauko.siarhei.fcc.database.entity.FuelConsumptionEntity
 import by.liauko.siarhei.fcc.entity.AppData
