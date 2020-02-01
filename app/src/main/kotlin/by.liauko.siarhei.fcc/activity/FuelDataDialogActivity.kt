@@ -18,6 +18,7 @@ import java.util.Calendar.MONTH
 import java.util.Calendar.YEAR
 
 class FuelDataDialogActivity : AppCompatActivity(), View.OnClickListener, DatePickerDialog.OnDateSetListener {
+
     private val defaultId = -1L
 
     private lateinit var litres: EditText

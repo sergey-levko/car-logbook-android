@@ -9,47 +9,33 @@ import by.liauko.siarhei.fcc.database.entity.LogEntity
 import by.liauko.siarhei.fcc.entity.AppData
 import by.liauko.siarhei.fcc.entity.LogData
 import by.liauko.siarhei.fcc.util.ApplicationUtil.periodCalendar
+import by.liauko.siarhei.fcc.util.DataType
 
-class LogRepository(context: Context): Repository {
-    private val logDao: LogDao
+class LogRepository(context: Context) : Repository {
 
-    init {
-        val database = CarLogDatabase(context)
-        logDao = database.logDao()
-    }
+    private val database = CarLogDatabase(context)
+    private val type = DataType.LOG
 
-    override fun selectAll(): List<LogData> {
-        val items = mutableListOf<LogData>() as ArrayList
-        val entities = SelectAsyncTask(logDao).execute().get()
-        for (entity in entities) {
-            items.add(convertToData(entity))
-        }
-
-        return items
-    }
+    override fun selectAll() =
+        SelectAsyncTask(type, database).execute().get().map { convertToData(it as LogEntity) }
 
     override fun selectAllByPeriod(): List<LogData> {
-        val timeBounds = RepositoryUtil.prepareDateRange(periodCalendar)
-        val items = mutableListOf<LogData>() as ArrayList
-        val entities = SelectByDateAsyncTask(logDao)
+        val timeBounds = prepareDateRange(periodCalendar)
+        return SelectByDateAsyncTask(type, database)
             .execute(timeBounds.first, timeBounds.second)
             .get()
-        for (entity in entities) {
-            items.add(convertToData(entity))
-        }
-
-        return items
+            .map { convertToData(it as LogEntity) }
     }
 
-    override fun insert(entity: AppEntity) =
-        InsertAsyncTask(logDao).execute(entity as LogEntity).get()
+    override fun insert(entity: AppEntity): Long =
+        InsertAsyncTask(type, database).execute(entity as LogEntity).get()
 
     override fun update(data: AppData) {
-        UpdateAsyncTask(logDao).execute(convertToEntity(data as LogData))
+        UpdateAsyncTask(type, database).execute(convertToEntity(data as LogData))
     }
 
     override fun delete(data: AppData) {
-        DeleteAsyncTask(logDao).execute(convertToEntity(data as LogData))
+        DeleteAsyncTask(type, database).execute(convertToEntity(data as LogData))
     }
 
     private fun convertToEntity(logData: LogData) =
@@ -69,28 +55,4 @@ class LogRepository(context: Context): Repository {
             logEntity.text,
             logEntity.mileage
         )
-
-    private class SelectAsyncTask(private val logDao: LogDao): AsyncTask<Unit, Unit, List<LogEntity>>() {
-        override fun doInBackground(vararg params: Unit?): List<LogEntity> = logDao.findAll()
-    }
-
-    private class SelectByDateAsyncTask(private val logDao: LogDao): AsyncTask<Long, Unit, List<LogEntity>>() {
-        override fun doInBackground(vararg params: Long?): List<LogEntity> = logDao.findAllByDate(params[0]!!, params[1]!!)
-    }
-
-    private class InsertAsyncTask(private val logDao: LogDao): AsyncTask<LogEntity, Unit, Long>() {
-        override fun doInBackground(vararg params: LogEntity?) = logDao.insert(params[0]!!)
-    }
-
-    private class UpdateAsyncTask(private val logDao: LogDao): AsyncTask<LogEntity, Unit, Unit>() {
-        override fun doInBackground(vararg params: LogEntity?) {
-            logDao.update(params[0]!!)
-        }
-    }
-
-    private class DeleteAsyncTask(private val logDao: LogDao): AsyncTask<LogEntity, Unit, Unit>() {
-        override fun doInBackground(vararg params: LogEntity?) {
-            logDao.delete(params[0]!!)
-        }
-    }
 }

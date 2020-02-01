@@ -1,4 +1,4 @@
-package by.liauko.siarhei.fcc.fragment
+package by.liauko.siarhei.fcc.activity.fragment
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,6 +23,10 @@ import by.liauko.siarhei.fcc.entity.LogData
 import by.liauko.siarhei.fcc.recyclerview.RecyclerViewDataAdapter
 import by.liauko.siarhei.fcc.recyclerview.RecyclerViewSwipeController
 import by.liauko.siarhei.fcc.repository.AppRepositoryCollection
+import by.liauko.siarhei.fcc.util.AppResultCodes.ADD_FUEL_CONSUMPTION
+import by.liauko.siarhei.fcc.util.AppResultCodes.ADD_LOG
+import by.liauko.siarhei.fcc.util.AppResultCodes.EDIT_FUEL_CONSUMPTION
+import by.liauko.siarhei.fcc.util.AppResultCodes.EDIT_LOG
 import by.liauko.siarhei.fcc.util.ApplicationUtil.dataPeriod
 import by.liauko.siarhei.fcc.util.ApplicationUtil.type
 import by.liauko.siarhei.fcc.util.DataPeriod
@@ -29,11 +34,7 @@ import by.liauko.siarhei.fcc.util.DataType
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.Calendar
 
-class DataFragment: Fragment() {
-    private val requestCodeAddFuelConsumption = 1
-    private val requestCodeEditFuelConsumption = 2
-    private val requestCodeAddLog = 3
-    private val requestCodeEditLog = 4
+class DataFragment : Fragment() {
 
     private lateinit var fragmentView: View
     private lateinit var items: ArrayList<AppData>
@@ -47,7 +48,13 @@ class DataFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        fragmentView = inflater.inflate(R.layout.data_fragment, container, false)
+        val toolbar = (container!!.parent as ViewGroup).getChildAt(0) as Toolbar
+        toolbar.title = when(type) {
+            DataType.LOG -> getString(R.string.data_fragment_log_title)
+            DataType.FUEL -> getString(R.string.data_fragment_fuel_title)
+        }
+
+        fragmentView = inflater.inflate(R.layout.fragment_data, container, false)
 
         items = arrayListOf()
         initRecyclerView()
@@ -55,8 +62,14 @@ class DataFragment: Fragment() {
         fab = fragmentView.findViewById(R.id.add_fab)
         fab.setOnClickListener {
             when (type) {
-                DataType.LOG -> startActivityForResult(Intent(requireContext(), LogDataActivity::class.java), requestCodeAddLog)
-                DataType.FUEL -> startActivityForResult(Intent(requireContext(), FuelDataDialogActivity::class.java), requestCodeAddFuelConsumption)
+                DataType.LOG -> startActivityForResult(
+                    Intent(requireContext(), LogDataActivity::class.java),
+                    ADD_LOG
+                )
+                DataType.FUEL -> startActivityForResult(
+                    Intent(requireContext(), FuelDataDialogActivity::class.java),
+                    ADD_FUEL_CONSUMPTION
+                )
             }
         }
 
@@ -69,23 +82,23 @@ class DataFragment: Fragment() {
         repositoryCollection = AppRepositoryCollection(requireContext())
         noDataTextView = fragmentView.findViewById(R.id.no_data_text)
 
-        rvAdapter = RecyclerViewDataAdapter(items, resources, repositoryCollection, noDataTextView, object:
-            RecyclerViewDataAdapter.RecyclerViewOnItemClickListener {
-            override fun onItemClick(item: AppData) {
-                if (item is LogData) {
-                    callLogEditActivityForResult(LogDataActivity::class.java, item)
-                } else if (item is FuelConsumptionData) {
-                    callFuelConsumptionEditActivityForResult(FuelDataDialogActivity::class.java, item)
+        rvAdapter = RecyclerViewDataAdapter(items, resources, repositoryCollection, noDataTextView,
+            object : RecyclerViewDataAdapter.RecyclerViewOnItemClickListener {
+                override fun onItemClick(item: AppData) {
+                    if (item is LogData) {
+                        callLogEditActivityForResult(LogDataActivity::class.java, item)
+                    } else if (item is FuelConsumptionData) {
+                        callFuelConsumptionEditActivityForResult(FuelDataDialogActivity::class.java, item)
+                    }
                 }
-            }
-        })
+            })
 
         val recyclerView = fragmentView.findViewById<RecyclerView>(R.id.recycler_view).apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
             adapter = rvAdapter
         }
-        recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener(){
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (dy > 0) {
@@ -110,7 +123,7 @@ class DataFragment: Fragment() {
         if (resultCode == AppCompatActivity.RESULT_OK && data != null) {
             val time = data.getLongExtra("time", Calendar.getInstance().timeInMillis)
             when (requestCode) {
-                requestCodeAddFuelConsumption -> {
+                ADD_FUEL_CONSUMPTION -> {
                     val litres = data.getStringExtra("litres").toDouble()
                     val distance = data.getStringExtra("distance").toDouble()
                     val fuelConsumption = litres * 100 / distance
@@ -122,7 +135,7 @@ class DataFragment: Fragment() {
                         rvAdapter.refreshRecyclerView()
                     }
                 }
-                requestCodeEditFuelConsumption -> {
+                EDIT_FUEL_CONSUMPTION -> {
                     val id = data.getLongExtra("id", -1L)
                     val litres = data.getStringExtra("litres").toDouble()
                     val distance = data.getStringExtra("distance").toDouble()
@@ -135,7 +148,7 @@ class DataFragment: Fragment() {
                     repositoryCollection.getRepository(type).update(item)
                     rvAdapter.refreshRecyclerView()
                 }
-                requestCodeAddLog -> {
+                ADD_LOG -> {
                     val title = data.getStringExtra("title").trim()
                     val text = data.getStringExtra("text").trim()
                     val mileage = data.getStringExtra("mileage").toLong()
@@ -147,7 +160,7 @@ class DataFragment: Fragment() {
                         rvAdapter.refreshRecyclerView()
                     }
                 }
-                requestCodeEditLog -> {
+                EDIT_LOG -> {
                     val id = data.getLongExtra("id", -1L)
                     val item = items.find { it.id == id } as LogData
 
@@ -179,7 +192,7 @@ class DataFragment: Fragment() {
         intent.putExtra("log_title", item.title)
         intent.putExtra("mileage", item.mileage)
         intent.putExtra("text", item.text)
-        startActivityForResult(intent, requestCodeEditLog)
+        startActivityForResult(intent, EDIT_LOG)
     }
 
     private fun callFuelConsumptionEditActivityForResult(activityClass: Class<*>, item: FuelConsumptionData) {
@@ -190,7 +203,7 @@ class DataFragment: Fragment() {
         intent.putExtra("time", item.time)
         intent.putExtra("litres", item.litres)
         intent.putExtra("distance", item.distance)
-        startActivityForResult(intent, requestCodeEditFuelConsumption)
+        startActivityForResult(intent, EDIT_FUEL_CONSUMPTION)
     }
 
     private fun select(type: DataType) {

@@ -12,7 +12,8 @@ import by.liauko.siarhei.fcc.util.ApplicationUtil.appTheme
 import com.google.android.material.textfield.TextInputLayout
 import java.util.Calendar
 
-class YearSelectorDialogActivity: AppCompatActivity(), View.OnClickListener {
+class YearSelectorDialogActivity : AppCompatActivity(), View.OnClickListener {
+
     private val currentYear = Calendar.getInstance()[Calendar.YEAR]
     private val minYear = 1970
 
@@ -23,7 +24,7 @@ class YearSelectorDialogActivity: AppCompatActivity(), View.OnClickListener {
         setTheme(appTheme.dialogId)
 
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.year_selector_dialog)
+        setContentView(R.layout.dialog_year_selector)
         val parameters = window.attributes
         parameters.width = WindowManager.LayoutParams.MATCH_PARENT
         window.attributes = parameters

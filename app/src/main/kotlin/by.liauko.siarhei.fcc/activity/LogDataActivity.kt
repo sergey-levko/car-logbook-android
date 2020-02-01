@@ -18,6 +18,7 @@ import java.util.Calendar.MONTH
 import java.util.Calendar.YEAR
 
 class LogDataActivity : AppCompatActivity(), View.OnClickListener, DatePickerDialog.OnDateSetListener {
+
     private val defaultId = -1L
 
     private lateinit var calendar: Calendar

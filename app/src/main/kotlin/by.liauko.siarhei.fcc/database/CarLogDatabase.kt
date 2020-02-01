@@ -11,7 +11,8 @@ import by.liauko.siarhei.fcc.database.entity.FuelConsumptionEntity
 import by.liauko.siarhei.fcc.database.entity.LogEntity
 
 @Database(entities = [LogEntity::class, FuelConsumptionEntity::class], version = 1)
-abstract class CarLogDatabase: RoomDatabase() {
+abstract class CarLogDatabase : RoomDatabase() {
+
     abstract fun logDao(): LogDao
     abstract fun fuelConsumptionDao(): FuelConsumptionDao
 
@@ -25,7 +26,7 @@ abstract class CarLogDatabase: RoomDatabase() {
 
         private fun buildDatabase(context: Context) =
             Room.databaseBuilder(context, CarLogDatabase::class.java, "car-log")
-                .addCallback(object: Callback() {
+                .addCallback(object : Callback() {
                     override fun onCreate(db: SupportSQLiteDatabase) {
                         super.onCreate(db)
                         Thread(Runnable {  })

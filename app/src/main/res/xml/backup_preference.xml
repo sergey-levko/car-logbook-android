@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+            android:title="@string/settings_preference_backup_automation_group_title">
+
+        <SwitchPreference
+                android:key="@string/backup_switcher_key"
+                android:title="@string/settings_preference_backup_google"
+                android:defaultValue="false" />
+
+        <ListPreference
+                android:defaultValue="0"
+                android:key="@string/backup_frequency_key"
+                android:title="@string/settings_preference_backup_frequency"
+                app:useSimpleSummaryProvider="true"
+                android:entries="@array/backup_frequencies"
+                android:entryValues="@array/backup_frequency_values"
+                android:enabled="false" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/settings_preference_backup_manual_group_title">
+
+        <Preference
+                android:key="@string/backup_file_export_key"
+                android:title="@string/settings_preference_backup_export_to_file"
+                android:summary="@string/settings_preference_backup_export_to_file_summary" />
+
+        <Preference
+                android:key="@string/backup_file_import_key"
+                android:title="@string/settings_preference_backup_import_from_file"
+                android:summary="@string/settings_preference_backup_import_from_file_summary" />
+
+        <Preference
+                android:key="@string/backup_drive_import_key"
+                android:title="@string/settings_preference_backup_import_from_drive"
+                android:summary="@string/settings_preference_backup_import_from_drive_summary" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

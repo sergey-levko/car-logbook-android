@@ -19,9 +19,15 @@ interface LogDao {
     @Insert
     fun insert(item: LogEntity): Long
 
+    @Insert
+    fun insertAll(items: List<LogEntity>)
+
     @Update
     fun update(item: LogEntity)
 
     @Delete
     fun delete(item: LogEntity)
+
+    @Query("DELETE FROM log")
+    fun deleteAll()
 }
