@@ -16,7 +16,7 @@ class CoroutineBackupWorker(private val context: Context, params: WorkerParamete
 
     override suspend fun doWork(): Result {
         val driverServiceHelper = initDriveServiceHelper()
-        BackupUtil.exportDataToDrive(context, driverServiceHelper)
+        BackupService.exportToDrive(context, driverServiceHelper)
 
         return Result.success()
     }
@@ -26,7 +26,8 @@ class CoroutineBackupWorker(private val context: Context, params: WorkerParamete
         val credential = GoogleAccountCredential.usingOAuth2(context, listOf(DriveScopes.DRIVE))
         credential.selectedAccount = googleSignInAccount?.account
         val googleDriveService = Drive.Builder(
-            AndroidHttp.newCompatibleTransport(), GsonFactory(),
+            AndroidHttp.newCompatibleTransport(),
+            GsonFactory(),
             credential
         ).setApplicationName(context.getString(R.string.app_name)).build()
 

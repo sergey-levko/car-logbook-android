@@ -9,7 +9,7 @@ import by.liauko.siarhei.fcc.R
 class ProgressDialog(
     context: Context,
     private val message: String
-): AlertDialog(context) {
+) : AlertDialog(context) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

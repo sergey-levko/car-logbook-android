@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,7 +28,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import by.liauko.siarhei.fcc.R
 import by.liauko.siarhei.fcc.activity.dialog.DriveImportDialog
-import by.liauko.siarhei.fcc.backup.BackupUtil
+import by.liauko.siarhei.fcc.backup.BackupService
 import by.liauko.siarhei.fcc.backup.CoroutineBackupWorker
 import by.liauko.siarhei.fcc.drive.DriveServiceHelper
 import by.liauko.siarhei.fcc.util.AppResultCodes
@@ -176,7 +177,7 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
                     .setTitle(R.string.dialog_reset_title)
                     .setMessage(R.string.dialog_reset_message)
                     .setPositiveButton(R.string.dialog_reset_positive_button) { dialog, _ ->
-                        BackupUtil.eraseAllData(appContext)
+                        BackupService.eraseAllData(appContext)
                         dialog.dismiss()
                         Toast.makeText(appContext, R.string.dialog_reset_toast_message, Toast.LENGTH_LONG)
                             .show()
@@ -213,15 +214,12 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
 
         val googleSignInAccount = GoogleSignIn.getLastSignedInAccount(appContext)
         if (googleSignInAccount == null) {
-            startActivityForResult(getGoogleSignInClient().signInIntent,
+            startActivityForResult(
+                getGoogleSignInClient().signInIntent,
                 AppResultCodes.GOOGLE_SIGN_IN
             )
         } else {
-            driveServiceHelper = initDriveServiceHelper(googleSignInAccount.account)
-            when (backupTask) {
-                BackupTask.IMPORT -> importDataFromDrive()
-                BackupTask.EXPORT -> exportDataToDrive()
-            }
+            executeBackupTask(googleSignInAccount.account)
         }
     }
 
@@ -232,11 +230,7 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
                 if (resultCode == Activity.RESULT_OK) {
                     val task = GoogleSignIn.getSignedInAccountFromIntent(data)
                     task.addOnSuccessListener {
-                        driveServiceHelper = initDriveServiceHelper(it.account)
-                        when (backupTask) {
-                            BackupTask.IMPORT -> importDataFromDrive()
-                            BackupTask.EXPORT -> exportDataToDrive()
-                        }
+                        executeBackupTask(it.account)
                     }
                 } else {
                     disableSyncPreferenceItems()
@@ -249,7 +243,7 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
                         R.string.dialog_backup_progress_export_text
                     )
                     progressDialog.show()
-                    BackupUtil.exportDataToFile(data!!.data!!, appContext, progressDialog)
+                    BackupService.exportToFile(data?.data ?: Uri.EMPTY, appContext, progressDialog)
                 }
             }
             AppResultCodes.BACKUP_OPEN_DOCUMENT -> {
@@ -259,7 +253,7 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
                         R.string.dialog_backup_progress_import_text
                     )
                     progressDialog.show()
-                    BackupUtil.importDataFromFile(data!!.data!!, appContext, progressDialog)
+                    BackupService.importFromFile(data?.data ?: Uri.EMPTY, appContext, progressDialog)
                 }
             }
         }
@@ -303,7 +297,8 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
         val credential = GoogleAccountCredential.usingOAuth2(appContext, listOf(DriveScopes.DRIVE))
         credential.selectedAccount = account
         val googleDriveService = Drive.Builder(
-            AndroidHttp.newCompatibleTransport(), GsonFactory(),
+            AndroidHttp.newCompatibleTransport(),
+            GsonFactory(),
             credential
         ).setApplicationName(appContext.getString(R.string.app_name)).build()
 
@@ -336,7 +331,7 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
         )
         progressDialog.show()
 
-        var folderId = BackupUtil.DRIVE_ROOT_FOLDER_ID
+        var folderId = BackupService.DRIVE_ROOT_FOLDER_ID
         driveServiceHelper!!.getFolderIdByName("car-logbook-backup")
             .addOnCompleteListener { searchResult ->
                 folderId = searchResult.result ?: folderId
@@ -376,15 +371,23 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
     private fun cancelWorkIfExist() {
         val workRequestId = sharedPreferences.getString(workRequestIdKey, "")!!
         if (workRequestId.isNotEmpty()) {
-            WorkManager.getInstance(appContext)
-                .cancelWorkById(UUID.fromString(workRequestId))
+            WorkManager.getInstance(appContext).cancelWorkById(UUID.fromString(workRequestId))
         }
     }
 
     // NetworkInfo class is deprecated in Android 10
+    @Suppress("DEPRECATION")
     private fun checkInternetConnection(): Boolean {
         val connectivityManager = appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         return connectivityManager.activeNetworkInfo?.isConnectedOrConnecting == true
+    }
+
+    private fun executeBackupTask(account: Account?) {
+        driveServiceHelper = initDriveServiceHelper(account)
+        when (backupTask) {
+            BackupTask.IMPORT -> importDataFromDrive()
+            BackupTask.EXPORT -> exportDataToDrive()
+        }
     }
 }
 

@@ -12,9 +12,9 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import by.liauko.siarhei.fcc.R
 import by.liauko.siarhei.fcc.activity.element.PeriodSelectorElement
-import by.liauko.siarhei.fcc.database.CarLogDatabase
 import by.liauko.siarhei.fcc.activity.fragment.DataFragment
 import by.liauko.siarhei.fcc.activity.fragment.SettingsFragment
+import by.liauko.siarhei.fcc.database.CarLogDatabase
 import by.liauko.siarhei.fcc.util.AppResultCodes.PERIOD_DIALOG_RESULT
 import by.liauko.siarhei.fcc.util.AppTheme
 import by.liauko.siarhei.fcc.util.ApplicationUtil.appTheme
@@ -37,9 +37,9 @@ class MainActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val preferences =  getSharedPreferences(getString(R.string.shared_preferences_name), Context.MODE_PRIVATE)
-        type = DataType.valueOf(preferences.getString(getString(R.string.main_screen_key), "LOG")!!)
-        appTheme = AppTheme.valueOf(preferences.getString(getString(R.string.theme_key), "KITTY")!!)
-        dataPeriod = DataPeriod.valueOf(preferences.getString(getString(R.string.period_key), "MONTH")!!)
+        type = DataType.valueOf(preferences.getString(getString(R.string.main_screen_key), "LOG") ?: "LOG")
+        appTheme = AppTheme.valueOf(preferences.getString(getString(R.string.theme_key), "KITTY") ?: "KITTY")
+        dataPeriod = DataPeriod.valueOf(preferences.getString(getString(R.string.period_key), "MONTH") ?: "MONTH")
         setTheme(appTheme.appId)
 
         super.onCreate(savedInstanceState)
@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity(),
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
         super.onRestoreInstanceState(savedInstanceState)
-        bottomNavigationView.selectedItemId = savedInstanceState!!.getInt("item_id")
+        bottomNavigationView.selectedItemId = savedInstanceState?.getInt("item_id") ?: R.id.log_menu_item
     }
 
     override fun onDestroy() {
@@ -146,12 +146,8 @@ class MainActivity : AppCompatActivity(),
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (resultCode == Activity.RESULT_OK && data != null) {
-            when (requestCode) {
-                PERIOD_DIALOG_RESULT -> {
-                    periodSelector.updateYear(data.getStringExtra("year"))
-                }
-            }
+        if (resultCode == Activity.RESULT_OK && data != null && requestCode == PERIOD_DIALOG_RESULT) {
+            periodSelector.updateYear(data.getStringExtra("year"))
         }
     }
 

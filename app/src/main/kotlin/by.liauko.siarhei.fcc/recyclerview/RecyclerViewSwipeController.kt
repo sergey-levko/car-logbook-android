@@ -35,7 +35,7 @@ class RecyclerViewSwipeController(private val adapter: RecyclerViewDataAdapter) 
             Snackbar.LENGTH_LONG
         ).setAction(R.string.data_fragment_snackbar_undo) {
             adapter.restoreItem(deletedItem, position)
-        }.addCallback(object: Snackbar.Callback() {
+        }.addCallback(object : Snackbar.Callback() {
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                 super.onDismissed(transientBottomBar, event)
                 if (event != DISMISS_EVENT_ACTION) {
