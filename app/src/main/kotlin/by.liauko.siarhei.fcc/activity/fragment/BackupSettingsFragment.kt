@@ -15,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.preference.ListPreference
@@ -59,6 +60,7 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
     private lateinit var backupFileExportKey: String
     private lateinit var backupFileImportKey: String
     private lateinit var backupDriveImportKey: String
+    private lateinit var backupResetKey: String
     private lateinit var backupSwitcher: SwitchPreference
     private lateinit var backupFrequencyPreference: ListPreference
     private lateinit var sharedPreferences: SharedPreferences
@@ -89,6 +91,7 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
         backupFileExportKey = getString(R.string.backup_file_export_key)
         backupFileImportKey = getString(R.string.backup_file_import_key)
         backupDriveImportKey = getString(R.string.backup_drive_import_key)
+        backupResetKey = getString(R.string.backup_reset_key)
 
         backupSwitcher = findPreference(backupSwitcherKey)!!
         backupSwitcher.onPreferenceClickListener = preferenceClickListener
@@ -99,6 +102,7 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
         findPreference<Preference>(backupFileExportKey)!!.onPreferenceClickListener = preferenceClickListener
         findPreference<Preference>(backupFileImportKey)!!.onPreferenceClickListener = preferenceClickListener
         findPreference<Preference>(backupDriveImportKey)!!.onPreferenceClickListener = preferenceClickListener
+        findPreference<Preference>(backupResetKey)!!.onPreferenceClickListener = preferenceClickListener
     }
 
     private val preferenceChangeListener = Preference.OnPreferenceChangeListener { preference, newValue ->
@@ -160,14 +164,26 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
                     startActivityForResult(e.intent, AppResultCodes.USER_RECOVERABLE_AUTH)
                 }
             }
-            backupFileExportKey -> {
+            backupFileExportKey ->
                 startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), AppResultCodes.BACKUP_OPEN_DOCUMENT_TREE)
-            }
             backupFileImportKey -> {
                 val openDocumentIntent = Intent(Intent.ACTION_OPEN_DOCUMENT)
                 openDocumentIntent.addCategory(Intent.CATEGORY_OPENABLE)
                 openDocumentIntent.type = "application/*"
                 startActivityForResult(openDocumentIntent, AppResultCodes.BACKUP_OPEN_DOCUMENT)
+            }
+            backupResetKey -> {
+                AlertDialog.Builder(appContext)
+                    .setTitle(R.string.dialog_reset_title)
+                    .setMessage(R.string.dialog_reset_message)
+                    .setPositiveButton(R.string.dialog_reset_positive_button) { dialog, _ ->
+                        BackupService.eraseAllData(appContext)
+                        dialog.dismiss()
+                        Toast.makeText(appContext, R.string.dialog_reset_toast_message, Toast.LENGTH_LONG)
+                            .show()
+                    }
+                    .setNegativeButton(R.string.dialog_reset_negative_button) { dialog, _ -> dialog.cancel() }
+                    .show()
             }
         }
 
@@ -360,6 +376,7 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
     }
 
     // NetworkInfo class is deprecated in Android 10
+    @Suppress("DEPRECATION")
     private fun checkInternetConnection(): Boolean {
         val connectivityManager = appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         return connectivityManager.activeNetworkInfo?.isConnectedOrConnecting == true

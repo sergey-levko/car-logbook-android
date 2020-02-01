@@ -81,6 +81,7 @@ class InsertAsyncTask(private val dataType: DataType, private val db: CarLogData
 
 class InsertAllAsyncTask(private val dataType: DataType, private val db: CarLogDatabase) : AsyncTask<List<AppEntity>, Unit, Unit>() {
 
+    @Suppress("UNCHECKED_CAST")
     override fun doInBackground(vararg params: List<AppEntity>?) {
         return when (dataType) {
             DataType.LOG -> db.logDao().insertAll(params[0]!! as List<LogEntity>)

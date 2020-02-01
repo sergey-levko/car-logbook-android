@@ -108,6 +108,9 @@
     <string name="settings_preference_backup_internet_permission_toast_text">Access to the internet is required</string>
     <string name="settings_preference_backup_account_permission_toast_text">Access to the accounts is required</string>
     <string name="settings_preference_backup_internet_access_toast_text">Network connection required</string>
+    <string name="settings_preference_backup_reset_group_title">Reset</string>
+    <string name="settings_preference_backup_reset_title">Erase all data</string>
+    <string name="settings_preference_backup_reset_summary">All user records will be deleted</string>
 
     <string name="dialog_drive_import_title">Import data from Google Drive</string>
     <string name="dialog_drive_import_no_files">No files to import</string>
@@ -115,6 +118,12 @@
     <string name="dialog_drive_import_negative_button">Cancel</string>
 
     <string name="dialog_progress_delete_file">Deleting file…</string>
+
+    <string name="dialog_reset_title">Erase all data</string>
+    <string name="dialog_reset_message">Are you sure you want to delete all data?</string>
+    <string name="dialog_reset_positive_button">Yes</string>
+    <string name="dialog_reset_negative_button">No</string>
+    <string name="dialog_reset_toast_message">All data was deleted</string>
 
     <string name="km">km</string>
     <string name="liters">L</string>
@@ -129,4 +138,5 @@
     <string name="backup_file_export_key" translatable="false">backup_file_export</string>
     <string name="backup_file_import_key" translatable="false">backup_file_import</string>
     <string name="backup_drive_import_key" translatable="false">backup_drive_import</string>
+    <string name="backup_reset_key" translatable="false">backup_reset</string>
 </resources>
