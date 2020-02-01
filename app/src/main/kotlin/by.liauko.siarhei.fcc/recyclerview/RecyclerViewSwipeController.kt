@@ -11,7 +11,8 @@ import by.liauko.siarhei.fcc.entity.FuelConsumptionData
 import by.liauko.siarhei.fcc.util.DataType
 import com.google.android.material.snackbar.Snackbar
 
-class RecyclerViewSwipeController(private val adapter: RecyclerViewDataAdapter): ItemTouchHelper.Callback() {
+class RecyclerViewSwipeController(private val adapter: RecyclerViewDataAdapter) : ItemTouchHelper.Callback() {
+
     private val deleteBackground = ColorDrawable(Color.RED)
     private val deleteIcon = ResourcesCompat.getDrawable(adapter.resources, R.drawable.delete_white, null)!!
 
@@ -34,7 +35,7 @@ class RecyclerViewSwipeController(private val adapter: RecyclerViewDataAdapter):
             Snackbar.LENGTH_LONG
         ).setAction(R.string.data_fragment_snackbar_undo) {
             adapter.restoreItem(deletedItem, position)
-        }.addCallback(object: Snackbar.Callback() {
+        }.addCallback(object : Snackbar.Callback() {
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                 super.onDismissed(transientBottomBar, event)
                 if (event != DISMISS_EVENT_ACTION) {

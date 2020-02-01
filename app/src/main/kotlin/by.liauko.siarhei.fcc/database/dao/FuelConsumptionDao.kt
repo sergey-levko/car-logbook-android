@@ -19,9 +19,15 @@ interface FuelConsumptionDao {
     @Insert
     fun insert(item: FuelConsumptionEntity): Long
 
+    @Insert
+    fun insertAll(items: List<FuelConsumptionEntity>)
+
     @Update
     fun update(item: FuelConsumptionEntity)
 
     @Delete
     fun delete(item: FuelConsumptionEntity)
+
+    @Query("DELETE FROM fuel_consumption")
+    fun deleteAll()
 }

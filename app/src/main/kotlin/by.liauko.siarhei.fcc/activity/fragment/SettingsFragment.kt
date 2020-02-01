@@ -1,24 +1,41 @@
-package by.liauko.siarhei.fcc.fragment
+package by.liauko.siarhei.fcc.activity.fragment
 
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
-import androidx.preference.DropDownPreference
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
+import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import by.liauko.siarhei.fcc.R
 import by.liauko.siarhei.fcc.util.ApplicationUtil.dataPeriod
 import by.liauko.siarhei.fcc.util.DataPeriod
 
-class SettingsFragment: PreferenceFragmentCompat() {
+class SettingsFragment : PreferenceFragmentCompat() {
+
     private lateinit var appContext: Context
     private lateinit var appVersion: String
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var mainScreenKey: String
     private lateinit var themeKey: String
     private lateinit var periodKey: String
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val toolbar = (container!!.parent as ViewGroup).getChildAt(0) as Toolbar
+        toolbar.navigationIcon = null
+        toolbar.title = getString(R.string.settings_fragment_title)
+
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.app_preferences)
@@ -31,9 +48,9 @@ class SettingsFragment: PreferenceFragmentCompat() {
         themeKey = getString(R.string.theme_key)
         periodKey = getString(R.string.period_key)
 
-        findPreference<DropDownPreference>(mainScreenKey)!!.onPreferenceChangeListener = preferenceChangeListener
-        findPreference<DropDownPreference>(themeKey)!!.onPreferenceChangeListener = preferenceChangeListener
-        findPreference<DropDownPreference>(periodKey)!!.onPreferenceChangeListener = preferenceChangeListener
+        findPreference<ListPreference>(mainScreenKey)!!.onPreferenceChangeListener = preferenceChangeListener
+        findPreference<ListPreference>(themeKey)!!.onPreferenceChangeListener = preferenceChangeListener
+        findPreference<ListPreference>(periodKey)!!.onPreferenceChangeListener = preferenceChangeListener
         findPreference<Preference>("version")!!.summary = appVersion
         findPreference<Preference>("feedback")!!.setOnPreferenceClickListener {
             sendFeedback()
@@ -42,21 +59,24 @@ class SettingsFragment: PreferenceFragmentCompat() {
     }
 
     private val preferenceChangeListener = Preference.OnPreferenceChangeListener { preference, newValue ->
-        if (preference.key == mainScreenKey) {
-            sharedPreferences.edit()
+        when (preference.key) {
+            mainScreenKey -> sharedPreferences.edit()
                 .putString(mainScreenKey, newValue.toString())
                 .apply()
-        } else if (preference.key == themeKey) {
-            sharedPreferences.edit()
-                .putString(themeKey, newValue.toString())
-                .apply()
-            requireActivity().finish()
-            startActivity(requireActivity().intent)
-        } else if (preference.key == periodKey) {
-            sharedPreferences.edit()
-                .putString(periodKey, newValue.toString())
-                .apply()
-            dataPeriod = DataPeriod.valueOf(newValue.toString())
+
+            themeKey -> {
+                sharedPreferences.edit()
+                    .putString(themeKey, newValue.toString())
+                    .apply()
+                requireActivity().finish()
+                startActivity(requireActivity().intent)
+            }
+            periodKey -> {
+                sharedPreferences.edit()
+                    .putString(periodKey, newValue.toString())
+                    .apply()
+                dataPeriod = DataPeriod.valueOf(newValue.toString())
+            }
         }
 
         true

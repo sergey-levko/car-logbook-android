@@ -54,6 +54,8 @@
     <string name="settings_preference_theme_title">Тема</string>
     <string name="settings_preference_period_title">Период</string>
     <string name="settings_preference_interface_group_title">Интерфейс</string>
+    <string name="settings_preference_backup_item_title">Резервное копирование</string>
+    <string name="settings_preference_backup_item_summary">Варианты резервного копирования</string>
 
     <string name="period_dialog_jan">ЯНВ</string>
     <string name="period_dialog_feb">ФЕВ</string>
@@ -78,6 +80,39 @@
     <string name="year_selector_dialog_error_text">Значение года должно быть между 1970 и</string>
     <string name="year_selector_dialog_positive_button">Выбрать</string>
     <string name="year_selector_dialog_negative_button">Отмена</string>
+
+    <string name="dialog_backup_progress_export_text">Экспортирование данных…</string>
+    <string name="dialog_backup_progress_import_text">Импортирование данных…</string>
+    <string name="dialog_backup_progress_open_file_list">Чтение данных из Google Drive…</string>
+
+    <string name="dialog_backup_alert_title_success">Успешно завершено</string>
+    <string name="dialog_backup_alert_title_fail">Внимание</string>
+    <string name="dialog_backup_alert_export_success">Данные были успешно экспортированы</string>
+    <string name="dialog_backup_alert_export_fail">Данные не были экспортированы</string>
+    <string name="dialog_backup_alert_import_success">Данные были успешно импортированы</string>
+    <string name="dialog_backup_alert_import_fail">Данные не были импортированы</string>
+
+    <string name="settings_preference_backup_title">Резервное копирование</string>
+    <string name="settings_preference_backup_automation_group_title">Автоматическое резервное копирование</string>
+    <string name="settings_preference_backup_google">Резервное копирование в Google Drive</string>
+    <string name="settings_preference_backup_frequency">Частота резервного копирования</string>
+    <string name="settings_preference_backup_manual_group_title">Ручное резервное копирование</string>
+    <string name="settings_preference_backup_export_to_file">Экспорт в файл</string>
+    <string name="settings_preference_backup_export_to_file_summary">Экспорт данных из базы данных в файл</string>
+    <string name="settings_preference_backup_import_from_drive">Импорт из Google Drive</string>
+    <string name="settings_preference_backup_import_from_drive_summary">Импорт данных из Google Drive файла в базу данных</string>
+    <string name="settings_preference_backup_import_from_file">Импорт из файла</string>
+    <string name="settings_preference_backup_import_from_file_summary">Импорт данных из файла в базу данных</string>
+    <string name="settings_preference_backup_internet_permission_toast_text">Необходим доступ к интернету</string>
+    <string name="settings_preference_backup_account_permission_toast_text">Необходим доступ к аккаунтам</string>
+    <string name="settings_preference_backup_internet_access_toast_text">Требуется подключение к интернету</string>
+
+    <string name="dialog_drive_import_title">Импорт данных из Google Drive</string>
+    <string name="dialog_drive_import_no_files">Нет файлов для импорта</string>
+    <string name="dialog_drive_import_recycler_view_item_remove_button_content_description">Удалить</string>
+    <string name="dialog_drive_import_negative_button">Отмена</string>
+
+    <string name="dialog_progress_delete_file">Удаление файла…</string>
 
     <string name="km">км</string>
     <string name="liters">л</string>

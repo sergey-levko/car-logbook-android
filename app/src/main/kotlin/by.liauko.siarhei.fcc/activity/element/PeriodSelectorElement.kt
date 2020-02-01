@@ -16,13 +16,17 @@ import android.widget.TextView
 import by.liauko.siarhei.fcc.R
 import by.liauko.siarhei.fcc.activity.MainActivity
 import by.liauko.siarhei.fcc.activity.YearSelectorDialogActivity
+import by.liauko.siarhei.fcc.util.AppResultCodes.PERIOD_DIALOG_RESULT
 import by.liauko.siarhei.fcc.util.ApplicationUtil
 import by.liauko.siarhei.fcc.util.DataPeriod
 import java.util.Calendar
 
-class PeriodSelectorElement(private val parent: MainActivity, private val rootView: ViewGroup)
-    : View.OnClickListener,
+class PeriodSelectorElement(
+    private val parent: MainActivity,
+    private val rootView: ViewGroup
+) : View.OnClickListener,
     Animation.AnimationListener {
+
     private val layoutInflater = parent.applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     private var view: View? = null
     private val minYear = 1970
@@ -40,8 +44,6 @@ class PeriodSelectorElement(private val parent: MainActivity, private val rootVi
     private var selectedYear = currentYear
     private var accentColorId = -1
     private var textColorId = -1
-
-    val requestCodePeriodDialog = 1
 
     var isShown = false
 
@@ -124,7 +126,7 @@ class PeriodSelectorElement(private val parent: MainActivity, private val rootVi
         yearTextView.setOnClickListener {
             val intent = Intent(parent.applicationContext, YearSelectorDialogActivity::class.java)
             intent.putExtra("year", year)
-            parent.startActivityForResult(intent, requestCodePeriodDialog)
+            parent.startActivityForResult(intent, PERIOD_DIALOG_RESULT)
         }
         yearTextView.text = year.toString()
 

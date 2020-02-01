@@ -8,11 +8,14 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
 import by.liauko.siarhei.fcc.R
 import by.liauko.siarhei.fcc.activity.element.PeriodSelectorElement
 import by.liauko.siarhei.fcc.database.CarLogDatabase
-import by.liauko.siarhei.fcc.fragment.DataFragment
-import by.liauko.siarhei.fcc.fragment.SettingsFragment
+import by.liauko.siarhei.fcc.activity.fragment.DataFragment
+import by.liauko.siarhei.fcc.activity.fragment.SettingsFragment
+import by.liauko.siarhei.fcc.util.AppResultCodes.PERIOD_DIALOG_RESULT
 import by.liauko.siarhei.fcc.util.AppTheme
 import by.liauko.siarhei.fcc.util.ApplicationUtil.appTheme
 import by.liauko.siarhei.fcc.util.ApplicationUtil.dataPeriod
@@ -24,7 +27,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.util.Calendar
 
 class MainActivity : AppCompatActivity(),
-    BottomNavigationView.OnNavigationItemSelectedListener {
+    BottomNavigationView.OnNavigationItemSelectedListener,
+    PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
+
     private lateinit var toolbar: Toolbar
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var periodSelector: PeriodSelectorElement
@@ -32,9 +37,9 @@ class MainActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val preferences =  getSharedPreferences(getString(R.string.shared_preferences_name), Context.MODE_PRIVATE)
-        type = DataType.valueOf(preferences.getString(getString(R.string.main_screen_key), "LOG")!!)
-        appTheme = AppTheme.valueOf(preferences.getString(getString(R.string.theme_key), "KITTY")!!)
-        dataPeriod = DataPeriod.valueOf(preferences.getString(getString(R.string.period_key), "MONTH")!!)
+        type = DataType.valueOf(preferences.getString(getString(R.string.main_screen_key), "LOG") ?: "LOG")
+        appTheme = AppTheme.valueOf(preferences.getString(getString(R.string.theme_key), "KITTY") ?: "KITTY")
+        dataPeriod = DataPeriod.valueOf(preferences.getString(getString(R.string.period_key), "MONTH") ?: "MONTH")
         setTheme(appTheme.appId)
 
         super.onCreate(savedInstanceState)
@@ -82,11 +87,6 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        loadFragment()
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putInt("item_id", bottomNavigationView.selectedItemId)
@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity(),
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
         super.onRestoreInstanceState(savedInstanceState)
-        bottomNavigationView.selectedItemId = savedInstanceState!!.getInt("item_id")
+        bottomNavigationView.selectedItemId = savedInstanceState?.getInt("item_id") ?: R.id.log_menu_item
     }
 
     override fun onDestroy() {
@@ -110,27 +110,26 @@ class MainActivity : AppCompatActivity(),
             R.id.log_menu_item -> {
                 updateToolbarMenuState()
                 type = DataType.LOG
-                loadFragment(DataFragment(), R.string.data_fragment_log_title)
+                loadFragment(DataFragment())
                 result = true
             }
             R.id.fuel_menu_item -> {
                 updateToolbarMenuState()
                 type = DataType.FUEL
-                loadFragment(DataFragment(), R.string.data_fragment_fuel_title)
+                loadFragment(DataFragment())
                 result = true
             }
             R.id.settings_menu_item -> {
                 toolbar.menu.findItem(R.id.period_select_menu_date).isVisible = false
                 periodCalendar = Calendar.getInstance()
-                loadFragment(SettingsFragment(), R.string.settings_fragment_title)
+                loadFragment(SettingsFragment())
                 result = true
             }
         }
         return result
     }
 
-    private fun loadFragment(fragment: Fragment, titleId: Int) {
-        toolbar.setTitle(titleId)
+    private fun loadFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.main_frame_container, fragment)
             .commit()
@@ -138,21 +137,32 @@ class MainActivity : AppCompatActivity(),
 
     fun loadFragment() {
         when (bottomNavigationView.selectedItemId) {
-            R.id.log_menu_item -> loadFragment(DataFragment(), R.string.data_fragment_log_title)
-            R.id.fuel_menu_item -> loadFragment(DataFragment(), R.string.data_fragment_fuel_title)
-            R.id.settings_menu_item -> loadFragment(SettingsFragment(), R.string.settings_fragment_title)
+            R.id.log_menu_item -> loadFragment(DataFragment())
+            R.id.fuel_menu_item -> loadFragment(DataFragment())
+            R.id.settings_menu_item -> loadFragment(SettingsFragment())
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (resultCode == Activity.RESULT_OK && data != null) {
-            when (requestCode) {
-                periodSelector.requestCodePeriodDialog -> {
-                    periodSelector.updateYear(data.getStringExtra("year"))
-                }
-            }
+        if (resultCode == Activity.RESULT_OK && data != null && requestCode == PERIOD_DIALOG_RESULT) {
+            periodSelector.updateYear(data.getStringExtra("year"))
         }
+    }
+
+    override fun onPreferenceStartFragment(
+        caller: PreferenceFragmentCompat?,
+        pref: Preference
+    ): Boolean {
+        val fragment = supportFragmentManager.fragmentFactory.instantiate(classLoader, pref.fragment)
+        fragment.arguments = pref.extras
+        fragment.setTargetFragment(caller, 0)
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.main_frame_container, fragment)
+            .addToBackStack(null)
+            .commit()
+
+        return true
     }
 }

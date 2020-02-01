@@ -16,12 +16,13 @@ import by.liauko.siarhei.fcc.util.DataType
 import by.liauko.siarhei.fcc.util.DateConverter
 import java.util.Calendar
 
-class RecyclerViewDataAdapter(val dataSet: ArrayList<AppData>,
-                              val resources: Resources,
-                              val repositoryCollection: AppRepositoryCollection,
-                              private val noDataTextView: TextView,
-                              private val listener: RecyclerViewOnItemClickListener)
-    : RecyclerView.Adapter<RecyclerViewDataViewHolder>() {
+class RecyclerViewDataAdapter(
+    val dataSet: ArrayList<AppData>,
+    val resources: Resources,
+    val repositoryCollection: AppRepositoryCollection,
+    private val noDataTextView: TextView,
+    private val listener: RecyclerViewOnItemClickListener
+) : RecyclerView.Adapter<RecyclerViewDataViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerViewDataViewHolder {
         when (type) {
