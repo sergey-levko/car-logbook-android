@@ -23,10 +23,11 @@ import java.util.Locale
 object BackupService {
 
     private const val MAX_FILE_COUNT = 16
+    private const val EMPTY_JSON_OBJECT = "{}"
 
     const val DRIVE_ROOT_FOLDER_ID = "root"
 
-    fun exportDataToDrive(context: Context, driveServiceHelper: DriveServiceHelper) {
+    fun exportToDrive(context: Context, driveServiceHelper: DriveServiceHelper) {
         val backupData = prepareBackupData(CarLogDatabase.invoke(context))
 
         var folderId = DRIVE_ROOT_FOLDER_ID
@@ -35,7 +36,7 @@ object BackupService {
                 folderId = it.result ?: DRIVE_ROOT_FOLDER_ID
             }.continueWithTask {
                 driveServiceHelper.getAllFilesInFolder(folderId).addOnCompleteListener {
-                    val files = it.result!!.sortedBy { item -> item.first }
+                    val files = it.result?.sortedBy { item -> item.first } ?: emptyList()
                     if (files.size >= MAX_FILE_COUNT) {
                         for (item in files.subList(0, files.size - MAX_FILE_COUNT + 1)) {
                             driveServiceHelper.deleteFile(item.second)
@@ -51,7 +52,7 @@ object BackupService {
             }
     }
 
-    fun importDataFromDrive(fileId: String, context: Context, driveServiceHelper: DriveServiceHelper) {
+    fun importFromDrive(fileId: String, context: Context, driveServiceHelper: DriveServiceHelper) {
         val progressDialog = ApplicationUtil.createProgressDialog(
             context,
             R.string.dialog_backup_progress_import_text
@@ -86,18 +87,20 @@ object BackupService {
             }
     }
 
-    fun exportDataToFile(directoryUri: Uri, context: Context, progressDialog: ProgressDialog) {
+    fun exportToFile(directoryUri: Uri, context: Context, progressDialog: ProgressDialog) {
         val logEntities = SelectAsyncTask(DataType.LOG, CarLogDatabase.invoke(context)).execute().get() as List<LogEntity>
         val fuelConsumptionEntities = SelectAsyncTask(DataType.FUEL, CarLogDatabase.invoke(context)).execute().get() as List<FuelConsumptionEntity>
         val backUpData = BackupEntity(logEntities, fuelConsumptionEntities)
 
-        val file = DocumentFile.fromTreeUri(context, directoryUri)!!.createFile(
+        val file = DocumentFile.fromTreeUri(context, directoryUri)?.createFile(
             DriveMimeTypes.TYPE_JSON_FILE,
             "car-logbook-${SimpleDateFormat("yyyy-MM-dd-HH-mm", Locale.getDefault()).format(Date())}.clbdata"
-        )!!
-        context.contentResolver.openOutputStream(file.uri)!!.use {
-            it.write(Gson().toJson(backUpData).toByteArray())
-            it.flush()
+        )
+        if (file?.uri != null) {
+            context.contentResolver.openOutputStream(file.uri)?.use {
+                it.write(Gson().toJson(backUpData).toByteArray())
+                it.flush()
+            }
         }
         progressDialog.dismiss()
         ApplicationUtil.createAlertDialog(
@@ -107,11 +110,11 @@ object BackupService {
         ).show()
     }
 
-    fun importDataFromFile(fileUri: Uri, context: Context, progressDialog: ProgressDialog) {
-        context.contentResolver.openInputStream(fileUri)!!.bufferedReader().use {
+    fun importFromFile(fileUri: Uri, context: Context, progressDialog: ProgressDialog) {
+        context.contentResolver.openInputStream(fileUri)?.bufferedReader().use {
             restoreData(
                 CarLogDatabase.invoke(context),
-                Gson().fromJson<BackupEntity>(it.readLine(), BackupEntity::class.java)
+                Gson().fromJson<BackupEntity>(it?.readLine() ?: EMPTY_JSON_OBJECT, BackupEntity::class.java)
             )
         }
         progressDialog.dismiss()

@@ -37,9 +37,9 @@ class MainActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val preferences =  getSharedPreferences(getString(R.string.shared_preferences_name), Context.MODE_PRIVATE)
-        type = DataType.valueOf(preferences.getString(getString(R.string.main_screen_key), "LOG")!!)
-        appTheme = AppTheme.valueOf(preferences.getString(getString(R.string.theme_key), "KITTY")!!)
-        dataPeriod = DataPeriod.valueOf(preferences.getString(getString(R.string.period_key), "MONTH")!!)
+        type = DataType.valueOf(preferences.getString(getString(R.string.main_screen_key), "LOG") ?: "LOG")
+        appTheme = AppTheme.valueOf(preferences.getString(getString(R.string.theme_key), "KITTY") ?: "KITTY")
+        dataPeriod = DataPeriod.valueOf(preferences.getString(getString(R.string.period_key), "MONTH") ?: "MONTH")
         setTheme(appTheme.appId)
 
         super.onCreate(savedInstanceState)
@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity(),
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
         super.onRestoreInstanceState(savedInstanceState)
-        bottomNavigationView.selectedItemId = savedInstanceState!!.getInt("item_id")
+        bottomNavigationView.selectedItemId = savedInstanceState?.getInt("item_id") ?: R.id.log_menu_item
     }
 
     override fun onDestroy() {

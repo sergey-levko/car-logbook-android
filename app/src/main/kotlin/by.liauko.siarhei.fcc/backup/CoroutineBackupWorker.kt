@@ -16,7 +16,7 @@ class CoroutineBackupWorker(private val context: Context, params: WorkerParamete
 
     override suspend fun doWork(): Result {
         val driverServiceHelper = initDriveServiceHelper()
-        BackupService.exportDataToDrive(context, driverServiceHelper)
+        BackupService.exportToDrive(context, driverServiceHelper)
 
         return Result.success()
     }

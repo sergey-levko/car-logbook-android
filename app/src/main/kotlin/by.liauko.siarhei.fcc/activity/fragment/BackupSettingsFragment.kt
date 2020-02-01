@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -226,7 +227,7 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
                         R.string.dialog_backup_progress_export_text
                     )
                     progressDialog.show()
-                    BackupService.exportDataToFile(data!!.data!!, appContext, progressDialog)
+                    BackupService.exportToFile(data?.data ?: Uri.EMPTY, appContext, progressDialog)
                 }
             }
             AppResultCodes.BACKUP_OPEN_DOCUMENT -> {
@@ -236,7 +237,7 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
                         R.string.dialog_backup_progress_import_text
                     )
                     progressDialog.show()
-                    BackupService.importDataFromFile(data!!.data!!, appContext, progressDialog)
+                    BackupService.importFromFile(data?.data ?: Uri.EMPTY, appContext, progressDialog)
                 }
             }
         }

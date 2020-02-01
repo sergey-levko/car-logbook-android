@@ -36,7 +36,7 @@ class DriveImportDialog(
             object : RecyclerViewImportFileAdapter.RecyclerViewOnItemClickListener {
                 override fun onItemClick(item: Pair<String, String>) {
                     dismiss()
-                    BackupService.importDataFromDrive(
+                    BackupService.importFromDrive(
                         item.second,
                         context,
                         driveServiceHelper
