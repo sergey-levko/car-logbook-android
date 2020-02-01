@@ -104,7 +104,7 @@
     <string name="settings_preference_backup_import_from_file">Импорт из файла</string>
     <string name="settings_preference_backup_import_from_file_summary">Импорт данных из файла в базу данных</string>
     <string name="settings_preference_backup_internet_permission_toast_text">Необходим доступ к интернету</string>
-    <string name="settings_preference_backup_account_permission_toast_text">Необходи доступ к аккаунтам</string>
+    <string name="settings_preference_backup_account_permission_toast_text">Необходим доступ к аккаунтам</string>
     <string name="settings_preference_backup_internet_access_toast_text">Требуется подключение к интернету</string>
     <string name="settings_preference_backup_reset_group_title">Сброс</string>
     <string name="settings_preference_backup_reset_title">Удалить все данные</string>
