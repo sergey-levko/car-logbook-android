@@ -8,7 +8,7 @@
 
     <Button
             android:id="@+id/fuel_date"
-            style="?android:attr/borderlessButtonStyle"
+            style="@style/MaterialButtonBorderless"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="24sp"
@@ -58,13 +58,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/data_dialog_negative_button"
-                style="@style/Widget.AppCompat.Button.Borderless.Colored" />
+                style="@style/Widget.MaterialComponents.Button.TextButton.Dialog" />
 
         <Button
                 android:id="@+id/fuel_dialog_positive_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Widget.AppCompat.Button.Borderless.Colored" />
+                style="@style/Widget.MaterialComponents.Button.TextButton.Dialog" />
 
     </LinearLayout>
 

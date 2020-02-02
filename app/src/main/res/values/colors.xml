@@ -1,28 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="kittyColorPrimary">#725583</color>
-    <color name="kittyColorPrimaryDark">#462b56</color>
-    <color name="kittyColorAccent">#ffa000</color>
+    <color name="primary">#725583</color>
+    <color name="primaryDark">#462b56</color>
+    <color name="secondary">#ffa000</color>
+    <color name="background">#fff</color>
+    <color name="surface">#fff</color>
+    <color name="error">#b00020</color>
+    <color name="onPrimary">#fff</color>
+    <color name="onSecondary">#fff</color>
+    <color name="onBackground">#000</color>
+    <color name="onSurface">#000</color>
+    <color name="onError">#fff</color>
 
-    <color name="blueColorPrimary">#1976d2</color>
-    <color name="blueColorPrimaryDark">#004ba0</color>
-    <color name="blueColorAccent">#ffa000</color>
-
-    <color name="redColorPrimary">#d50000</color>
-    <color name="redColorPrimaryDark">#9b0000</color>
-    <color name="redColorAccent">#00838f</color>
-
-    <color name="orangeColorPrimary">#ff6f00</color>
-    <color name="orangeColorPrimaryDark">#c43e00</color>
-    <color name="orangeColorAccent">#1976d2</color>
-
-    <color name="greenColorPrimary">#00695c</color>
-    <color name="greenColorPrimaryDark">#003d33</color>
-    <color name="greenColorAccent">#d50000</color>
-
-    <color name="darkColorPrimary">#37474f</color>
-    <color name="darkColorPrimaryDark">#102027</color>
-    <color name="darkColorAccent">#ff6d00</color>
+    <color name="dialogPrimary">#725583</color>
 
     <color name="white">#fff</color>
     <color name="black">#000</color>
