@@ -3,6 +3,7 @@ package by.liauko.siarhei.fcc.activity
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -39,7 +40,11 @@ class MainActivity : AppCompatActivity(),
         val preferences =  getSharedPreferences(getString(R.string.shared_preferences_name), Context.MODE_PRIVATE)
         type = DataType.valueOf(preferences.getString(getString(R.string.main_screen_key), "LOG") ?: "LOG")
         dataPeriod = DataPeriod.valueOf(preferences.getString(getString(R.string.period_key), "MONTH") ?: "MONTH")
-        val uiMode = preferences.getInt(getString(R.string.dark_mode_key), AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        val defaultUiMode = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P)
+            AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
+        else
+            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        val uiMode = preferences.getInt(getString(R.string.dark_mode_key), defaultUiMode)
         AppCompatDelegate.setDefaultNightMode(uiMode)
 
         super.onCreate(savedInstanceState)

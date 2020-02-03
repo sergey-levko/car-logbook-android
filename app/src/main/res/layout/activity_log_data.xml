@@ -71,7 +71,7 @@
                             android:drawablePadding="8dp" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                         android:id="@+id/log_date"
                         style="@style/Widget.MaterialComponents.Button.TextButton"
                         android:textColor="@color/onBackground"

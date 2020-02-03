@@ -68,10 +68,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
             darkModeKey -> {
                 newValue as Boolean
-                val mode = if (newValue) {
-                    AppCompatDelegate.MODE_NIGHT_YES
-                } else {
-                    AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                val mode = when {
+                    newValue -> AppCompatDelegate.MODE_NIGHT_YES
+                    Build.VERSION.SDK_INT <= Build.VERSION_CODES.P -> AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
+                    else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
                 }
                 sharedPreferences.edit()
                     .putInt(darkModeKey, mode)
