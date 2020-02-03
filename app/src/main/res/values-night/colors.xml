@@ -14,4 +14,6 @@
     <color name="onError">#000</color>
 
     <color name="toolbarPrimary">#272727</color>
+
+    <color name="datePickerBackground">#272727</color>
 </resources>
