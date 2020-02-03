@@ -53,8 +53,8 @@
     <string name="settings_preference_terms_title">Условия использования</string>
     <string name="settings_preference_dark_mode_title">Тёмный режим</string>
     <string name="settings_preference_period_title">Период</string>
-    <string name="settings_preference_backup_item_title">Резервное копирование</string>
-    <string name="settings_preference_backup_item_summary">Варианты резервного копирования</string>
+    <string name="settings_preference_backup_item_title">Резервное копирование &amp; сброс</string>
+    <string name="settings_preference_backup_item_summary">Варианты резервного копирования и сброса</string>
 
     <string name="period_dialog_jan">ЯНВ</string>
     <string name="period_dialog_feb">ФЕВ</string>
@@ -91,7 +91,7 @@
     <string name="dialog_backup_alert_import_success">Данные были успешно импортированы</string>
     <string name="dialog_backup_alert_import_fail">Данные не были импортированы</string>
 
-    <string name="settings_preference_backup_title">Резервное копирование</string>
+    <string name="settings_preference_backup_title">Резервное копирование &amp; сброс</string>
     <string name="settings_preference_backup_automation_group_title">Автоматическое резервное копирование</string>
     <string name="settings_preference_backup_google">Резервное копирование в Google Drive</string>
     <string name="settings_preference_backup_frequency">Частота резервного копирования</string>

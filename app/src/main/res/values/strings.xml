@@ -54,8 +54,8 @@
     <string name="settings_preference_terms_url" translatable="false">https://www.gnu.org/licenses/gpl-3.0.en.html</string>
     <string name="settings_preference_dark_mode_title">Dark mode</string>
     <string name="settings_preference_period_title">Period</string>
-    <string name="settings_preference_backup_item_title">Backup</string>
-    <string name="settings_preference_backup_item_summary">Backup options</string>
+    <string name="settings_preference_backup_item_title">Backup &amp; reset</string>
+    <string name="settings_preference_backup_item_summary">Backup and reset options</string>
 
     <string name="period_dialog_jan">JAN</string>
     <string name="period_dialog_feb">FEB</string>
@@ -93,7 +93,7 @@
     <string name="dialog_backup_alert_import_fail">Data was not imported</string>
     <string name="dialog_backup_alert_ok_button" translatable="false">OK</string>
 
-    <string name="settings_preference_backup_title">Backup</string>
+    <string name="settings_preference_backup_title">Backup &amp; reset</string>
     <string name="settings_preference_backup_automation_group_title">Automated backup</string>
     <string name="settings_preference_backup_google">Google Drive automated backup</string>
     <string name="settings_preference_backup_frequency">Backup frequency</string>
