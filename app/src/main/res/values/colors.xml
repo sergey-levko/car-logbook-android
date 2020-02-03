@@ -3,6 +3,7 @@
     <color name="primary">#725583</color>
     <color name="primaryDark">#462b56</color>
     <color name="secondary">#ffa000</color>
+    <color name="secondaryVariant">#c67100</color>
     <color name="background">#fff</color>
     <color name="surface">#fff</color>
     <color name="error">#b00020</color>
@@ -12,7 +13,7 @@
     <color name="onSurface">#000</color>
     <color name="onError">#fff</color>
 
-    <color name="dialogPrimary">#725583</color>
+    <color name="toolbarPrimary">#725583</color>
 
     <color name="white">#fff</color>
     <color name="black">#000</color>

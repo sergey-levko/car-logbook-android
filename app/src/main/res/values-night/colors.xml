@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#272727</color>
+    <color name="primary">#b39ddb</color>
     <color name="primaryDark">#121212</color>
-    <color name="secondary">#b39ddb</color>
+    <color name="secondary">#ffad42</color>
+    <color name="secondaryVariant">#f57c00</color>
     <color name="background">#121212</color>
     <color name="surface">#121212</color>
     <color name="error">#cf6679</color>
@@ -12,5 +13,5 @@
     <color name="onSurface">#fff</color>
     <color name="onError">#000</color>
 
-    <color name="dialogPrimary">#b39ddb</color>
+    <color name="toolbarPrimary">#272727</color>
 </resources>

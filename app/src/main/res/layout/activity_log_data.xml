@@ -13,7 +13,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:elevation="4dp"
-            android:background="?attr/colorPrimary"
+            android:background="@color/toolbarPrimary"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             android:layout_marginBottom="4dp" />
@@ -73,7 +73,8 @@
 
                 <Button
                         android:id="@+id/log_date"
-                        style="@style/MaterialButtonBorderless"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:textColor="@color/onBackground"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="24sp"
