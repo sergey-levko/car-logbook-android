@@ -9,7 +9,6 @@ import java.util.Calendar
 object ApplicationUtil {
 
     var type = DataType.LOG
-    var appTheme = AppTheme.KITTY
     var dataPeriod = DataPeriod.MONTH
     var periodCalendar: Calendar = Calendar.getInstance()
 
@@ -28,13 +27,6 @@ object ApplicationUtil {
 
 enum class DataType {
     LOG, FUEL
-}
-
-enum class AppTheme(val appId: Int, val dialogId: Int) {
-    KITTY(
-        R.style.AppDefault,
-        R.style.DialogDefault
-    )
 }
 
 enum class DataPeriod {

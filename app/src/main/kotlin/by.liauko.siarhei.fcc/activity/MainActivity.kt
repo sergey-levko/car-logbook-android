@@ -6,8 +6,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import by.liauko.siarhei.fcc.R
@@ -16,8 +18,6 @@ import by.liauko.siarhei.fcc.activity.fragment.DataFragment
 import by.liauko.siarhei.fcc.activity.fragment.SettingsFragment
 import by.liauko.siarhei.fcc.database.CarLogDatabase
 import by.liauko.siarhei.fcc.util.AppResultCodes.PERIOD_DIALOG_RESULT
-import by.liauko.siarhei.fcc.util.AppTheme
-import by.liauko.siarhei.fcc.util.ApplicationUtil.appTheme
 import by.liauko.siarhei.fcc.util.ApplicationUtil.dataPeriod
 import by.liauko.siarhei.fcc.util.ApplicationUtil.periodCalendar
 import by.liauko.siarhei.fcc.util.ApplicationUtil.type
@@ -38,9 +38,9 @@ class MainActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         val preferences =  getSharedPreferences(getString(R.string.shared_preferences_name), Context.MODE_PRIVATE)
         type = DataType.valueOf(preferences.getString(getString(R.string.main_screen_key), "LOG") ?: "LOG")
-        appTheme = AppTheme.valueOf(preferences.getString(getString(R.string.theme_key), "KITTY") ?: "KITTY")
         dataPeriod = DataPeriod.valueOf(preferences.getString(getString(R.string.period_key), "MONTH") ?: "MONTH")
-        setTheme(appTheme.appId)
+        val uiMode = preferences.getInt(getString(R.string.dark_mode_key), AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        AppCompatDelegate.setDefaultNightMode(uiMode)
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -130,6 +130,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun loadFragment(fragment: Fragment) {
+        supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         supportFragmentManager.beginTransaction()
             .replace(R.id.main_frame_container, fragment)
             .commit()

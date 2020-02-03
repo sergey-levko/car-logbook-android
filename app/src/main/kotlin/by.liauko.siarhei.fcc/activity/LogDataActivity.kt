@@ -10,7 +10,6 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import by.liauko.siarhei.fcc.R
-import by.liauko.siarhei.fcc.util.ApplicationUtil.appTheme
 import by.liauko.siarhei.fcc.util.DateConverter
 import java.util.Calendar
 import java.util.Calendar.DAY_OF_MONTH
@@ -31,8 +30,6 @@ class LogDataActivity : AppCompatActivity(), View.OnClickListener, DatePickerDia
     private var id = defaultId
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(appTheme.appId)
-        
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_log_data)
 
@@ -146,14 +143,14 @@ class LogDataActivity : AppCompatActivity(), View.OnClickListener, DatePickerDia
     }
 
     override fun onClick(v: View?) {
-        if (v != null) {
-            when (v.id) {
-                R.id.log_date -> {
-                    DatePickerDialog(this@LogDataActivity, this,
-                        calendar.get(YEAR), calendar.get(MONTH), calendar.get(DAY_OF_MONTH))
-                        .show()
-                }
-            }
+        if (v != null && v.id == R.id.log_date) {
+            DatePickerDialog(
+                this@LogDataActivity,
+                this,
+                calendar.get(YEAR),
+                calendar.get(MONTH),
+                calendar.get(DAY_OF_MONTH)
+            ).show()
         }
     }
 

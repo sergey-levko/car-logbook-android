@@ -192,19 +192,11 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
 
     private fun checkPermissions() {
         val internetPermission = ActivityCompat.checkSelfPermission(appContext, Manifest.permission.INTERNET)
-        val accountPermission = ActivityCompat.checkSelfPermission(appContext, Manifest.permission.GET_ACCOUNTS)
         if (internetPermission != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
                 this.requireActivity(),
                 arrayOf(Manifest.permission.INTERNET),
                 internetPermission
-            )
-        }
-        if (accountPermission != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                this.requireActivity(),
-                arrayOf(Manifest.permission.GET_ACCOUNTS),
-                AppResultCodes.GET_ACCOUNT_PERMISSION
             )
         }
     }
@@ -264,27 +256,15 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        when(requestCode) {
-            AppResultCodes.INTERNET_PERMISSION -> {
-                if (grantResults.isEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    Toast.makeText(
-                        appContext,
-                        getString(R.string.settings_preference_backup_internet_permission_toast_text),
-                        Toast.LENGTH_LONG
-                    ).show()
-                    disableSyncPreferenceItems()
-                }
-            }
-            AppResultCodes.GET_ACCOUNT_PERMISSION -> {
-                if (grantResults.isEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    Toast.makeText(
-                        appContext,
-                        getString(R.string.settings_preference_backup_account_permission_toast_text),
-                        Toast.LENGTH_LONG
-                    ).show()
-                    disableSyncPreferenceItems()
-                }
-            }
+        if (requestCode == AppResultCodes.INTERNET_PERMISSION &&
+            grantResults.isEmpty() &&
+            grantResults[0] == PackageManager.PERMISSION_DENIED) {
+            Toast.makeText(
+                appContext,
+                getString(R.string.settings_preference_backup_internet_permission_toast_text),
+                Toast.LENGTH_LONG
+            ).show()
+            disableSyncPreferenceItems()
         }
     }
 
