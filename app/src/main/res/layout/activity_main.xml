@@ -28,10 +28,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:elevation="4dp"
-            app:menu="@menu/menu_main"
-            android:background="?android:attr/windowBackground"
-            app:itemTextColor="@color/bottom_navigation_view_item_color_selector"
-            app:itemIconTint="@color/bottom_navigation_view_item_color_selector"
-            android:theme="@style/Widget.Design.BottomNavigationView" />
+            app:menu="@menu/menu_main" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
