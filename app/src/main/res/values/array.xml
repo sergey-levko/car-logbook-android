@@ -10,24 +10,6 @@
         <item>FUEL</item>
     </string-array>
 
-    <string-array name="themes">
-        <item>Kitten Valerie (Purple)</item>
-        <item>Blue</item>
-        <item>Red</item>
-        <item>Orange</item>
-        <item>Green</item>
-        <item>Dark</item>
-    </string-array>
-
-    <string-array name="theme_values">
-        <item>KITTY</item>
-        <item>BLUE</item>
-        <item>RED</item>
-        <item>ORANGE</item>
-        <item>GREEN</item>
-        <item>DARK</item>
-    </string-array>
-
     <string-array name="periods">
         <item>Month</item>
         <item>Year</item>

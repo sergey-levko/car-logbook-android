@@ -8,7 +8,6 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import by.liauko.siarhei.fcc.R
-import by.liauko.siarhei.fcc.util.ApplicationUtil.appTheme
 import com.google.android.material.textfield.TextInputLayout
 import java.util.Calendar
 
@@ -21,8 +20,6 @@ class YearSelectorDialogActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var yearEditText: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(appTheme.dialogId)
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.dialog_year_selector)
         val parameters = window.attributes

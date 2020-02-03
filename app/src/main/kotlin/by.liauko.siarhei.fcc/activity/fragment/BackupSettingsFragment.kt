@@ -15,7 +15,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.preference.ListPreference
@@ -38,6 +37,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.Scopes
 import com.google.android.gms.common.api.Scope
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
@@ -173,7 +173,7 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
                 startActivityForResult(openDocumentIntent, AppResultCodes.BACKUP_OPEN_DOCUMENT)
             }
             backupResetKey -> {
-                AlertDialog.Builder(appContext)
+                MaterialAlertDialogBuilder(appContext)
                     .setTitle(R.string.dialog_reset_title)
                     .setMessage(R.string.dialog_reset_message)
                     .setPositiveButton(R.string.dialog_reset_positive_button) { dialog, _ ->
@@ -192,19 +192,11 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
 
     private fun checkPermissions() {
         val internetPermission = ActivityCompat.checkSelfPermission(appContext, Manifest.permission.INTERNET)
-        val accountPermission = ActivityCompat.checkSelfPermission(appContext, Manifest.permission.GET_ACCOUNTS)
         if (internetPermission != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
                 this.requireActivity(),
                 arrayOf(Manifest.permission.INTERNET),
                 internetPermission
-            )
-        }
-        if (accountPermission != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                this.requireActivity(),
-                arrayOf(Manifest.permission.GET_ACCOUNTS),
-                AppResultCodes.GET_ACCOUNT_PERMISSION
             )
         }
     }
@@ -264,27 +256,15 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        when(requestCode) {
-            AppResultCodes.INTERNET_PERMISSION -> {
-                if (grantResults.isEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    Toast.makeText(
-                        appContext,
-                        getString(R.string.settings_preference_backup_internet_permission_toast_text),
-                        Toast.LENGTH_LONG
-                    ).show()
-                    disableSyncPreferenceItems()
-                }
-            }
-            AppResultCodes.GET_ACCOUNT_PERMISSION -> {
-                if (grantResults.isEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    Toast.makeText(
-                        appContext,
-                        getString(R.string.settings_preference_backup_account_permission_toast_text),
-                        Toast.LENGTH_LONG
-                    ).show()
-                    disableSyncPreferenceItems()
-                }
-            }
+        if (requestCode == AppResultCodes.INTERNET_PERMISSION &&
+            grantResults.isEmpty() &&
+            grantResults[0] == PackageManager.PERMISSION_DENIED) {
+            Toast.makeText(
+                appContext,
+                getString(R.string.settings_preference_backup_internet_permission_toast_text),
+                Toast.LENGTH_LONG
+            ).show()
+            disableSyncPreferenceItems()
         }
     }
 

@@ -1,9 +1,7 @@
 package by.liauko.siarhei.fcc.activity.element
 
-import android.content.Context
 import android.content.Intent
 import android.util.TypedValue
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
@@ -27,7 +25,6 @@ class PeriodSelectorElement(
 ) : View.OnClickListener,
     Animation.AnimationListener {
 
-    private val layoutInflater = parent.applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     private var view: View? = null
     private val minYear = 1970
     private val currentYear = Calendar.getInstance()[Calendar.YEAR]
@@ -48,14 +45,13 @@ class PeriodSelectorElement(
     var isShown = false
 
     init {
-        parent.applicationContext.setTheme(ApplicationUtil.appTheme.appId)
         val value = TypedValue()
-        parent.theme.resolveAttribute(R.attr.colorAccent, value, true)
+        parent.theme.resolveAttribute(R.attr.colorSecondary, value, true)
         accentColorId = value.data
     }
 
     fun show() {
-        view = layoutInflater.inflate(R.layout.period_selector, rootView, false)
+        view = parent.layoutInflater.inflate(R.layout.period_selector, rootView, false)
         initPeriodSelector()
         rootView.addView(view)
         isShown = true
@@ -93,15 +89,19 @@ class PeriodSelectorElement(
     }
 
     private fun updateYearButtonsState() {
-        if (year == currentYear) {
-            nextYearButton.isEnabled = false
-            previousYearButton.isEnabled = true
-        } else if (year == minYear) {
-            nextYearButton.isEnabled = true
-            previousYearButton.isEnabled = false
-        } else {
-            nextYearButton.isEnabled = true
-            nextYearButton.isEnabled = true
+        when (year) {
+            currentYear -> {
+                nextYearButton.isEnabled = false
+                previousYearButton.isEnabled = true
+            }
+            minYear -> {
+                nextYearButton.isEnabled = true
+                previousYearButton.isEnabled = false
+            }
+            else -> {
+                nextYearButton.isEnabled = true
+                nextYearButton.isEnabled = true
+            }
         }
     }
 

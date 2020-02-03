@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_height="match_parent"
-        android:layout_width="match_parent">
+        android:layout_width="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
     <View
             android:id="@+id/period_selector_cover_view"
             android:layout_width="match_parent"
@@ -44,7 +44,8 @@
                     android:layout_centerInParent="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="24sp" />
+                    android:textSize="24sp"
+                    android:textColor="@color/onBackground" />
 
             <ImageButton
                     android:id="@+id/next_year_button"
@@ -63,73 +64,85 @@
                 android:layout_height="wrap_content">
             <Button
                     android:id="@+id/jan"
-                    style="?android:attr/borderlessButtonStyle"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:textColor="@color/onBackground"
                     android:text="@string/period_dialog_jan"
                     android:layout_column="0"
                     android:layout_row="0" />
             <Button
                     android:id="@+id/feb"
-                    style="?android:attr/borderlessButtonStyle"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:textColor="@color/onBackground"
                     android:text="@string/period_dialog_feb"
                     android:layout_column="1"
                     android:layout_row="0" />
             <Button
                     android:id="@+id/mar"
-                    style="?android:attr/borderlessButtonStyle"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:textColor="@color/onBackground"
                     android:text="@string/period_dialog_mar"
                     android:layout_column="2"
                     android:layout_row="0" />
             <Button
                     android:id="@+id/apr"
-                    style="?android:attr/borderlessButtonStyle"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:textColor="@color/onBackground"
                     android:text="@string/period_dialog_apr"
                     android:layout_column="3"
                     android:layout_row="0" />
             <Button
                     android:id="@+id/may"
-                    style="?android:attr/borderlessButtonStyle"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:textColor="@color/onBackground"
                     android:text="@string/period_dialog_may"
                     android:layout_column="0"
                     android:layout_row="1" />
             <Button
                     android:id="@+id/jun"
-                    style="?android:attr/borderlessButtonStyle"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:textColor="@color/onBackground"
                     android:text="@string/period_dialog_jun"
                     android:layout_column="1"
                     android:layout_row="1" />
             <Button
                     android:id="@+id/jul"
-                    style="?android:attr/borderlessButtonStyle"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:textColor="@color/onBackground"
                     android:text="@string/period_dialog_jul"
                     android:layout_column="2"
                     android:layout_row="1" />
             <Button
                     android:id="@+id/aug"
-                    style="?android:attr/borderlessButtonStyle"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:textColor="@color/onBackground"
                     android:text="@string/period_dialog_aug"
                     android:layout_column="3"
                     android:layout_row="1" />
             <Button
                     android:id="@+id/sep"
-                    style="?android:attr/borderlessButtonStyle"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:textColor="@color/onBackground"
                     android:text="@string/period_dialog_sep"
                     android:layout_column="0"
                     android:layout_row="2" />
             <Button
                     android:id="@+id/oct"
-                    style="?android:attr/borderlessButtonStyle"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:textColor="@color/onBackground"
                     android:text="@string/period_dialog_oct"
                     android:layout_column="1"
                     android:layout_row="2" />
             <Button
                     android:id="@+id/nov"
-                    style="?android:attr/borderlessButtonStyle"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:textColor="@color/onBackground"
                     android:text="@string/period_dialog_nov"
                     android:layout_column="2"
                     android:layout_row="2" />
             <Button
                     android:id="@+id/dec"
-                    style="?android:attr/borderlessButtonStyle"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:textColor="@color/onBackground"
                     android:text="@string/period_dialog_dec"
                     android:layout_column="3"
                     android:layout_row="2" />
@@ -142,18 +155,21 @@
                 android:orientation="horizontal"
                 android:gravity="end|bottom">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                     android:id="@+id/period_dialog_negative_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/period_dialog_negative_button"
-                    style="@style/Widget.AppCompat.Button.Borderless.Colored" />
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    app:strokeColor="@color/primary"
+                    app:strokeWidth="1dp"
+                    android:layout_marginEnd="4dp" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                     android:id="@+id/period_dialog_positive_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/Widget.AppCompat.Button.Borderless.Colored" />
+                    android:layout_marginEnd="6dp" />
 
         </LinearLayout>
 

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#b39ddb</color>
+    <color name="primaryDark">#121212</color>
+    <color name="secondary">#ffad42</color>
+    <color name="secondaryVariant">#f57c00</color>
+    <color name="background">#121212</color>
+    <color name="surface">#1f1f1f</color>
+    <color name="error">#cf6679</color>
+    <color name="onPrimary">#fff</color>
+    <color name="onSecondary">#000</color>
+    <color name="onBackground">#fff</color>
+    <color name="onSurface">#fff</color>
+    <color name="onError">#000</color>
+
+    <color name="toolbarPrimary">#272727</color>
+
+    <color name="datePickerBackground">#272727</color>
+</resources>
