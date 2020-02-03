@@ -146,6 +146,7 @@ class LogDataActivity : AppCompatActivity(), View.OnClickListener, DatePickerDia
         if (v != null && v.id == R.id.log_date) {
             DatePickerDialog(
                 this@LogDataActivity,
+                R.style.DatePickerDialog,
                 this,
                 calendar.get(YEAR),
                 calendar.get(MONTH),

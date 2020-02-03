@@ -5,7 +5,7 @@
     <color name="secondary">#ffa000</color>
     <color name="secondaryVariant">#c67100</color>
     <color name="background">#fff</color>
-    <color name="surface">#fff</color>
+    <color name="surface">#f2f2f2</color>
     <color name="error">#b00020</color>
     <color name="onPrimary">#fff</color>
     <color name="onSecondary">#fff</color>

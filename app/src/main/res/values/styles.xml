@@ -35,4 +35,9 @@
         <item name="colorOnError">@color/onError</item>
     </style>
 
+    <style name="DatePickerDialog" parent="DialogDefault">
+        <item name="colorPrimary">@color/background</item>
+        <item name="colorOnPrimary">@color/primary</item>
+    </style>
+
 </resources>

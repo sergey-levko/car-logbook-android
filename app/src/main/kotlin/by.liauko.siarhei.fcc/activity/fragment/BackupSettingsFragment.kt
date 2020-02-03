@@ -15,7 +15,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.preference.ListPreference
@@ -38,6 +37,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.Scopes
 import com.google.android.gms.common.api.Scope
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
@@ -173,7 +173,7 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
                 startActivityForResult(openDocumentIntent, AppResultCodes.BACKUP_OPEN_DOCUMENT)
             }
             backupResetKey -> {
-                AlertDialog.Builder(appContext)
+                MaterialAlertDialogBuilder(appContext)
                     .setTitle(R.string.dialog_reset_title)
                     .setMessage(R.string.dialog_reset_message)
                     .setPositiveButton(R.string.dialog_reset_positive_button) { dialog, _ ->

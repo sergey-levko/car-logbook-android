@@ -1,9 +1,10 @@
 package by.liauko.siarhei.fcc.util
 
-import android.app.AlertDialog
 import android.content.Context
+import androidx.appcompat.app.AlertDialog
 import by.liauko.siarhei.fcc.R
 import by.liauko.siarhei.fcc.activity.dialog.ProgressDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.Calendar
 
 object ApplicationUtil {
@@ -16,7 +17,7 @@ object ApplicationUtil {
             = ProgressDialog(context, context.getString(messageId))
 
     fun createAlertDialog(context: Context, titleId: Int, messageId: Int): AlertDialog
-            = AlertDialog.Builder(context)
+            = MaterialAlertDialogBuilder(context)
         .setTitle(titleId)
         .setMessage(messageId)
         .setNeutralButton(

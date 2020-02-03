@@ -86,6 +86,7 @@ class FuelDataDialogActivity : AppCompatActivity(), View.OnClickListener, DatePi
                 R.id.fuel_date -> {
                     DatePickerDialog(
                         this@FuelDataDialogActivity,
+                        R.style.DatePickerDialog,
                         this,
                         calendar.get(YEAR),
                         calendar.get(MONTH),
