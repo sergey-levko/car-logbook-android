@@ -19,22 +19,15 @@
                 app:useSimpleSummaryProvider="true"
                 android:entryValues="@array/period_values" />
 
+        <SwitchPreference
+                android:key="@string/dark_mode_key"
+                android:title="@string/settings_preference_dark_mode_title"
+                android:defaultValue="false" />
+
         <Preference
                 app:fragment="by.liauko.siarhei.fcc.activity.fragment.BackupSettingsFragment"
                 android:title="@string/settings_preference_backup_item_title"
                 android:summary="@string/settings_preference_backup_item_summary" />
-
-    </PreferenceCategory>
-
-    <PreferenceCategory android:title="@string/settings_preference_interface_group_title">
-
-        <ListPreference
-                android:key="@string/theme_key"
-                android:defaultValue="KITTY"
-                android:title="@string/settings_preference_theme_title"
-                android:entries="@array/themes"
-                app:useSimpleSummaryProvider="true"
-                android:entryValues="@array/theme_values" />
 
     </PreferenceCategory>
 

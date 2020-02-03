@@ -8,10 +8,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.SwitchPreference
 import by.liauko.siarhei.fcc.R
 import by.liauko.siarhei.fcc.util.ApplicationUtil.dataPeriod
 import by.liauko.siarhei.fcc.util.DataPeriod
@@ -22,7 +24,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private lateinit var appVersion: String
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var mainScreenKey: String
-    private lateinit var themeKey: String
+    private lateinit var darkModeKey: String
     private lateinit var periodKey: String
 
     override fun onCreateView(
@@ -45,11 +47,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
         sharedPreferences = appContext.getSharedPreferences(getString(R.string.shared_preferences_name), Context.MODE_PRIVATE)
 
         mainScreenKey = getString(R.string.main_screen_key)
-        themeKey = getString(R.string.theme_key)
+        darkModeKey = getString(R.string.dark_mode_key)
         periodKey = getString(R.string.period_key)
 
         findPreference<ListPreference>(mainScreenKey)!!.onPreferenceChangeListener = preferenceChangeListener
-        findPreference<ListPreference>(themeKey)!!.onPreferenceChangeListener = preferenceChangeListener
+        findPreference<SwitchPreference>(darkModeKey)!!.onPreferenceChangeListener = preferenceChangeListener
         findPreference<ListPreference>(periodKey)!!.onPreferenceChangeListener = preferenceChangeListener
         findPreference<Preference>("version")!!.summary = appVersion
         findPreference<Preference>("feedback")!!.setOnPreferenceClickListener {
@@ -64,12 +66,18 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 .putString(mainScreenKey, newValue.toString())
                 .apply()
 
-            themeKey -> {
+            darkModeKey -> {
+                newValue as Boolean
+                val mode = when {
+                    newValue -> AppCompatDelegate.MODE_NIGHT_YES
+                    Build.VERSION.SDK_INT <= Build.VERSION_CODES.P -> AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
+                    else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                }
                 sharedPreferences.edit()
-                    .putString(themeKey, newValue.toString())
+                    .putInt(darkModeKey, mode)
                     .apply()
-                requireActivity().finish()
-                startActivity(requireActivity().intent)
+
+                AppCompatDelegate.setDefaultNightMode(mode)
             }
             periodKey -> {
                 sharedPreferences.edit()

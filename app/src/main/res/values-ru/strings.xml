@@ -51,11 +51,10 @@
     <string name="settings_feedback_email_app_version">Версия приложения:</string>
     <string name="settings_feedback_email_device">Устройство:</string>
     <string name="settings_preference_terms_title">Условия использования</string>
-    <string name="settings_preference_theme_title">Тема</string>
+    <string name="settings_preference_dark_mode_title">Тёмный режим</string>
     <string name="settings_preference_period_title">Период</string>
-    <string name="settings_preference_interface_group_title">Интерфейс</string>
-    <string name="settings_preference_backup_item_title">Резервное копирование</string>
-    <string name="settings_preference_backup_item_summary">Варианты резервного копирования</string>
+    <string name="settings_preference_backup_item_title">Резервное копирование &amp; сброс</string>
+    <string name="settings_preference_backup_item_summary">Варианты резервного копирования и сброса</string>
 
     <string name="period_dialog_jan">ЯНВ</string>
     <string name="period_dialog_feb">ФЕВ</string>
@@ -92,7 +91,7 @@
     <string name="dialog_backup_alert_import_success">Данные были успешно импортированы</string>
     <string name="dialog_backup_alert_import_fail">Данные не были импортированы</string>
 
-    <string name="settings_preference_backup_title">Резервное копирование</string>
+    <string name="settings_preference_backup_title">Резервное копирование &amp; сброс</string>
     <string name="settings_preference_backup_automation_group_title">Автоматическое резервное копирование</string>
     <string name="settings_preference_backup_google">Резервное копирование в Google Drive</string>
     <string name="settings_preference_backup_frequency">Частота резервного копирования</string>
@@ -104,7 +103,6 @@
     <string name="settings_preference_backup_import_from_file">Импорт из файла</string>
     <string name="settings_preference_backup_import_from_file_summary">Импорт данных из файла в базу данных</string>
     <string name="settings_preference_backup_internet_permission_toast_text">Необходим доступ к интернету</string>
-    <string name="settings_preference_backup_account_permission_toast_text">Необходим доступ к аккаунтам</string>
     <string name="settings_preference_backup_internet_access_toast_text">Требуется подключение к интернету</string>
     <string name="settings_preference_backup_reset_group_title">Сброс</string>
     <string name="settings_preference_backup_reset_title">Удалить все данные</string>

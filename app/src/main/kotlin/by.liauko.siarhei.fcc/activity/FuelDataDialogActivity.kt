@@ -10,7 +10,6 @@ import android.widget.DatePicker
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import by.liauko.siarhei.fcc.R
-import by.liauko.siarhei.fcc.util.ApplicationUtil.appTheme
 import by.liauko.siarhei.fcc.util.DateConverter
 import java.util.Calendar
 import java.util.Calendar.DAY_OF_MONTH
@@ -29,8 +28,6 @@ class FuelDataDialogActivity : AppCompatActivity(), View.OnClickListener, DatePi
     private var id = defaultId
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(appTheme.dialogId)
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fuel_data)
         val parameters = window.attributes
@@ -87,9 +84,14 @@ class FuelDataDialogActivity : AppCompatActivity(), View.OnClickListener, DatePi
         if (v != null) {
             when (v.id) {
                 R.id.fuel_date -> {
-                    DatePickerDialog(this@FuelDataDialogActivity, this,
-                        calendar.get(YEAR), calendar.get(MONTH), calendar.get(DAY_OF_MONTH))
-                        .show()
+                    DatePickerDialog(
+                        this@FuelDataDialogActivity,
+                        R.style.DatePickerDialog,
+                        this,
+                        calendar.get(YEAR),
+                        calendar.get(MONTH),
+                        calendar.get(DAY_OF_MONTH)
+                    ).show()
                 }
                 R.id.fuel_dialog_positive_button -> {
                     if (validateFields()) {

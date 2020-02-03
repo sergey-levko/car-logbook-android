@@ -11,9 +11,9 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:elevation="4dp"
-            android:background="?attr/colorPrimary"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+            android:background="@color/toolbarPrimary"
+            android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.MaterialComponents" />
 
     <FrameLayout
             android:id="@+id/main_frame_container"
@@ -27,11 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:elevation="16dp"
-            app:menu="@menu/menu_main"
-            android:background="?android:attr/windowBackground"
-            app:itemTextColor="@color/bottom_navigation_view_item_color_selector"
-            app:itemIconTint="@color/bottom_navigation_view_item_color_selector"
-            android:theme="@style/Widget.Design.BottomNavigationView" />
+            android:elevation="4dp"
+            app:menu="@menu/menu_main" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
