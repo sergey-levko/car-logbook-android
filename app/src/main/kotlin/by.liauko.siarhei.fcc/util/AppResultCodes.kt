@@ -8,8 +8,6 @@ object AppResultCodes {
     const val PERIOD_DIALOG_RESULT = 0x200
     const val GOOGLE_SIGN_IN = 0x300
     const val INTERNET_PERMISSION = 0x301
-    const val GET_ACCOUNT_PERMISSION = 0x302
-    const val USER_RECOVERABLE_AUTH = 0x303
     const val BACKUP_OPEN_DOCUMENT_TREE = 0x400
     const val BACKUP_OPEN_DOCUMENT = 0x401
 }

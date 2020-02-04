@@ -24,7 +24,7 @@ class DriveImportDialog(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.dialog_export)
+        setContentView(R.layout.dialog_import)
         initRecyclerView()
         findViewById<Button>(R.id.dialog_import_negative_button)!!.setOnClickListener { dismiss() }
     }
