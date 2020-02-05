@@ -12,16 +12,16 @@
             android:supportsRtl="true"
             android:theme="@style/AppDefault">
         <activity
-                android:name="by.liauko.siarhei.cl.activity.YearSelectorDialogActivity"
+                android:name=".activity.YearSelectorDialogActivity"
                 android:theme="@style/DialogDefault"
                 android:windowSoftInputMode="stateVisible" />
         <activity
-                android:name="by.liauko.siarhei.cl.activity.LogDataActivity" />
+                android:name=".activity.LogDataActivity" />
         <activity
-                android:name="by.liauko.siarhei.cl.activity.FuelDataDialogActivity"
+                android:name=".activity.FuelDataDialogActivity"
                 android:theme="@style/DialogDefault" />
         <activity
-                android:name="by.liauko.siarhei.cl.activity.MainActivity">
+                android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
