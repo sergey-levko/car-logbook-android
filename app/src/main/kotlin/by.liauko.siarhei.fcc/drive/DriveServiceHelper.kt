@@ -101,17 +101,14 @@ class DriveServiceHelper(private val mDriveService: Drive) {
      */
     fun getAllFilesInFolder(folderId: String): Task<DriveFileInfoList> {
         return Tasks.call(mExecutor, Callable {
-            val filesData = DriveFileInfoList()
+            var filesData = DriveFileInfoList()
             if (folderId != DRIVE_ROOT_FOLDER_ID) {
-                val files = mDriveService.files().list()
+                filesData = mDriveService.files().list()
                     .setQ("mimeType = '${DriveMimeTypes.TYPE_JSON_FILE}' and '$folderId' in parents")
                     .setSpaces("drive")
                     .execute()
                     .files
-
-                for (file in files) {
-                    filesData.add(Pair(file.name, file.id))
-                }
+                    .map { Pair(it.name, it.id) } as ArrayList
             }
 
             filesData

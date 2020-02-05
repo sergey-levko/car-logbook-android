@@ -36,6 +36,8 @@ import java.util.Calendar
 
 class DataFragment : Fragment() {
 
+    private val emptyString = ""
+
     private lateinit var fragmentView: View
     private lateinit var items: ArrayList<AppData>
     private lateinit var rvAdapter: RecyclerViewDataAdapter
@@ -124,8 +126,8 @@ class DataFragment : Fragment() {
             val time = data.getLongExtra("time", Calendar.getInstance().timeInMillis)
             when (requestCode) {
                 ADD_FUEL_CONSUMPTION -> {
-                    val litres = data.getStringExtra("litres").toDouble()
-                    val distance = data.getStringExtra("distance").toDouble()
+                    val litres = data.getStringExtra("litres")?.toDouble() ?: Double.MIN_VALUE
+                    val distance = data.getStringExtra("distance")?.toDouble() ?: Double.MIN_VALUE
                     val fuelConsumption = litres * 100 / distance
                     val id = repositoryCollection.getRepository(type).insert(
                         FuelConsumptionEntity(null, fuelConsumption, litres, distance, time)
@@ -137,8 +139,8 @@ class DataFragment : Fragment() {
                 }
                 EDIT_FUEL_CONSUMPTION -> {
                     val id = data.getLongExtra("id", -1L)
-                    val litres = data.getStringExtra("litres").toDouble()
-                    val distance = data.getStringExtra("distance").toDouble()
+                    val litres = data.getStringExtra("litres")?.toDouble() ?: Double.MIN_VALUE
+                    val distance = data.getStringExtra("distance")?.toDouble() ?: Double.MIN_VALUE
                     val fuelConsumption = litres * 100 / distance
                     val item = items.find { it.id == id } as FuelConsumptionData
                     item.litres = litres
@@ -149,9 +151,9 @@ class DataFragment : Fragment() {
                     rvAdapter.refreshRecyclerView()
                 }
                 ADD_LOG -> {
-                    val title = data.getStringExtra("title").trim()
-                    val text = data.getStringExtra("text").trim()
-                    val mileage = data.getStringExtra("mileage").toLong()
+                    val title = data.getStringExtra("title")?.trim() ?: emptyString
+                    val text = data.getStringExtra("text")?.trim() ?: emptyString
+                    val mileage = data.getStringExtra("mileage")?.toLong() ?: Long.MIN_VALUE
                     val id = repositoryCollection.getRepository(type).insert(
                         LogEntity(null, title, text, mileage, time)
                     )
@@ -169,9 +171,9 @@ class DataFragment : Fragment() {
                         rvAdapter.removeItem(position)
                         repositoryCollection.getRepository(type).delete(item)
                     } else {
-                        val title = data.getStringExtra("title")
-                        val text = data.getStringExtra("text")
-                        val mileage = data.getStringExtra("mileage").toLong()
+                        val title = data.getStringExtra("title") ?: emptyString
+                        val text = data.getStringExtra("text") ?: emptyString
+                        val mileage = data.getStringExtra("mileage")?.toLong() ?: Long.MIN_VALUE
                         item.title = title
                         item.text = text
                         item.mileage = mileage
