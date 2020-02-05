@@ -7,12 +7,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import by.liauko.siarhei.fcc.R
+import by.liauko.siarhei.fcc.drive.DriveFileInfoList
 import by.liauko.siarhei.fcc.drive.DriveServiceHelper
 import by.liauko.siarhei.fcc.util.ApplicationUtil
 
 class RecyclerViewImportFileAdapter(
     private val context: Context,
-    private val dataSet: ArrayList<Pair<String, String>>,
+    private val dataSet: DriveFileInfoList,
     private val noFileTextView: TextView,
     private val driveServiceHelper: DriveServiceHelper,
     private val listener: RecyclerViewOnItemClickListener

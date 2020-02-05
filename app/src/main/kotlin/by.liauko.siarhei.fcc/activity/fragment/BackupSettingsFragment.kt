@@ -40,7 +40,6 @@ import com.google.android.gms.common.api.Scope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
-import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
@@ -147,21 +146,17 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
                 }
             }
             backupDriveImportKey -> {
-                try {
-                    if (!checkInternetConnection()) {
-                        Toast.makeText(
-                            appContext,
-                            R.string.settings_preference_backup_internet_access_toast_text,
-                            Toast.LENGTH_LONG
-                        ).show()
-                    } else if (driveServiceHelper == null) {
-                        backupTask = BackupTask.IMPORT
-                        googleAuth()
-                    } else {
-                        importDataFromDrive()
-                    }
-                } catch (e: UserRecoverableAuthIOException) {
-                    startActivityForResult(e.intent, AppResultCodes.USER_RECOVERABLE_AUTH)
+                if (!checkInternetConnection()) {
+                    Toast.makeText(
+                        appContext,
+                        R.string.settings_preference_backup_internet_access_toast_text,
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else if (driveServiceHelper == null) {
+                    backupTask = BackupTask.IMPORT
+                    googleAuth()
+                } else {
+                    importDataFromDrive()
                 }
             }
             backupFileExportKey ->
@@ -291,7 +286,7 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
                 .requestEmail()
                 .requestScopes(
                     Scope(Scopes.PROFILE),
-                    Scope("https://www.googleapis.com/auth/drive.file")
+                    Scope("https://www.googleapis.com/auth/drive")
                 )
                 .build()
         return GoogleSignIn.getClient(appContext, googleSignInOptions)
@@ -335,7 +330,6 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
 
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
-            .setRequiresDeviceIdle(true)
             .build()
 
         val workRequest = PeriodicWorkRequestBuilder<CoroutineBackupWorker>(repeatInterval, TimeUnit.DAYS)
