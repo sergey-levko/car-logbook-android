@@ -77,9 +77,10 @@ class PeriodSelectorElement(
 
     override fun onAnimationStart(animation: Animation?) {}
 
-    fun updateYear(value: String) {
-        yearTextView.text = value
-        year = value.toInt()
+    fun updateYear(value: String?) {
+        val newYear = value ?: currentYear.toString()
+        yearTextView.text = newYear
+        year = newYear.toInt()
         updateYearButtonsState()
         if (year == selectedYear) {
             months[selectedMonth].setTextColor(accentColorId)
