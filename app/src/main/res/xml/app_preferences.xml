@@ -25,7 +25,7 @@
                 android:defaultValue="false" />
 
         <Preference
-                app:fragment="by.liauko.siarhei.fcc.activity.fragment.BackupSettingsFragment"
+                app:fragment="by.liauko.siarhei.cl.activity.fragment.BackupSettingsFragment"
                 android:title="@string/settings_preference_backup_item_title"
                 android:summary="@string/settings_preference_backup_item_summary" />
 
