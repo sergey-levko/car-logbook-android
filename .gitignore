@@ -78,3 +78,4 @@ lint/intermediates/
 lint/generated/
 lint/outputs/
 lint/tmp/
+signin-config.gradle
