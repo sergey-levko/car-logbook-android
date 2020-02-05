@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-        package="by.liauko.siarhei.fcc">
+        package="by.liauko.siarhei.cl">
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
@@ -12,16 +12,16 @@
             android:supportsRtl="true"
             android:theme="@style/AppDefault">
         <activity
-                android:name=".activity.YearSelectorDialogActivity"
+                android:name="by.liauko.siarhei.cl.activity.YearSelectorDialogActivity"
                 android:theme="@style/DialogDefault"
                 android:windowSoftInputMode="stateVisible" />
         <activity
-                android:name=".activity.LogDataActivity" />
+                android:name="by.liauko.siarhei.cl.activity.LogDataActivity" />
         <activity
-                android:name=".activity.FuelDataDialogActivity"
+                android:name="by.liauko.siarhei.cl.activity.FuelDataDialogActivity"
                 android:theme="@style/DialogDefault" />
         <activity
-                android:name=".activity.MainActivity">
+                android:name="by.liauko.siarhei.cl.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
