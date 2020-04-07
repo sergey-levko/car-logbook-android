@@ -25,31 +25,21 @@ object BackupService {
     private const val MAX_FILE_COUNT = 16
     private const val EMPTY_JSON_OBJECT = "{}"
 
-    const val DRIVE_ROOT_FOLDER_ID = "root"
-
     fun exportToDrive(context: Context, driveServiceHelper: DriveServiceHelper) {
         val backupData = prepareBackupData(CarLogDatabase.invoke(context))
 
-        var folderId = DRIVE_ROOT_FOLDER_ID
-        driveServiceHelper.createFolderIfNotExist("car-logbook-backup")
-            .addOnCompleteListener {
-                folderId = it.result ?: DRIVE_ROOT_FOLDER_ID
-            }.continueWithTask {
-                driveServiceHelper.getAllFilesInFolder(folderId).addOnCompleteListener {
-                    val files = it.result?.sortedBy { item -> item.first } ?: emptyList()
-                    if (files.size >= MAX_FILE_COUNT) {
-                        for (item in files.subList(0, files.size - MAX_FILE_COUNT + 1)) {
-                            driveServiceHelper.deleteFile(item.second)
-                        }
-                    }
-                }
-            }.continueWithTask {
-                driveServiceHelper.createFile(
-                    folderId,
-                    "car-logbook-${SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())}.clbdata",
-                    Gson().toJson(backupData)
-                )
+        val folderId = driveServiceHelper.createFolderIfNotExist("car-logbook-backup")
+        val files = driveServiceHelper.getAllFilesInFolder(folderId).sortedBy { item -> item.first }
+        if (files.size >= MAX_FILE_COUNT) {
+            for (item in files.subList(0, files.size - MAX_FILE_COUNT + 1)) {
+                driveServiceHelper.deleteFile(item.second)
             }
+        }
+        driveServiceHelper.createFile(
+            folderId,
+            "car-logbook-${SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())}.clbdata",
+            Gson().toJson(backupData)
+        )
     }
 
     fun importFromDrive(fileId: String, context: Context, driveServiceHelper: DriveServiceHelper) {
