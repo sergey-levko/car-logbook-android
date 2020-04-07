@@ -17,7 +17,7 @@ class DriveImportDialog(
     private val appContext: Context,
     private val driveServiceHelper: DriveServiceHelper,
     private val files: DriveFileInfoList
-) : AlertDialog(appContext) {
+) : AlertDialog(appContext, R.style.FullScreenDialogDefault) {
 
     private lateinit var rvAdapter: RecyclerViewImportFileAdapter
     private lateinit var noFileTextView: TextView

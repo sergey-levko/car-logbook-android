@@ -15,8 +15,12 @@ import com.google.api.services.drive.DriveScopes
 class CoroutineBackupWorker(private val context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
-        val driverServiceHelper = initDriveServiceHelper()
-        BackupService.exportToDrive(context, driverServiceHelper)
+        try {
+            val driverServiceHelper = initDriveServiceHelper()
+            BackupService.exportToDrive(context, driverServiceHelper)
+        } catch (e: Exception) {
+            return Result.retry()
+        }
 
         return Result.success()
     }
