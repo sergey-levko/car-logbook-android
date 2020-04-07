@@ -13,7 +13,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
@@ -22,6 +21,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
 import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
@@ -29,6 +29,7 @@ import by.liauko.siarhei.cl.R
 import by.liauko.siarhei.cl.activity.dialog.DriveImportDialog
 import by.liauko.siarhei.cl.backup.BackupService
 import by.liauko.siarhei.cl.backup.CoroutineBackupWorker
+import by.liauko.siarhei.cl.drive.DRIVE_ROOT_FOLDER_ID
 import by.liauko.siarhei.cl.drive.DriveServiceHelper
 import by.liauko.siarhei.cl.util.AppResultCodes
 import by.liauko.siarhei.cl.util.ApplicationUtil
@@ -43,12 +44,11 @@ import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
-import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 class BackupSettingsFragment : PreferenceFragmentCompat() {
 
-    private val workRequestIdKey = "work_request_id"
+    private val workTag = "car-logbook-backup-work"
 
     private var driveServiceHelper: DriveServiceHelper? = null
     private var backupTask = BackupTask.IMPORT
@@ -116,7 +116,7 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
                         googleAuth()
                     }
                 } else {
-                    cancelWorkIfExist()
+                    WorkManager.getInstance(appContext).cancelAllWorkByTag(workTag)
                     getGoogleSignInClient().signOut().addOnSuccessListener {
                         driveServiceHelper = null
                     }
@@ -126,6 +126,8 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
                 val repeatInterval = newValue.toString().toLong()
                 if (repeatInterval != 0L) {
                     startBackupWorker(repeatInterval)
+                } else {
+                    WorkManager.getInstance(appContext).cancelAllWorkByTag(workTag)
                 }
             }
         }
@@ -306,28 +308,22 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
         )
         progressDialog.show()
 
-        var folderId = BackupService.DRIVE_ROOT_FOLDER_ID
+        var folderId = DRIVE_ROOT_FOLDER_ID
         driveServiceHelper!!.getFolderIdByName("car-logbook-backup")
             .addOnCompleteListener { searchResult ->
                 folderId = searchResult.result ?: folderId
             }.continueWithTask {
-                driveServiceHelper!!.getAllFilesInFolder(folderId)
+                driveServiceHelper!!.getAllFilesInFolderTask(folderId)
                     .addOnCompleteListener { fileList ->
                         val files = fileList.result ?: ArrayList()
                         val driveImportDialog = DriveImportDialog(appContext, driveServiceHelper!!, files)
-                        val layoutParams = WindowManager.LayoutParams()
-                        layoutParams.copyFrom(driveImportDialog.window!!.attributes)
-                        layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT
                         progressDialog.dismiss()
                         driveImportDialog.show()
-                        driveImportDialog.window!!.attributes = layoutParams
                     }
             }
     }
 
     private fun startBackupWorker(repeatInterval: Long) {
-        cancelWorkIfExist()
-
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
@@ -336,17 +332,7 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
             .setConstraints(constraints)
             .build()
         WorkManager.getInstance(appContext)
-            .enqueue(workRequest)
-        sharedPreferences.edit()
-            .putString(workRequestIdKey, workRequest.id.toString())
-            .apply()
-    }
-
-    private fun cancelWorkIfExist() {
-        val workRequestId = sharedPreferences.getString(workRequestIdKey, "")!!
-        if (workRequestId.isNotEmpty()) {
-            WorkManager.getInstance(appContext).cancelWorkById(UUID.fromString(workRequestId))
-        }
+            .enqueueUniquePeriodicWork(workTag, ExistingPeriodicWorkPolicy.REPLACE, workRequest)
     }
 
     // NetworkInfo class is deprecated in Android 10
