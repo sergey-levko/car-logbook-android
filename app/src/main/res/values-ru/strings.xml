@@ -1,16 +1,19 @@
 <resources>
     <string name="app_name">Бортжурнал</string>
 
-    <string name="activity_main_log_title">Бортовой журнал</string>
-    <string name="activity_main_fuel_title">Расход топлива</string>
-    <string name="activity_main_add_fab">Добавить запись</string>
-    <string name="activity_main_snackbar_message">Запись успешно удалена</string>
-    <string name="activity_main_snackbar_undo">ОТМЕНА</string>
     <string name="activity_main_navigation_view_open">Открыть</string>
     <string name="activity_main_navigation_view_close">Закрыть</string>
-    <string name="activity_main_navigation_menu_log_item">Бортовой журнал</string>
-    <string name="activity_main_navigation_menu_fuel_item">Расход топлива</string>
-    <string name="activity_main_no_records">Здесь пока нет записей</string>
+    <string name="activity_main_navigation_menu_log_item">Журнал</string>
+    <string name="activity_main_navigation_menu_fuel_item">Топливо</string>
+    <string name="activity_main_navigation_menu_settings_item">Настройки</string>
+    <string name="activity_main_period_select_menu_date">Периуд</string>
+
+    <string name="data_fragment_log_title">Бортовой журнал</string>
+    <string name="data_fragment_fuel_title">Расход топлива</string>
+    <string name="data_fragment_add_fab">Добавить запись</string>
+    <string name="data_fragment_snackbar_message">Запись успешно удалена</string>
+    <string name="data_fragment_snackbar_undo">ОТМЕНА</string>
+    <string name="data_fragment_no_records">Здесь пока нет записей</string>
 
     <string name="data_dialog_title_add">Новая запись о расходе топлива</string>
     <string name="data_dialog_title_edit">Изменить запись о расходе топлива</string>
@@ -20,6 +23,8 @@
     <string name="data_dialog_positive_button_add">Добавить</string>
     <string name="data_dialog_positive_button_edit">Сохранить</string>
     <string name="data_dialog_negative_button">Отмена</string>
+    <string name="data_dialog_volume_parameter_error">Объём - обязательное значение и не может быть 0</string>
+    <string name="data_dialog_distance_parameter_error">Расстояние - обязательное значение и не может быть 0</string>
 
     <string name="activity_log_title_add">Добавить запись журнала</string>
     <string name="activity_log_title_edit">Редактировать запись журнала</string>
@@ -27,8 +32,96 @@
     <string name="activity_log_text_hint">Текст</string>
     <string name="activity_log_mileage_hint">Пробег (км)</string>
     <string name="activity_log_save_button">Сохранить</string>
+    <string name="activity_log_delete_button">Удалить</string>
+    <string name="activity_log_title_error">Поле заголовка обязательное</string>
+    <string name="activity_log_mileage_error">Пробег - обязательное значение и не может быть 0</string>
+
+    <string name="settings_fragment_title">Настройки</string>
+    <string name="settings_preference_general_group_title">Общие</string>
+    <string name="settings_preference_main_page_item">Главный экран</string>
+    <string name="settings_preference_about_group_title">О программе</string>
+    <string name="settings_preference_about_text">Приложение помогает организовать удобное хранилище записей об обслуживании вашего автомобиля и о расходе топлива в вашем устройстве. Приложение разработано Левко Сергеем. Минск, Республика Беларусь.</string>
+    <string name="settings_preference_version_title">Версия</string>
+    <string name="settings_preference_feedback_title">Отправить отзыв</string>
+    <string name="settings_preference_feedback_summary">Есть какие-либо вопросы? Мы будем рады помочь!</string>
+    <string name="settings_feedback_email_subject">Бортжурнал, отзыв</string>
+    <string name="settings_feedback_email_client">Выберите почтовый клиент</string>
+    <string name="settings_feedback_email_dont_remove">Пожалуйста, не удаляйте информацию ниже</string>
+    <string name="settings_feedback_email_os">ОС устройства: Android</string>
+    <string name="settings_feedback_email_app_version">Версия приложения:</string>
+    <string name="settings_feedback_email_device">Устройство:</string>
+    <string name="settings_preference_terms_title">Условия использования</string>
+    <string name="settings_preference_dark_mode_title">Тёмный режим</string>
+    <string name="settings_preference_period_title">Период</string>
+    <string name="settings_preference_backup_item_title">Резервное копирование &amp; сброс</string>
+    <string name="settings_preference_backup_item_summary">Варианты резервного копирования и сброса</string>
+
+    <string name="period_dialog_jan">ЯНВ</string>
+    <string name="period_dialog_feb">ФЕВ</string>
+    <string name="period_dialog_mar">МАР</string>
+    <string name="period_dialog_apr">АПР</string>
+    <string name="period_dialog_may">МАЙ</string>
+    <string name="period_dialog_jun">ИЮН</string>
+    <string name="period_dialog_jul">ИЮЛ</string>
+    <string name="period_dialog_aug">АВГ</string>
+    <string name="period_dialog_sep">СЕН</string>
+    <string name="period_dialog_oct">ОКТ</string>
+    <string name="period_dialog_nov">НОЯ</string>
+    <string name="period_dialog_dec">ДЕК</string>
+    <string name="period_dialog_positive_button_month">Текущий месяц</string>
+    <string name="period_dialog_positive_button_year">Выбрать</string>
+    <string name="period_dialog_negative_button">Отмена</string>
+    <string name="period_dialog_previous_year_button_content_description">Предыдущий</string>
+    <string name="period_dialog_next_year_button_content_description">Следующий</string>
+
+    <string name="year_selector_dialog_title">Введите год</string>
+    <string name="year_selector_dialog_year_hint">Год</string>
+    <string name="year_selector_dialog_error_text">Значение года должно быть между 1970 и</string>
+    <string name="year_selector_dialog_positive_button">Выбрать</string>
+    <string name="year_selector_dialog_negative_button">Отмена</string>
+
+    <string name="dialog_backup_progress_export_text">Экспортирование данных…</string>
+    <string name="dialog_backup_progress_import_text">Импортирование данных…</string>
+    <string name="dialog_backup_progress_open_file_list">Чтение данных из Google Drive…</string>
+
+    <string name="dialog_backup_alert_title_success">Успешно завершено</string>
+    <string name="dialog_backup_alert_title_fail">Внимание</string>
+    <string name="dialog_backup_alert_export_success">Данные были успешно экспортированы</string>
+    <string name="dialog_backup_alert_export_fail">Данные не были экспортированы</string>
+    <string name="dialog_backup_alert_import_success">Данные были успешно импортированы</string>
+    <string name="dialog_backup_alert_import_fail">Данные не были импортированы</string>
+
+    <string name="settings_preference_backup_title">Резервное копирование &amp; сброс</string>
+    <string name="settings_preference_backup_automation_group_title">Автоматическое резервное копирование</string>
+    <string name="settings_preference_backup_google">Резервное копирование в Google Drive</string>
+    <string name="settings_preference_backup_frequency">Частота резервного копирования</string>
+    <string name="settings_preference_backup_manual_group_title">Ручное резервное копирование</string>
+    <string name="settings_preference_backup_export_to_file">Экспорт в файл</string>
+    <string name="settings_preference_backup_export_to_file_summary">Экспорт данных из базы данных в файл</string>
+    <string name="settings_preference_backup_import_from_drive">Импорт из Google Drive</string>
+    <string name="settings_preference_backup_import_from_drive_summary">Импорт данных из Google Drive файла в базу данных</string>
+    <string name="settings_preference_backup_import_from_file">Импорт из файла</string>
+    <string name="settings_preference_backup_import_from_file_summary">Импорт данных из файла в базу данных</string>
+    <string name="settings_preference_backup_internet_permission_toast_text">Необходим доступ к интернету</string>
+    <string name="settings_preference_backup_internet_access_toast_text">Требуется подключение к интернету</string>
+    <string name="settings_preference_backup_reset_group_title">Сброс</string>
+    <string name="settings_preference_backup_reset_title">Удалить все данные</string>
+    <string name="settings_preference_backup_reset_summary">Все записи пользователя будут удалены</string>
+
+    <string name="dialog_drive_import_title">Импорт данных из Google Drive</string>
+    <string name="dialog_drive_import_no_files">Нет файлов для импорта</string>
+    <string name="dialog_drive_import_recycler_view_item_remove_button_content_description">Удалить</string>
+    <string name="dialog_drive_import_negative_button">Отмена</string>
+
+    <string name="dialog_progress_delete_file">Удаление файла…</string>
+
+    <string name="dialog_reset_title">Удалить все данные</string>
+    <string name="dialog_reset_message">Вы уверены, что хотите удалить все данные?</string>
+    <string name="dialog_reset_positive_button">Да</string>
+    <string name="dialog_reset_negative_button">Нет</string>
+    <string name="dialog_reset_toast_message">Вся информация была удалена</string>
 
     <string name="km">км</string>
     <string name="liters">л</string>
-    <string name="consumption_value">л/100км</string>
+    <string name="consumption_value">л / 100км</string>
 </resources>

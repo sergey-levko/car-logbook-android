@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="entries">
+        <item>Log</item>
+        <item>Fuel consumption</item>
+    </string-array>
+
+    <string-array name="entry_values">
+        <item>LOG</item>
+        <item>FUEL</item>
+    </string-array>
+
+    <string-array name="periods">
+        <item>Month</item>
+        <item>Year</item>
+        <item>All time</item>
+    </string-array>
+
+    <string-array name="period_values">
+        <item>MONTH</item>
+        <item>YEAR</item>
+        <item>ALL</item>
+    </string-array>
+
+    <string-array name="backup_frequencies">
+        <item>Off</item>
+        <item>Daily</item>
+        <item>Weekly</item>
+        <item>Monthly</item>
+    </string-array>
+
+    <string-array name="backup_frequency_values">
+        <item>0</item>
+        <item>1</item>
+        <item>7</item>
+        <item>31</item>
+    </string-array>
+</resources>

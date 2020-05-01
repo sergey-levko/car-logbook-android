@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#725583</color>
-    <color name="colorPrimaryDark">#462b56</color>
-    <color name="colorAccent">#ffa000</color>
+    <color name="primary">#725583</color>
+    <color name="primaryDark">#462b56</color>
+    <color name="secondary">#ffa000</color>
+    <color name="secondaryVariant">#c67100</color>
+    <color name="background">#fff</color>
+    <color name="surface">#f2f2f2</color>
+    <color name="error">#b00020</color>
+    <color name="onPrimary">#fff</color>
+    <color name="onSecondary">#fff</color>
+    <color name="onBackground">#000</color>
+    <color name="onSurface">#000</color>
+    <color name="onError">#fff</color>
+
+    <color name="toolbarPrimary">#725583</color>
+
+    <color name="datePickerBackground">#fff</color>
 
     <color name="white">#fff</color>
     <color name="black">#000</color>
+    <color name="dialog_out_background">#6000</color>
 </resources>

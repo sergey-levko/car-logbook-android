@@ -1,16 +1,19 @@
 <resources>
     <string name="app_name">Car logbook</string>
 
-    <string name="activity_main_log_title">Log</string>
-    <string name="activity_main_fuel_title">Fuel consumption</string>
-    <string name="activity_main_add_fab">Add record</string>
-    <string name="activity_main_snackbar_message">Record successfully removed</string>
-    <string name="activity_main_snackbar_undo">UNDO</string>
     <string name="activity_main_navigation_view_open">Open</string>
     <string name="activity_main_navigation_view_close">Close</string>
     <string name="activity_main_navigation_menu_log_item">Log</string>
-    <string name="activity_main_navigation_menu_fuel_item">Fuel consumption</string>
-    <string name="activity_main_no_records">No records here</string>
+    <string name="activity_main_navigation_menu_fuel_item">Fuel</string>
+    <string name="activity_main_navigation_menu_settings_item">Settings</string>
+    <string name="activity_main_period_select_menu_date">Period</string>
+
+    <string name="data_fragment_log_title">Log</string>
+    <string name="data_fragment_fuel_title">Fuel consumption</string>
+    <string name="data_fragment_add_fab">Add record</string>
+    <string name="data_fragment_snackbar_message">Record successfully removed</string>
+    <string name="data_fragment_snackbar_undo">UNDO</string>
+    <string name="data_fragment_no_records">No records here</string>
 
     <string name="data_dialog_title_add">New fuel consumption record</string>
     <string name="data_dialog_title_edit">Edit fuel consumption record</string>
@@ -20,6 +23,8 @@
     <string name="data_dialog_positive_button_add">Add</string>
     <string name="data_dialog_positive_button_edit">Save</string>
     <string name="data_dialog_negative_button">Cancel</string>
+    <string name="data_dialog_volume_parameter_error">Volume value is required and can not be 0</string>
+    <string name="data_dialog_distance_parameter_error">Distance value is required and can not be 0</string>
 
     <string name="activity_log_title_add">Add log record</string>
     <string name="activity_log_title_edit">Edit log record</string>
@@ -27,8 +32,109 @@
     <string name="activity_log_text_hint">Text</string>
     <string name="activity_log_mileage_hint">Mileage (km)</string>
     <string name="activity_log_save_button">Save</string>
+    <string name="activity_log_delete_button">Delete</string>
+    <string name="activity_log_title_error">Title field is required</string>
+    <string name="activity_log_mileage_error">Mileage value is required and can not be 0</string>
+
+    <string name="settings_fragment_title">Settings</string>
+    <string name="settings_preference_general_group_title">General</string>
+    <string name="settings_preference_main_page_item">Main page</string>
+    <string name="settings_preference_about_group_title">About</string>
+    <string name="settings_preference_about_text">The application helps organize a convenient repository of records about the maintenance of your car and the fuel consumption in your device. Application developed by Sergey Levko. Minsk, Republic of Belarus.</string>
+    <string name="settings_preference_version_title">Version</string>
+    <string name="settings_preference_feedback_title">Send Feedback</string>
+    <string name="settings_preference_feedback_summary">Got any queries? We are happy to help!</string>
+    <string name="settings_feedback_email_subject">Car logbook feedback</string>
+    <string name="settings_feedback_email_client">Choose email client</string>
+    <string name="settings_feedback_email_dont_remove">Please don\'t remove this information</string>
+    <string name="settings_feedback_email_os">Device OS: Android</string>
+    <string name="settings_feedback_email_app_version">App version:</string>
+    <string name="settings_feedback_email_device">Device:</string>
+    <string name="settings_preference_terms_title">Terms &amp; Conditions</string>
+    <string name="settings_preference_terms_url" translatable="false">https://www.gnu.org/licenses/gpl-3.0.en.html</string>
+    <string name="settings_preference_dark_mode_title">Dark mode</string>
+    <string name="settings_preference_period_title">Period</string>
+    <string name="settings_preference_backup_item_title">Backup &amp; reset</string>
+    <string name="settings_preference_backup_item_summary">Backup and reset options</string>
+
+    <string name="period_dialog_jan">JAN</string>
+    <string name="period_dialog_feb">FEB</string>
+    <string name="period_dialog_mar">MAR</string>
+    <string name="period_dialog_apr">APR</string>
+    <string name="period_dialog_may">MAY</string>
+    <string name="period_dialog_jun">JUN</string>
+    <string name="period_dialog_jul">JUL</string>
+    <string name="period_dialog_aug">AUG</string>
+    <string name="period_dialog_sep">SEP</string>
+    <string name="period_dialog_oct">OCT</string>
+    <string name="period_dialog_nov">NOV</string>
+    <string name="period_dialog_dec">DEC</string>
+    <string name="period_dialog_positive_button_month">This month</string>
+    <string name="period_dialog_positive_button_year">Select</string>
+    <string name="period_dialog_negative_button">Cancel</string>
+    <string name="period_dialog_previous_year_button_content_description">Previous</string>
+    <string name="period_dialog_next_year_button_content_description">Next</string>
+
+    <string name="year_selector_dialog_title">Enter year</string>
+    <string name="year_selector_dialog_year_hint">Year</string>
+    <string name="year_selector_dialog_error_text">The year value must be between 1970 and</string>
+    <string name="year_selector_dialog_positive_button">Select</string>
+    <string name="year_selector_dialog_negative_button">Cancel</string>
+
+    <string name="dialog_backup_progress_export_text">Exporting data…</string>
+    <string name="dialog_backup_progress_import_text">Importing data…</string>
+    <string name="dialog_backup_progress_open_file_list">Reading data from Google Drive…</string>
+
+    <string name="dialog_backup_alert_title_success">Success</string>
+    <string name="dialog_backup_alert_title_fail">Warning</string>
+    <string name="dialog_backup_alert_export_success">Data was exported successfully</string>
+    <string name="dialog_backup_alert_export_fail">Data was not exported</string>
+    <string name="dialog_backup_alert_import_success">Data was imported successfully</string>
+    <string name="dialog_backup_alert_import_fail">Data was not imported</string>
+    <string name="dialog_backup_alert_ok_button" translatable="false">OK</string>
+
+    <string name="settings_preference_backup_title">Backup &amp; reset</string>
+    <string name="settings_preference_backup_automation_group_title">Automated backup</string>
+    <string name="settings_preference_backup_google">Google Drive automated backup</string>
+    <string name="settings_preference_backup_frequency">Backup frequency</string>
+    <string name="settings_preference_backup_manual_group_title">Manual backup</string>
+    <string name="settings_preference_backup_export_to_file">Export to file</string>
+    <string name="settings_preference_backup_export_to_file_summary">Export data from database to file</string>
+    <string name="settings_preference_backup_import_from_drive">Import from Google Drive</string>
+    <string name="settings_preference_backup_import_from_drive_summary">Import data from Google Drive file to database</string>
+    <string name="settings_preference_backup_import_from_file">Import data from file</string>
+    <string name="settings_preference_backup_import_from_file_summary">Import data from file to database</string>
+    <string name="settings_preference_backup_internet_permission_toast_text">Access to the internet is required</string>
+    <string name="settings_preference_backup_internet_access_toast_text">Network connection required</string>
+    <string name="settings_preference_backup_reset_group_title">Reset</string>
+    <string name="settings_preference_backup_reset_title">Erase all data</string>
+    <string name="settings_preference_backup_reset_summary">All user records will be deleted</string>
+
+    <string name="dialog_drive_import_title">Import data from Google Drive</string>
+    <string name="dialog_drive_import_no_files">No files to import</string>
+    <string name="dialog_drive_import_recycler_view_item_remove_button_content_description">Remove</string>
+    <string name="dialog_drive_import_negative_button">Cancel</string>
+
+    <string name="dialog_progress_delete_file">Deleting file…</string>
+
+    <string name="dialog_reset_title">Erase all data</string>
+    <string name="dialog_reset_message">Are you sure you want to delete all data?</string>
+    <string name="dialog_reset_positive_button">Yes</string>
+    <string name="dialog_reset_negative_button">No</string>
+    <string name="dialog_reset_toast_message">All data was deleted</string>
 
     <string name="km">km</string>
     <string name="liters">L</string>
-    <string name="consumption_value">L/100km</string>
+    <string name="consumption_value">L / 100km</string>
+
+    <string name="shared_preferences_name" translatable="false">app_preferences</string>
+    <string name="main_screen_key" translatable="false">main_screen</string>
+    <string name="dark_mode_key" translatable="false">dark_mode</string>
+    <string name="period_key" translatable="false">period</string>
+    <string name="backup_switcher_key" translatable="false">backup_switcher</string>
+    <string name="backup_frequency_key" translatable="false">backup_frequency</string>
+    <string name="backup_file_export_key" translatable="false">backup_file_export</string>
+    <string name="backup_file_import_key" translatable="false">backup_file_import</string>
+    <string name="backup_drive_import_key" translatable="false">backup_drive_import</string>
+    <string name="backup_reset_key" translatable="false">backup_reset</string>
 </resources>

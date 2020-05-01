@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dp"
         android:gravity="center" >
 
-    <Button
+    <com.google.android.material.button.MaterialButton
             android:id="@+id/fuel_date"
-            style="?android:attr/borderlessButtonStyle"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:textColor="@color/onBackground"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="24sp"
@@ -53,18 +55,20 @@
             android:gravity="end|bottom"
             android:layout_marginTop="8dp">
 
-        <Button
-                android:id="@+id/negative_button"
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/fuel_dialog_negative_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/data_dialog_negative_button"
-                style="@style/Widget.AppCompat.Button.Borderless.Colored" />
+                android:layout_marginEnd="4dp"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                app:strokeColor="@color/primary"
+                app:strokeWidth="1dp" />
 
-        <Button
-                android:id="@+id/positive_button"
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/fuel_dialog_positive_button"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/Widget.AppCompat.Button.Borderless.Colored" />
+                android:layout_height="wrap_content" />
 
     </LinearLayout>
 
