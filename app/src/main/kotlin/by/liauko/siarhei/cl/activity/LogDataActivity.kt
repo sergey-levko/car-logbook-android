@@ -51,23 +51,20 @@ class LogDataActivity : AppCompatActivity(), View.OnClickListener, DatePickerDia
         toolbar.setNavigationOnClickListener {
             handleBackAction()
         }
-        toolbar.inflateMenu(R.menu.log_menu_save)
+        toolbar.inflateMenu(R.menu.data_activity_menu)
         toolbar.setOnMenuItemClickListener {
             var result = false
             when (it.itemId) {
-                R.id.log_menu_save -> {
+                R.id.data_menu_save -> {
                     if (validateFields()) {
                         val intent = Intent()
-                        intent.putExtra("title", title.text.toString())
-                        intent.putExtra("mileage", mileage.text.toString())
-                        intent.putExtra("text", text.text.toString())
-                        intent.putExtra("time", calendar.timeInMillis)
+                        fillIntent(intent)
                         setResult(RESULT_OK, intent)
                         finish()
                         result = true
                     }
                 }
-                R.id.log_menu_delete -> {
+                R.id.data_menu_delete -> {
                     val intent = Intent()
                     intent.putExtra("remove", true)
                     intent.putExtra("id", id)
@@ -80,11 +77,11 @@ class LogDataActivity : AppCompatActivity(), View.OnClickListener, DatePickerDia
             return@setOnMenuItemClickListener result
         }
         if (id == defaultId) {
-            toolbar.menu.findItem(R.id.log_menu_save).isVisible = true
-            toolbar.menu.findItem(R.id.log_menu_delete).isVisible = false
+            toolbar.menu.findItem(R.id.data_menu_save).isVisible = true
+            toolbar.menu.findItem(R.id.data_menu_delete).isVisible = false
         } else {
-            toolbar.menu.findItem(R.id.log_menu_save).isVisible = false
-            toolbar.menu.findItem(R.id.log_menu_delete).isVisible = true
+            toolbar.menu.findItem(R.id.data_menu_save).isVisible = false
+            toolbar.menu.findItem(R.id.data_menu_delete).isVisible = true
         }
     }
 
@@ -110,13 +107,12 @@ class LogDataActivity : AppCompatActivity(), View.OnClickListener, DatePickerDia
     private fun validateFields(): Boolean {
         var result = true
 
-        val text = title.text.trim()
-        if (text.isEmpty()) {
+        if (title.text.isBlank()) {
             title.error = getString(R.string.activity_log_title_error)
             result = false
         }
 
-        if (mileage.text.isNullOrEmpty() || mileage.text.toString().toLong() == 0L) {
+        if (mileage.text.isNullOrBlank() || mileage.text.toString().toLong() == 0L) {
             mileage.error = getString(R.string.activity_log_mileage_error)
             result = false
         }
@@ -129,10 +125,7 @@ class LogDataActivity : AppCompatActivity(), View.OnClickListener, DatePickerDia
             if (validateFields()) {
                 val intent = Intent()
                 intent.putExtra("id", id)
-                intent.putExtra("title", title.text.toString())
-                intent.putExtra("mileage", mileage.text.toString())
-                intent.putExtra("text", text.text.toString())
-                intent.putExtra("time", calendar.timeInMillis)
+                fillIntent(intent)
                 setResult(RESULT_OK, intent)
                 finish()
             }
@@ -140,6 +133,13 @@ class LogDataActivity : AppCompatActivity(), View.OnClickListener, DatePickerDia
             setResult(RESULT_CANCELED)
             finish()
         }
+    }
+
+    private fun fillIntent(intent: Intent) {
+        intent.putExtra("title", title.text.toString())
+        intent.putExtra("mileage", mileage.text.toString())
+        intent.putExtra("text", text.text.toString())
+        intent.putExtra("time", calendar.timeInMillis)
     }
 
     override fun onClick(v: View?) {

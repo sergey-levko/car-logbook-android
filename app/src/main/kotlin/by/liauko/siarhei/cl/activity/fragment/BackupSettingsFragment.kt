@@ -173,13 +173,13 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
                 MaterialAlertDialogBuilder(appContext)
                     .setTitle(R.string.dialog_reset_title)
                     .setMessage(R.string.dialog_reset_message)
-                    .setPositiveButton(R.string.dialog_reset_positive_button) { dialog, _ ->
+                    .setPositiveButton(R.string.yes) { dialog, _ ->
                         BackupService.eraseAllData(appContext)
                         dialog.dismiss()
                         Toast.makeText(appContext, R.string.dialog_reset_toast_message, Toast.LENGTH_LONG)
                             .show()
                     }
-                    .setNegativeButton(R.string.dialog_reset_negative_button) { dialog, _ -> dialog.cancel() }
+                    .setNegativeButton(R.string.no) { dialog, _ -> dialog.cancel() }
                     .show()
             }
         }

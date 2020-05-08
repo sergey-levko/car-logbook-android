@@ -33,3 +33,11 @@ enum class DataType {
 enum class DataPeriod {
     MONTH, YEAR, ALL
 }
+
+enum class CarBodyType {
+    SEDAN, HATCHBACK, SUV, WAGON, COUPE, VAN, JEEP, CONVERTIBLE
+}
+
+enum class CarFuelType {
+    GASOLINE, DIESEL, GAS, ETHANOL, HYBRID, ELECTRICITY
+}
