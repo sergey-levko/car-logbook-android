@@ -37,6 +37,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="8dp"
-            android:text="@string/dialog_drive_import_negative_button" />
+            android:text="@string/cancel" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

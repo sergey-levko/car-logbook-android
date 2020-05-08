@@ -22,7 +22,6 @@
     <string name="data_dialog_date_hint">Date</string>
     <string name="data_dialog_positive_button_add">Add</string>
     <string name="data_dialog_positive_button_edit">Save</string>
-    <string name="data_dialog_negative_button">Cancel</string>
     <string name="data_dialog_volume_parameter_error">Volume value is required and can not be 0</string>
     <string name="data_dialog_distance_parameter_error">Distance value is required and can not be 0</string>
 
@@ -71,7 +70,6 @@
     <string name="period_dialog_dec">DEC</string>
     <string name="period_dialog_positive_button_month">This month</string>
     <string name="period_dialog_positive_button_year">Select</string>
-    <string name="period_dialog_negative_button">Cancel</string>
     <string name="period_dialog_previous_year_button_content_description">Previous</string>
     <string name="period_dialog_next_year_button_content_description">Next</string>
 
@@ -79,7 +77,6 @@
     <string name="year_selector_dialog_year_hint">Year</string>
     <string name="year_selector_dialog_error_text">The year value must be between 1970 and</string>
     <string name="year_selector_dialog_positive_button">Select</string>
-    <string name="year_selector_dialog_negative_button">Cancel</string>
 
     <string name="dialog_backup_progress_export_text">Exporting data…</string>
     <string name="dialog_backup_progress_import_text">Importing data…</string>
@@ -113,19 +110,34 @@
     <string name="dialog_drive_import_title">Import data from Google Drive</string>
     <string name="dialog_drive_import_no_files">No files to import</string>
     <string name="dialog_drive_import_recycler_view_item_remove_button_content_description">Remove</string>
-    <string name="dialog_drive_import_negative_button">Cancel</string>
 
     <string name="dialog_progress_delete_file">Deleting file…</string>
 
     <string name="dialog_reset_title">Erase all data</string>
     <string name="dialog_reset_message">Are you sure you want to delete all data?</string>
-    <string name="dialog_reset_positive_button">Yes</string>
-    <string name="dialog_reset_negative_button">No</string>
     <string name="dialog_reset_toast_message">All data was deleted</string>
 
     <string name="km">km</string>
     <string name="liters">L</string>
     <string name="consumption_value">L / 100km</string>
+    <string name="cancel">Cancel</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
+    <string name="activity_car_title_create">Create new car profile</string>
+    <string name="activity_car_title_edit">Edit car profile</string>
+    <string name="activity_car_name_hint">Car profile name</string>
+    <string name="activity_car_body_hint">Body type</string>
+    <string name="activity_car_fuel_hint">Fuel type</string>
+    <string name="activity_car_engine_hint">Engine volume (L)</string>
+    <string name="activity_car_save_button">Save</string>
+    <string name="activity_car_delete_button">Delete</string>
+    <string name="activity_car_name_error">Profile name field is required</string>
+    <string name="activity_car_engine_error">Engine volume value is required and can not be 0</string>
+
+    <string name="dialog_delete_car_title">Delete car profile</string>
+    <string name="dialog_delete_car_message">Are you sure you want to delete car profile? All data from logbook and about fuel consumption associated with this car will be also deleted.</string>
+    <string name="dialog_delete_car_toast_message">Car profile was deleted</string>
 
     <string name="shared_preferences_name" translatable="false">app_preferences</string>
     <string name="main_screen_key" translatable="false">main_screen</string>

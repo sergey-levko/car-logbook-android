@@ -159,7 +159,7 @@
                     android:id="@+id/period_dialog_negative_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/period_dialog_negative_button"
+                    android:text="@string/cancel"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     app:strokeColor="@color/primary"
                     app:strokeWidth="1dp"
