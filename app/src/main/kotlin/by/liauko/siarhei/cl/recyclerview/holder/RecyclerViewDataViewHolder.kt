@@ -1,10 +1,11 @@
-package by.liauko.siarhei.cl.recyclerview
+package by.liauko.siarhei.cl.recyclerview.holder
 
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import by.liauko.siarhei.cl.R
 import by.liauko.siarhei.cl.entity.AppData
+import by.liauko.siarhei.cl.recyclerview.adapter.RecyclerViewDataAdapter
 
 abstract class RecyclerViewDataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
