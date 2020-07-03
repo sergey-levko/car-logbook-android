@@ -13,8 +13,11 @@ interface FuelConsumptionDao {
     @Query("SELECT id, fuel_consumption, litres, distance, time FROM fuel_consumption")
     fun findAll(): List<FuelConsumptionEntity>
 
-    @Query("SELECT id, fuel_consumption, litres, distance, time FROM fuel_consumption WHERE time BETWEEN :startTime AND :endTime")
-    fun findAllByDate(startTime: Long, endTime: Long): List<FuelConsumptionEntity>
+    @Query("SELECT id, fuel_consumption, litres, distance, time FROM fuel_consumption WHERE profileId = :profileId")
+    fun findAllByProfileId(profileId: Long): List<FuelConsumptionEntity>
+
+    @Query("SELECT id, fuel_consumption, litres, distance, time FROM fuel_consumption WHERE profileId = :profileId AND time BETWEEN :startTime AND :endTime")
+    fun findAllByProfileIdAndDate(profileId: Long, startTime: Long, endTime: Long): List<FuelConsumptionEntity>
 
     @Insert
     fun insert(item: FuelConsumptionEntity): Long
@@ -30,4 +33,7 @@ interface FuelConsumptionDao {
 
     @Query("DELETE FROM fuel_consumption")
     fun deleteAll()
+
+    @Query("DELETE FROM fuel_consumption WHERE profileId = :profileId")
+    fun deleteAllByProfileId(profileId: Long)
 }

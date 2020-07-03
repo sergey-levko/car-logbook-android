@@ -9,5 +9,6 @@ data class LogEntity(
     val title: String,
     val text: String,
     val mileage: Long,
-    val time: Long
+    val time: Long,
+    val profileId: Long?
 ) : AppEntity()

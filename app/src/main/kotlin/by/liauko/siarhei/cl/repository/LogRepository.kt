@@ -9,7 +9,7 @@ import by.liauko.siarhei.cl.entity.LogData
 import by.liauko.siarhei.cl.util.ApplicationUtil.periodCalendar
 import by.liauko.siarhei.cl.util.DataType
 
-class LogRepository(context: Context) : Repository {
+class LogRepository(context: Context) : DataRepository {
 
     private val database = CarLogDatabase(context)
     private val type = DataType.LOG
@@ -17,10 +17,13 @@ class LogRepository(context: Context) : Repository {
     override fun selectAll() =
         SelectAsyncTask(type, database).execute().get().map { convertToData(it as LogEntity) }
 
-    override fun selectAllByPeriod(): List<LogData> {
+    override fun selectAllByProfileId(profileId: Long) =
+        SelectByProfileIdAsyncTask(type, database).execute(profileId).get().map { convertToData(it as LogEntity) }
+
+    override fun selectAllByProfileIdAndPeriod(profileId: Long): List<LogData> {
         val timeBounds = prepareDateRange(periodCalendar)
-        return SelectByDateAsyncTask(type, database)
-            .execute(timeBounds.first, timeBounds.second)
+        return SelectByProfileIdAndDateAsyncTask(type, database)
+            .execute(profileId, timeBounds.first, timeBounds.second)
             .get()
             .map { convertToData(it as LogEntity) }
     }
@@ -36,21 +39,26 @@ class LogRepository(context: Context) : Repository {
         DeleteAsyncTask(type, database).execute(convertToEntity(data as LogData))
     }
 
-    private fun convertToEntity(logData: LogData) =
+    override fun deleteAllByProfileId(profileId: Long) {
+        DeleteAllByProfileId(type, database).execute(profileId)
+    }
+
+    private fun convertToEntity(data: LogData) =
         LogEntity(
-            logData.id,
-            logData.title,
-            logData.text,
-            logData.mileage,
-            logData.time
+            data.id,
+            data.title,
+            data.text,
+            data.mileage,
+            data.time,
+            null
         )
 
-    private fun convertToData(logEntity: LogEntity) =
+    private fun convertToData(entity: LogEntity) =
         LogData(
-            logEntity.id!!,
-            logEntity.time,
-            logEntity.title,
-            logEntity.text,
-            logEntity.mileage
+            entity.id!!,
+            entity.time,
+            entity.title,
+            entity.text,
+            entity.mileage
         )
 }

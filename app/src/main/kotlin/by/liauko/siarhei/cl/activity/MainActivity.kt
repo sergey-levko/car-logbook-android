@@ -18,9 +18,12 @@ import by.liauko.siarhei.cl.activity.element.PeriodSelectorElement
 import by.liauko.siarhei.cl.activity.fragment.DataFragment
 import by.liauko.siarhei.cl.activity.fragment.SettingsFragment
 import by.liauko.siarhei.cl.database.CarLogDatabase
+import by.liauko.siarhei.cl.util.AppResultCodes.CAR_PROFILE_SHOW_LIST
 import by.liauko.siarhei.cl.util.AppResultCodes.PERIOD_DIALOG_RESULT
 import by.liauko.siarhei.cl.util.ApplicationUtil.dataPeriod
 import by.liauko.siarhei.cl.util.ApplicationUtil.periodCalendar
+import by.liauko.siarhei.cl.util.ApplicationUtil.profileId
+import by.liauko.siarhei.cl.util.ApplicationUtil.profileName
 import by.liauko.siarhei.cl.util.ApplicationUtil.type
 import by.liauko.siarhei.cl.util.DataPeriod
 import by.liauko.siarhei.cl.util.DataType
@@ -50,6 +53,12 @@ class MainActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        profileId = preferences.getLong(getString(R.string.car_profile_id_key), -1L)
+        profileName = preferences.getString(getString(R.string.car_profile_name_key), getString(R.string.app_name))
+        if (profileId == -1L) {
+            //TODO: show activity for creation or importing car profile
+        }
+
         periodSelector = PeriodSelectorElement(this, findViewById(R.id.main_coordinator_layout))
         initToolbar()
         initBottomNavigationView()
@@ -57,6 +66,7 @@ class MainActivity : AppCompatActivity(),
 
     private fun initToolbar() {
         toolbar = findViewById(R.id.toolbar)
+        toolbar.title = profileName ?: getString(R.string.app_name)
         toolbar.inflateMenu(R.menu.period_select_menu)
         toolbar.setOnMenuItemClickListener {
             var result = false
@@ -68,6 +78,9 @@ class MainActivity : AppCompatActivity(),
                         periodSelector.hide()
                     }
                     result = true
+                }
+                R.id.car_profile_menu -> {
+                    startActivityForResult(Intent(applicationContext, CarProfilesActivity::class.java), CAR_PROFILE_SHOW_LIST)
                 }
             }
 
@@ -81,6 +94,7 @@ class MainActivity : AppCompatActivity(),
             DataPeriod.ALL -> false
             else -> true
         }
+        toolbar.menu.findItem(R.id.car_profile_menu).isVisible = true
     }
 
     private fun initBottomNavigationView() {
@@ -128,6 +142,7 @@ class MainActivity : AppCompatActivity(),
             }
             R.id.settings_menu_item -> {
                 toolbar.menu.findItem(R.id.period_select_menu_date).isVisible = false
+                toolbar.menu.findItem(R.id.car_profile_menu).isVisible = false
                 periodCalendar = Calendar.getInstance()
                 loadFragment(SettingsFragment())
                 result = true

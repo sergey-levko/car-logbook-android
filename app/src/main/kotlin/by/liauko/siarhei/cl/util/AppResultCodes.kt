@@ -1,6 +1,7 @@
 package by.liauko.siarhei.cl.util
 
 object AppResultCodes {
+    //TODO: refactor code names
     const val ADD_LOG = 0x000
     const val EDIT_LOG = 0x001
     const val ADD_FUEL_CONSUMPTION = 0x100
@@ -10,4 +11,7 @@ object AppResultCodes {
     const val INTERNET_PERMISSION = 0x301
     const val BACKUP_OPEN_DOCUMENT_TREE = 0x400
     const val BACKUP_OPEN_DOCUMENT = 0x401
+    const val CAR_PROFILE_ADD = 0x500
+    const val CAR_PROFILE_EDIT = 0x501
+    const val CAR_PROFILE_SHOW_LIST = 0x502
 }

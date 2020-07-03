@@ -7,9 +7,8 @@
     <string name="activity_main_navigation_menu_fuel_item">Fuel</string>
     <string name="activity_main_navigation_menu_settings_item">Settings</string>
     <string name="activity_main_period_select_menu_date">Period</string>
+    <string name="activity_main_car_profile_menu">Car profile</string>
 
-    <string name="data_fragment_log_title">Log</string>
-    <string name="data_fragment_fuel_title">Fuel consumption</string>
     <string name="data_fragment_add_fab">Add record</string>
     <string name="data_fragment_snackbar_message">Record successfully removed</string>
     <string name="data_fragment_snackbar_undo">UNDO</string>
@@ -139,6 +138,10 @@
     <string name="dialog_delete_car_message">Are you sure you want to delete car profile? All data from logbook and about fuel consumption associated with this car will be also deleted.</string>
     <string name="dialog_delete_car_toast_message">Car profile was deleted</string>
 
+    <string name="activity_car_profile_title">Car profiles</string>
+    <string name="activity_car_profile_add_fab">Add profile</string>
+    <string name="activity_car_profile_edit">Edit</string>
+
     <string name="shared_preferences_name" translatable="false">app_preferences</string>
     <string name="main_screen_key" translatable="false">main_screen</string>
     <string name="dark_mode_key" translatable="false">dark_mode</string>
@@ -149,4 +152,6 @@
     <string name="backup_file_import_key" translatable="false">backup_file_import</string>
     <string name="backup_drive_import_key" translatable="false">backup_drive_import</string>
     <string name="backup_reset_key" translatable="false">backup_reset</string>
+    <string name="car_profile_id_key" translatable="false">car_profile_id</string>
+    <string name="car_profile_name_key" translatable="false">car_profile_name</string>
 </resources>

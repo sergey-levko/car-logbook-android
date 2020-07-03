@@ -9,9 +9,13 @@ import java.util.Calendar
 
 object ApplicationUtil {
 
+    const val EMPTY_STRING = ""
+
     var type = DataType.LOG
     var dataPeriod = DataPeriod.MONTH
     var periodCalendar: Calendar = Calendar.getInstance()
+    var profileId = -1L
+    var profileName: String? = null
 
     fun createProgressDialog(context: Context, messageId: Int)
             = ProgressDialog(context, context.getString(messageId))

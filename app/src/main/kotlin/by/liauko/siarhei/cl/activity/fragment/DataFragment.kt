@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,7 +26,9 @@ import by.liauko.siarhei.cl.util.AppResultCodes.ADD_FUEL_CONSUMPTION
 import by.liauko.siarhei.cl.util.AppResultCodes.ADD_LOG
 import by.liauko.siarhei.cl.util.AppResultCodes.EDIT_FUEL_CONSUMPTION
 import by.liauko.siarhei.cl.util.AppResultCodes.EDIT_LOG
+import by.liauko.siarhei.cl.util.ApplicationUtil.EMPTY_STRING
 import by.liauko.siarhei.cl.util.ApplicationUtil.dataPeriod
+import by.liauko.siarhei.cl.util.ApplicationUtil.profileId
 import by.liauko.siarhei.cl.util.ApplicationUtil.type
 import by.liauko.siarhei.cl.util.DataPeriod
 import by.liauko.siarhei.cl.util.DataType
@@ -35,8 +36,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.Calendar
 
 class DataFragment : Fragment() {
-
-    private val emptyString = ""
 
     private lateinit var fragmentView: View
     private lateinit var items: ArrayList<AppData>
@@ -50,12 +49,6 @@ class DataFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val toolbar = (container!!.parent as ViewGroup).getChildAt(0) as Toolbar
-        toolbar.title = when(type) {
-            DataType.LOG -> getString(R.string.data_fragment_log_title)
-            DataType.FUEL -> getString(R.string.data_fragment_fuel_title)
-        }
-
         fragmentView = inflater.inflate(R.layout.fragment_data, container, false)
 
         items = arrayListOf()
@@ -130,7 +123,7 @@ class DataFragment : Fragment() {
                     val distance = data.getStringExtra("distance")?.toDouble() ?: Double.MIN_VALUE
                     val fuelConsumption = litres * 100 / distance
                     val id = repositoryCollection.getRepository(type).insert(
-                        FuelConsumptionEntity(null, fuelConsumption, litres, distance, time)
+                        FuelConsumptionEntity(null, fuelConsumption, litres, distance, time, profileId)
                     )
                     if (id != -1L) {
                         items.add(FuelConsumptionData(id, time, fuelConsumption, litres, distance))
@@ -151,11 +144,11 @@ class DataFragment : Fragment() {
                     rvAdapter.refreshRecyclerView()
                 }
                 ADD_LOG -> {
-                    val title = data.getStringExtra("title")?.trim() ?: emptyString
-                    val text = data.getStringExtra("text")?.trim() ?: emptyString
+                    val title = data.getStringExtra("title")?.trim() ?: EMPTY_STRING
+                    val text = data.getStringExtra("text")?.trim() ?: EMPTY_STRING
                     val mileage = data.getStringExtra("mileage")?.toLong() ?: Long.MIN_VALUE
                     val id = repositoryCollection.getRepository(type).insert(
-                        LogEntity(null, title, text, mileage, time)
+                        LogEntity(null, title, text, mileage, time, profileId)
                     )
                     if (id != -1L) {
                         items.add(LogData(id, time, title, text, mileage))
@@ -171,8 +164,8 @@ class DataFragment : Fragment() {
                         rvAdapter.removeItem(position)
                         repositoryCollection.getRepository(type).delete(item)
                     } else {
-                        val title = data.getStringExtra("title") ?: emptyString
-                        val text = data.getStringExtra("text") ?: emptyString
+                        val title = data.getStringExtra("title") ?: EMPTY_STRING
+                        val text = data.getStringExtra("text") ?: EMPTY_STRING
                         val mileage = data.getStringExtra("mileage")?.toLong() ?: Long.MIN_VALUE
                         item.title = title
                         item.text = text
@@ -211,8 +204,8 @@ class DataFragment : Fragment() {
     private fun select(type: DataType) {
         items.clear()
         when (dataPeriod) {
-            DataPeriod.ALL -> items.addAll(repositoryCollection.getRepository(type).selectAll())
-            else -> items.addAll(repositoryCollection.getRepository(type).selectAllByPeriod())
+            DataPeriod.ALL -> items.addAll(repositoryCollection.getRepository(type).selectAllByProfileId(profileId))
+            else -> items.addAll(repositoryCollection.getRepository(type).selectAllByProfileIdAndPeriod(profileId))
         }
         rvAdapter.refreshRecyclerView()
     }

@@ -29,6 +29,8 @@
         </activity>
         <activity
                 android:name=".activity.CarDataActivity" />
+        <activity
+                android:name=".activity.CarProfilesActivity" />
     </application>
 
 </manifest>

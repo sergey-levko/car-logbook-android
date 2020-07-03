@@ -29,7 +29,6 @@ class CarDataActivity : AppCompatActivity() {
     private lateinit var fuelType: AutoCompleteTextView
     private lateinit var engineVolume: EditText
     private lateinit var engineVolumeLayout: TextInputLayout
-    private lateinit var toolbar: Toolbar
     private lateinit var carInfo: CarInfo
 
     private var id = defaultId
@@ -49,7 +48,7 @@ class CarDataActivity : AppCompatActivity() {
     }
 
     private fun initToolbar() {
-        toolbar = findViewById(R.id.car_toolbar)
+        val toolbar = findViewById<Toolbar>(R.id.car_toolbar)
         toolbar.setTitle(if (id == defaultId) R.string.activity_car_title_create else R.string.activity_car_title_edit)
         toolbar.setNavigationIcon(R.drawable.arrow_left_white)
         toolbar.setNavigationOnClickListener {
@@ -81,7 +80,7 @@ class CarDataActivity : AppCompatActivity() {
                             finish()
                             result = true
                             Toast.makeText(this, R.string.dialog_delete_car_toast_message, Toast.LENGTH_LONG)
-                                .show();
+                                .show()
                         }
                         .setNegativeButton(R.string.no) { dialog, _ -> dialog.cancel() }
                         .show()
@@ -199,7 +198,7 @@ class CarDataActivity : AppCompatActivity() {
         intent.putExtra("body_type", carInfo.body.name)
         intent.putExtra("fuel_type", carInfo.fuelType.name)
         if (engineVolume.text.isNotBlank()) {
-            intent.putExtra("engine_volume", engineVolume.text.toString().toDouble())
+            intent.putExtra("engine_volume", engineVolume.text.toString())
         }
     }
 

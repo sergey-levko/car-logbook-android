@@ -9,7 +9,7 @@ import by.liauko.siarhei.cl.entity.FuelConsumptionData
 import by.liauko.siarhei.cl.util.ApplicationUtil.periodCalendar
 import by.liauko.siarhei.cl.util.DataType
 
-class FuelConsumptionRepository(context: Context) : Repository {
+class FuelConsumptionRepository(context: Context) : DataRepository {
 
     private val database = CarLogDatabase(context)
     private val type = DataType.FUEL
@@ -17,10 +17,13 @@ class FuelConsumptionRepository(context: Context) : Repository {
     override fun selectAll() =
         SelectAsyncTask(type, database).execute().get().map { convertToData(it as FuelConsumptionEntity) }
 
-    override fun selectAllByPeriod(): List<FuelConsumptionData> {
+    override fun selectAllByProfileId(profileId: Long) =
+        SelectByProfileIdAsyncTask(type, database).execute(profileId).get().map { convertToData(it as FuelConsumptionEntity) }
+
+    override fun selectAllByProfileIdAndPeriod(profileId: Long): List<FuelConsumptionData> {
         val timeBounds = prepareDateRange(periodCalendar)
-        return SelectByDateAsyncTask(type, database)
-            .execute(timeBounds.first, timeBounds.second)
+        return SelectByProfileIdAndDateAsyncTask(type, database)
+            .execute(profileId, timeBounds.first, timeBounds.second)
             .get()
             .map { convertToData(it as FuelConsumptionEntity) }
     }
@@ -36,21 +39,26 @@ class FuelConsumptionRepository(context: Context) : Repository {
         DeleteAsyncTask(type, database).execute(convertToEntity(data as FuelConsumptionData))
     }
 
-    private fun convertToEntity(fuelConsumptionData: FuelConsumptionData) =
+    override fun deleteAllByProfileId(profileId: Long) {
+        DeleteAllByProfileId(type, database).execute(profileId)
+    }
+
+    private fun convertToEntity(data: FuelConsumptionData) =
         FuelConsumptionEntity(
-            fuelConsumptionData.id,
-            fuelConsumptionData.fuelConsumption,
-            fuelConsumptionData.litres,
-            fuelConsumptionData.distance,
-            fuelConsumptionData.time
+            data.id,
+            data.fuelConsumption,
+            data.litres,
+            data.distance,
+            data.time,
+            null
         )
 
-    private fun convertToData(fuelConsumptionEntity: FuelConsumptionEntity) =
+    private fun convertToData(entity: FuelConsumptionEntity) =
         FuelConsumptionData(
-            fuelConsumptionEntity.id!!,
-            fuelConsumptionEntity.time,
-            fuelConsumptionEntity.fuelConsumption,
-            fuelConsumptionEntity.litres,
-            fuelConsumptionEntity.distance
+            entity.id!!,
+            entity.time,
+            entity.fuelConsumption,
+            entity.litres,
+            entity.distance
         )
 }
