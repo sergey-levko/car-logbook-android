@@ -11,16 +11,17 @@ import by.liauko.siarhei.cl.database.dao.LogDao
 import by.liauko.siarhei.cl.database.entity.CarProfileEntity
 import by.liauko.siarhei.cl.database.entity.FuelConsumptionEntity
 import by.liauko.siarhei.cl.database.entity.LogEntity
+import by.liauko.siarhei.cl.database.migration.CarLogbookMigration.MIGRATION_1_2
 
 @Database(entities = [LogEntity::class, FuelConsumptionEntity::class, CarProfileEntity::class], version = 2)
-abstract class CarLogDatabase : RoomDatabase() {
+abstract class CarLogbookDatabase : RoomDatabase() {
 
     abstract fun logDao(): LogDao
     abstract fun fuelConsumptionDao(): FuelConsumptionDao
     abstract fun carProfileDao(): CarProfileDao
 
     companion object {
-        private var instance: CarLogDatabase? = null
+        private var instance: CarLogbookDatabase? = null
         private val lock = Any()
 
         operator fun invoke(context: Context) = instance ?: synchronized(lock) {
@@ -28,7 +29,8 @@ abstract class CarLogDatabase : RoomDatabase() {
         }
 
         private fun buildDatabase(context: Context) =
-            Room.databaseBuilder(context, CarLogDatabase::class.java, "car-log")
+            Room.databaseBuilder(context, CarLogbookDatabase::class.java, "car-log")
+                .addMigrations(MIGRATION_1_2)
                 .addCallback(object : Callback() {
                     override fun onCreate(db: SupportSQLiteDatabase) {
                         super.onCreate(db)

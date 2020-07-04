@@ -142,6 +142,9 @@
     <string name="activity_car_profile_add_fab">Add profile</string>
     <string name="activity_car_profile_edit">Edit</string>
 
+    <string name="default_car_profile_dialog_title">Default car profile was created</string>
+    <string name="default_car_profile_dialog_message">Now application supports car profiles. Default car profile was created for your existed records. You can edit it on car profile screen (button in the right top corner).</string>
+
     <string name="shared_preferences_name" translatable="false">app_preferences</string>
     <string name="main_screen_key" translatable="false">main_screen</string>
     <string name="dark_mode_key" translatable="false">dark_mode</string>
@@ -154,4 +157,5 @@
     <string name="backup_reset_key" translatable="false">backup_reset</string>
     <string name="car_profile_id_key" translatable="false">car_profile_id</string>
     <string name="car_profile_name_key" translatable="false">car_profile_name</string>
+    <string name="default_car_profile_dialog_key" translatable="false">default_car_profile_dialog</string>
 </resources>

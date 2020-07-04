@@ -1,7 +1,7 @@
 package by.liauko.siarhei.cl.repository
 
 import android.content.Context
-import by.liauko.siarhei.cl.database.CarLogDatabase
+import by.liauko.siarhei.cl.database.CarLogbookDatabase
 import by.liauko.siarhei.cl.database.entity.AppEntity
 import by.liauko.siarhei.cl.database.entity.LogEntity
 import by.liauko.siarhei.cl.entity.AppData
@@ -11,7 +11,7 @@ import by.liauko.siarhei.cl.util.DataType
 
 class LogRepository(context: Context) : DataRepository {
 
-    private val database = CarLogDatabase(context)
+    private val database = CarLogbookDatabase(context)
     private val type = DataType.LOG
 
     override fun selectAll() =

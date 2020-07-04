@@ -3,6 +3,7 @@ package by.liauko.siarhei.cl.activity
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
@@ -17,9 +18,10 @@ import by.liauko.siarhei.cl.R
 import by.liauko.siarhei.cl.activity.element.PeriodSelectorElement
 import by.liauko.siarhei.cl.activity.fragment.DataFragment
 import by.liauko.siarhei.cl.activity.fragment.SettingsFragment
-import by.liauko.siarhei.cl.database.CarLogDatabase
+import by.liauko.siarhei.cl.database.CarLogbookDatabase
 import by.liauko.siarhei.cl.util.AppResultCodes.CAR_PROFILE_SHOW_LIST
 import by.liauko.siarhei.cl.util.AppResultCodes.PERIOD_DIALOG_RESULT
+import by.liauko.siarhei.cl.util.ApplicationUtil.createAlertDialog
 import by.liauko.siarhei.cl.util.ApplicationUtil.dataPeriod
 import by.liauko.siarhei.cl.util.ApplicationUtil.periodCalendar
 import by.liauko.siarhei.cl.util.ApplicationUtil.profileId
@@ -33,6 +35,8 @@ import java.util.Calendar
 class MainActivity : AppCompatActivity(),
     BottomNavigationView.OnNavigationItemSelectedListener,
     PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
+
+    private val defaultCarProfileName = "Default Car Profile"
 
     private lateinit var toolbar: Toolbar
     private lateinit var bottomNavigationView: BottomNavigationView
@@ -55,9 +59,7 @@ class MainActivity : AppCompatActivity(),
 
         profileId = preferences.getLong(getString(R.string.car_profile_id_key), -1L)
         profileName = preferences.getString(getString(R.string.car_profile_name_key), getString(R.string.app_name))
-        if (profileId == -1L) {
-            //TODO: show activity for creation or importing car profile
-        }
+        checkCarProfile(preferences)
 
         periodSelector = PeriodSelectorElement(this, findViewById(R.id.main_coordinator_layout))
         initToolbar()
@@ -120,7 +122,7 @@ class MainActivity : AppCompatActivity(),
 
     override fun onDestroy() {
         super.onDestroy()
-        CarLogDatabase.closeDatabase()
+        CarLogbookDatabase.closeDatabase()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -187,5 +189,26 @@ class MainActivity : AppCompatActivity(),
             .commit()
 
         return true
+    }
+
+    private fun checkCarProfile(preferences: SharedPreferences) {
+        val dialogShown = preferences.getBoolean(getString(R.string.default_car_profile_dialog_key), false)
+        if (profileId == -1L) {
+            val entities = CarLogbookDatabase.invoke(applicationContext).carProfileDao().findAll()
+            if (entities.isNotEmpty()) {
+                profileId = entities[0].id!!
+                profileName = entities[0].name
+                if (defaultCarProfileName == profileName && !dialogShown) {
+                    createAlertDialog(
+                        applicationContext,
+                        R.string.default_car_profile_dialog_title,
+                        R.string.default_car_profile_dialog_message
+                    )
+                    preferences.edit().putBoolean(getString(R.string.default_car_profile_dialog_key), true).apply()
+                }
+            } else {
+                //TODO: show activity for creation or importing car profile
+            }
+        }
     }
 }

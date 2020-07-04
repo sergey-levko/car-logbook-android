@@ -5,7 +5,7 @@ import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
 import by.liauko.siarhei.cl.R
 import by.liauko.siarhei.cl.activity.dialog.ProgressDialog
-import by.liauko.siarhei.cl.database.CarLogDatabase
+import by.liauko.siarhei.cl.database.CarLogbookDatabase
 import by.liauko.siarhei.cl.database.entity.FuelConsumptionEntity
 import by.liauko.siarhei.cl.database.entity.LogEntity
 import by.liauko.siarhei.cl.drive.DriveMimeTypes
@@ -31,7 +31,7 @@ object BackupService {
     private const val EMPTY_JSON_OBJECT = "{}"
 
     fun exportToDrive(context: Context, driveServiceHelper: DriveServiceHelper) {
-        val backupData = prepareBackupData(CarLogDatabase.invoke(context))
+        val backupData = prepareBackupData(CarLogbookDatabase.invoke(context))
 
         val folderId = driveServiceHelper.createFolderIfNotExist("car-logbook-backup")
         val files = driveServiceHelper.getAllFilesInFolder(folderId).sortedBy { item -> item.first }
@@ -58,7 +58,7 @@ object BackupService {
             .addOnCompleteListener {
                 val data = it.result
                 if (data != null) {
-                    restoreData(CarLogDatabase.invoke(context), data)
+                    restoreData(CarLogbookDatabase.invoke(context), data)
                     progressDialog.dismiss()
                     ApplicationUtil.createAlertDialog(
                         context,
@@ -86,7 +86,7 @@ object BackupService {
 
     @Suppress("UNCHECKED_CAST")
     fun exportToFile(directoryUri: Uri, context: Context, progressDialog: ProgressDialog) {
-        val database = CarLogDatabase.invoke(context)
+        val database = CarLogbookDatabase.invoke(context)
         val logEntities = SelectAsyncTask(DataType.LOG, database).execute().get() as List<LogEntity>
         val fuelConsumptionEntities = SelectAsyncTask(DataType.FUEL, database).execute().get() as List<FuelConsumptionEntity>
         val carProfileEntities = SelectAllCarProfileAsyncTask(database).execute().get()
@@ -113,7 +113,7 @@ object BackupService {
     fun importFromFile(fileUri: Uri, context: Context, progressDialog: ProgressDialog) {
         context.contentResolver.openInputStream(fileUri)?.bufferedReader().use {
             restoreData(
-                CarLogDatabase.invoke(context),
+                CarLogbookDatabase.invoke(context),
                 Gson().fromJson<BackupEntity>(it?.readLine() ?: EMPTY_JSON_OBJECT, BackupEntity::class.java)
             )
         }
@@ -126,7 +126,7 @@ object BackupService {
     }
 
     fun eraseAllData(context: Context) {
-        val database = CarLogDatabase.invoke(context)
+        val database = CarLogbookDatabase.invoke(context)
         DeleteAllAsyncTask(DataType.LOG, database).execute()
         DeleteAllAsyncTask(DataType.FUEL, database).execute()
         DeleteAllCarProfilesAsyncTask(database).execute()
@@ -135,14 +135,14 @@ object BackupService {
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun prepareBackupData(database: CarLogDatabase): BackupEntity {
+    private fun prepareBackupData(database: CarLogbookDatabase): BackupEntity {
         val logEntities = SelectAsyncTask(DataType.LOG, database).execute().get() as List<LogEntity>
         val fuelConsumptionEntities = SelectAsyncTask(DataType.FUEL, database).execute().get() as List<FuelConsumptionEntity>
         val carProfileEntities = SelectAllCarProfileAsyncTask(database).execute().get()
         return BackupEntity(logEntities, fuelConsumptionEntities, carProfileEntities)
     }
     
-    private fun restoreData(database: CarLogDatabase, backupData: BackupEntity) {
+    private fun restoreData(database: CarLogbookDatabase, backupData: BackupEntity) {
         DeleteAllAsyncTask(DataType.LOG, database).execute()
         InsertAllAsyncTask(DataType.LOG,  database).execute(backupData.logEntities)
         DeleteAllAsyncTask(DataType.FUEL, database).execute()

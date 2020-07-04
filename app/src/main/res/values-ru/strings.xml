@@ -139,4 +139,7 @@
     <string name="dialog_delete_car_title">Удаление профиля автомобиля</string>
     <string name="dialog_delete_car_message">Вы уверены, что хотите удалить профиль автомобиля? Все данные из журнала и о расходе топлива, связанные с этим автомобилем, будут так же удалены.</string>
     <string name="dialog_delete_car_toast_message">Профиль автомобиля был удалён</string>
+
+    <string name="default_car_profile_dialog_title">Был создан стандартный профиль автомобиля</string>
+    <string name="default_car_profile_dialog_message">Теперь приложение поддерживает профили автомобилей. Для уже существующих записей был создан стандартный профиль. Вы можете изменить его на экране списка профилей (кнопка в верхнем правом углу).</string>
 </resources>

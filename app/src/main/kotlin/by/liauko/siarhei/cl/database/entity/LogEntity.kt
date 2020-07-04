@@ -1,5 +1,6 @@
 package by.liauko.siarhei.cl.database.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -10,5 +11,5 @@ data class LogEntity(
     val text: String,
     val mileage: Long,
     val time: Long,
-    val profileId: Long?
+    @ColumnInfo(name = "profile_id") val profileId: Long?
 ) : AppEntity()

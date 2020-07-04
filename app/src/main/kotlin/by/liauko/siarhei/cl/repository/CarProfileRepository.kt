@@ -2,7 +2,7 @@ package by.liauko.siarhei.cl.repository
 
 import android.content.Context
 import android.os.AsyncTask
-import by.liauko.siarhei.cl.database.CarLogDatabase
+import by.liauko.siarhei.cl.database.CarLogbookDatabase
 import by.liauko.siarhei.cl.database.entity.CarProfileEntity
 import by.liauko.siarhei.cl.entity.CarProfileData
 import by.liauko.siarhei.cl.util.CarBodyType
@@ -10,7 +10,7 @@ import by.liauko.siarhei.cl.util.CarFuelType
 
 class CarProfileRepository(context: Context) : Repository<CarProfileData, CarProfileEntity> {
 
-    private val database = CarLogDatabase(context)
+    private val database = CarLogbookDatabase(context)
 
     override fun selectAll() =
         SelectAllCarProfileAsyncTask(database).execute().get().map { convertToData(it) }
@@ -45,19 +45,19 @@ class CarProfileRepository(context: Context) : Repository<CarProfileData, CarPro
         )
 }
 
-class SelectAllCarProfileAsyncTask(private val db: CarLogDatabase) : AsyncTask<Unit, Unit, List<CarProfileEntity>>() {
+class SelectAllCarProfileAsyncTask(private val db: CarLogbookDatabase) : AsyncTask<Unit, Unit, List<CarProfileEntity>>() {
 
     override fun doInBackground(vararg params: Unit?) =
         db.carProfileDao().findAll()
 }
 
-class InsertCarProfileAsyncTask(private val db: CarLogDatabase) : AsyncTask<CarProfileEntity, Unit, Long>() {
+class InsertCarProfileAsyncTask(private val db: CarLogbookDatabase) : AsyncTask<CarProfileEntity, Unit, Long>() {
 
     override fun doInBackground(vararg params: CarProfileEntity?) =
         db.carProfileDao().insert(params[0]!!)
 }
 
-class InsertAllCarProfileAsyncTask(private val db: CarLogDatabase) : AsyncTask<List<CarProfileEntity>, Unit, Unit>() {
+class InsertAllCarProfileAsyncTask(private val db: CarLogbookDatabase) : AsyncTask<List<CarProfileEntity>, Unit, Unit>() {
 
     @Suppress("UNCHECKED_CAST")
     override fun doInBackground(vararg params: List<CarProfileEntity>?) {
@@ -65,21 +65,21 @@ class InsertAllCarProfileAsyncTask(private val db: CarLogDatabase) : AsyncTask<L
     }
 }
 
-class UpdateCarProfileAsyncTask(private val db: CarLogDatabase) : AsyncTask<CarProfileEntity, Unit, Unit>() {
+class UpdateCarProfileAsyncTask(private val db: CarLogbookDatabase) : AsyncTask<CarProfileEntity, Unit, Unit>() {
 
     override fun doInBackground(vararg params: CarProfileEntity?) {
         db.carProfileDao().update(params[0]!!)
     }
 }
 
-class DeleteCarProfileAsyncTask(private val db: CarLogDatabase) : AsyncTask<CarProfileEntity, Unit, Unit>() {
+class DeleteCarProfileAsyncTask(private val db: CarLogbookDatabase) : AsyncTask<CarProfileEntity, Unit, Unit>() {
 
     override fun doInBackground(vararg params: CarProfileEntity?) {
         db.carProfileDao().delete(params[0]!!)
     }
 }
 
-class DeleteAllCarProfilesAsyncTask(private val db: CarLogDatabase) : AsyncTask<Unit, Unit, Unit>() {
+class DeleteAllCarProfilesAsyncTask(private val db: CarLogbookDatabase) : AsyncTask<Unit, Unit, Unit>() {
 
     override fun doInBackground(vararg params: Unit?) {
         db.carProfileDao().deleteAll()
