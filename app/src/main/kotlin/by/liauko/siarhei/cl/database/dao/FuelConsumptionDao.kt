@@ -10,13 +10,13 @@ import by.liauko.siarhei.cl.database.entity.FuelConsumptionEntity
 @Dao
 interface FuelConsumptionDao {
 
-    @Query("SELECT id, fuel_consumption, litres, distance, time FROM fuel_consumption")
+    @Query("SELECT id, fuel_consumption, litres, distance, time, profile_id FROM fuel_consumption")
     fun findAll(): List<FuelConsumptionEntity>
 
-    @Query("SELECT id, fuel_consumption, litres, distance, time FROM fuel_consumption WHERE profileId = :profileId")
+    @Query("SELECT id, fuel_consumption, litres, distance, time FROM fuel_consumption WHERE profile_id = :profileId")
     fun findAllByProfileId(profileId: Long): List<FuelConsumptionEntity>
 
-    @Query("SELECT id, fuel_consumption, litres, distance, time FROM fuel_consumption WHERE profileId = :profileId AND time BETWEEN :startTime AND :endTime")
+    @Query("SELECT id, fuel_consumption, litres, distance, time FROM fuel_consumption WHERE profile_id = :profileId AND time BETWEEN :startTime AND :endTime")
     fun findAllByProfileIdAndDate(profileId: Long, startTime: Long, endTime: Long): List<FuelConsumptionEntity>
 
     @Insert
@@ -34,6 +34,6 @@ interface FuelConsumptionDao {
     @Query("DELETE FROM fuel_consumption")
     fun deleteAll()
 
-    @Query("DELETE FROM fuel_consumption WHERE profileId = :profileId")
+    @Query("DELETE FROM fuel_consumption WHERE profile_id = :profileId")
     fun deleteAllByProfileId(profileId: Long)
 }

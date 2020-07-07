@@ -10,7 +10,7 @@ import by.liauko.siarhei.cl.database.entity.CarProfileEntity
 @Dao
 interface CarProfileDao {
 
-    @Query("SELECT id, name, bodyType, fuelType, engineVolume FROM car_profile")
+    @Query("SELECT id, name, body_type, fuel_type, engine_volume FROM car_profile")
     fun findAll(): List<CarProfileEntity>
 
     @Insert
