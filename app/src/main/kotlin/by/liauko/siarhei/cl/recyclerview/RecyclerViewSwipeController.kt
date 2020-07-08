@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import by.liauko.siarhei.cl.R
 import by.liauko.siarhei.cl.entity.FuelConsumptionData
+import by.liauko.siarhei.cl.recyclerview.adapter.RecyclerViewDataAdapter
 import by.liauko.siarhei.cl.util.DataType
 import com.google.android.material.snackbar.Snackbar
 

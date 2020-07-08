@@ -10,5 +10,6 @@ data class FuelConsumptionEntity(
     @ColumnInfo(name = "fuel_consumption") val fuelConsumption: Double,
     val litres: Double,
     val distance: Double,
-    val time: Long
+    val time: Long,
+    @ColumnInfo(name = "profile_id") val profileId: Long?
 ) : AppEntity()

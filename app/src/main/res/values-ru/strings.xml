@@ -7,9 +7,8 @@
     <string name="activity_main_navigation_menu_fuel_item">Топливо</string>
     <string name="activity_main_navigation_menu_settings_item">Настройки</string>
     <string name="activity_main_period_select_menu_date">Периуд</string>
+    <string name="activity_main_car_profile_menu">Профиль авто</string>
 
-    <string name="data_fragment_log_title">Бортовой журнал</string>
-    <string name="data_fragment_fuel_title">Расход топлива</string>
     <string name="data_fragment_add_fab">Добавить запись</string>
     <string name="data_fragment_snackbar_message">Запись успешно удалена</string>
     <string name="data_fragment_snackbar_undo">ОТМЕНА</string>
@@ -115,6 +114,10 @@
     <string name="dialog_reset_message">Вы уверены, что хотите удалить все данные?</string>
     <string name="dialog_reset_toast_message">Вся информация была удалена</string>
 
+    <string name="activity_car_profile_title">Профили автомобилей</string>
+    <string name="activity_car_profile_add_fab">Добавить профиль</string>
+    <string name="activity_car_profile_edit">Изменить</string>
+
     <string name="km">км</string>
     <string name="liters">л</string>
     <string name="consumption_value">л / 100км</string>
@@ -136,4 +139,7 @@
     <string name="dialog_delete_car_title">Удаление профиля автомобиля</string>
     <string name="dialog_delete_car_message">Вы уверены, что хотите удалить профиль автомобиля? Все данные из журнала и о расходе топлива, связанные с этим автомобилем, будут так же удалены.</string>
     <string name="dialog_delete_car_toast_message">Профиль автомобиля был удалён</string>
+
+    <string name="default_car_profile_dialog_title">Был создан стандартный профиль автомобиля</string>
+    <string name="default_car_profile_dialog_message">Теперь приложение поддерживает профили автомобилей. Для уже существующих записей был создан стандартный профиль. Вы можете изменить его на экране списка профилей (кнопка в верхнем правом углу).</string>
 </resources>

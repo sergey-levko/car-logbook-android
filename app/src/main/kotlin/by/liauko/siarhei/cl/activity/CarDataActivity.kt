@@ -29,7 +29,6 @@ class CarDataActivity : AppCompatActivity() {
     private lateinit var fuelType: AutoCompleteTextView
     private lateinit var engineVolume: EditText
     private lateinit var engineVolumeLayout: TextInputLayout
-    private lateinit var toolbar: Toolbar
     private lateinit var carInfo: CarInfo
 
     private var id = defaultId
@@ -44,12 +43,15 @@ class CarDataActivity : AppCompatActivity() {
         id = intent.getLongExtra("id", defaultId)
 
         initToolbar()
-        initElements()
         initCarInfo()
+        initElements()
+        if (id != defaultId) {
+            fillData()
+        }
     }
 
     private fun initToolbar() {
-        toolbar = findViewById(R.id.car_toolbar)
+        val toolbar = findViewById<Toolbar>(R.id.car_toolbar)
         toolbar.setTitle(if (id == defaultId) R.string.activity_car_title_create else R.string.activity_car_title_edit)
         toolbar.setNavigationIcon(R.drawable.arrow_left_white)
         toolbar.setNavigationOnClickListener {
@@ -81,7 +83,7 @@ class CarDataActivity : AppCompatActivity() {
                             finish()
                             result = true
                             Toast.makeText(this, R.string.dialog_delete_car_toast_message, Toast.LENGTH_LONG)
-                                .show();
+                                .show()
                         }
                         .setNegativeButton(R.string.no) { dialog, _ -> dialog.cancel() }
                         .show()
@@ -106,14 +108,14 @@ class CarDataActivity : AppCompatActivity() {
         name = findViewById(R.id.car_name)
 
         bodyType = findViewById(R.id.car_body)
-        bodyType.text.append(bodyTypes.first())
+        bodyType.text.append(bodyTypes[carInfo.body.ordinal])
         bodyType.inputType = InputType.TYPE_NULL
         bodyType.setAdapter(bodyAdapter)
         bodyType.setOnFocusChangeListener { view, _ -> hideKeyboard(view) }
         bodyType.setOnItemClickListener { _, _, i, _ -> carInfo.body = CarBodyType.values()[i] }
 
         fuelType = findViewById(R.id.car_fuel_type)
-        fuelType.text.append(fuelTypes.first())
+        fuelType.text.append(fuelTypes[carInfo.fuelType.ordinal])
         fuelType.inputType = InputType.TYPE_NULL
         fuelType.setAdapter(fuelAdapter)
         fuelType.setOnFocusChangeListener { view, _ -> hideKeyboard(view) }
@@ -133,14 +135,13 @@ class CarDataActivity : AppCompatActivity() {
     }
 
     private fun initCarInfo() {
-        if (id != defaultId) {
-            carInfo = CarInfo(
+        carInfo = if (id != defaultId) {
+            CarInfo(
                 CarBodyType.valueOf(intent.getStringExtra("body_type")!!),
                 CarFuelType.valueOf(intent.getStringExtra("fuel_type")!!)
             )
-            fillData()
         } else {
-            carInfo = CarInfo(
+            CarInfo(
                 CarBodyType.SEDAN,
                 CarFuelType.GASOLINE
             )
@@ -149,10 +150,6 @@ class CarDataActivity : AppCompatActivity() {
 
     private fun fillData() {
         name.text.append(intent.getStringExtra("car_name"))
-        bodyType.text.clear()
-        bodyType.text.append(bodyTypes[carInfo.body.ordinal])
-        fuelType.text.clear()
-        fuelType.text.append(fuelTypes[carInfo.fuelType.ordinal])
         val volume = intent.getStringExtra("engine_volume")
         if (volume != null) {
             engineVolume.text.append(volume)
@@ -199,7 +196,7 @@ class CarDataActivity : AppCompatActivity() {
         intent.putExtra("body_type", carInfo.body.name)
         intent.putExtra("fuel_type", carInfo.fuelType.name)
         if (engineVolume.text.isNotBlank()) {
-            intent.putExtra("engine_volume", engineVolume.text.toString().toDouble())
+            intent.putExtra("engine_volume", engineVolume.text.toString())
         }
     }
 

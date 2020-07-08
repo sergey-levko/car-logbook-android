@@ -11,7 +11,7 @@ import by.liauko.siarhei.cl.R
 import by.liauko.siarhei.cl.backup.BackupService
 import by.liauko.siarhei.cl.drive.DriveFileInfoList
 import by.liauko.siarhei.cl.drive.DriveServiceHelper
-import by.liauko.siarhei.cl.recyclerview.RecyclerViewImportFileAdapter
+import by.liauko.siarhei.cl.recyclerview.adapter.RecyclerViewImportFileAdapter
 
 class DriveImportDialog(
     private val appContext: Context,
@@ -32,18 +32,23 @@ class DriveImportDialog(
     private fun initRecyclerView() {
         noFileTextView = findViewById(R.id.no_files_for_import)!!
 
-        rvAdapter = RecyclerViewImportFileAdapter(appContext, files, noFileTextView, driveServiceHelper,
-            object : RecyclerViewImportFileAdapter.RecyclerViewOnItemClickListener {
-                override fun onItemClick(item: Pair<String, String>) {
-                    dismiss()
-                    BackupService.importFromDrive(
-                        item.second,
-                        context,
-                        driveServiceHelper
-                    )
+        rvAdapter =
+            RecyclerViewImportFileAdapter(
+                appContext,
+                files,
+                noFileTextView,
+                driveServiceHelper,
+                object : RecyclerViewImportFileAdapter.RecyclerViewOnItemClickListener {
+                    override fun onItemClick(item: Pair<String, String>) {
+                        dismiss()
+                        BackupService.importFromDrive(
+                            item.second,
+                            context,
+                            driveServiceHelper
+                        )
+                    }
                 }
-            }
-        )
+            )
 
         findViewById<RecyclerView>(R.id.import_data_recycler_view)!!.apply {
             setHasFixedSize(true)

@@ -2,7 +2,7 @@ package by.liauko.siarhei.cl.repository
 
 import android.content.Context
 import android.os.AsyncTask
-import by.liauko.siarhei.cl.database.CarLogDatabase
+import by.liauko.siarhei.cl.database.CarLogbookDatabase
 import by.liauko.siarhei.cl.database.entity.AppEntity
 import by.liauko.siarhei.cl.database.entity.FuelConsumptionEntity
 import by.liauko.siarhei.cl.database.entity.LogEntity
@@ -41,7 +41,7 @@ class AppRepositoryCollection(context: Context) {
     private val logRepository = LogRepository(context)
     private val fuelConsumptionRepository = FuelConsumptionRepository(context)
 
-    fun getRepository(type: DataType): Repository {
+    fun getRepository(type: DataType): DataRepository {
         return when (type) {
             DataType.LOG -> logRepository
             DataType.FUEL -> fuelConsumptionRepository
@@ -49,48 +49,54 @@ class AppRepositoryCollection(context: Context) {
     }
 }
 
-class SelectAsyncTask(private val dataType: DataType, private val db: CarLogDatabase) : AsyncTask<Unit, Unit, List<AppEntity>>() {
+class SelectAsyncTask(private val dataType: DataType, private val db: CarLogbookDatabase) : AsyncTask<Unit, Unit, List<AppEntity>>() {
 
-    override fun doInBackground(vararg params: Unit?): List<AppEntity> {
-        return when (dataType) {
+    override fun doInBackground(vararg params: Unit?) =
+        when (dataType) {
             DataType.LOG -> db.logDao().findAll()
             DataType.FUEL -> db.fuelConsumptionDao().findAll()
         }
-    }
 }
 
-class SelectByDateAsyncTask(private val dataType: DataType, private val db: CarLogDatabase) : AsyncTask<Long, Unit, List<AppEntity>>() {
+class SelectByProfileIdAsyncTask(private val dataType: DataType, private val db: CarLogbookDatabase) : AsyncTask<Long, Unit, List<AppEntity>>() {
 
-    override fun doInBackground(vararg params: Long?): List<AppEntity> {
-        return when (dataType) {
-            DataType.LOG -> db.logDao().findAllByDate(params[0]!!, params[1]!!)
-            DataType.FUEL -> db.fuelConsumptionDao().findAllByDate(params[0]!!, params[1]!!)
+    override fun doInBackground(vararg params: Long?) =
+        when (dataType) {
+            DataType.LOG -> db.logDao().findAllByProfileId(params[0]!!)
+            DataType.FUEL -> db.fuelConsumptionDao().findAllByProfileId(params[0]!!)
         }
-    }
 }
 
-class InsertAsyncTask(private val dataType: DataType, private val db: CarLogDatabase) : AsyncTask<AppEntity, Unit, Long>() {
+class SelectByProfileIdAndDateAsyncTask(private val dataType: DataType, private val db: CarLogbookDatabase) : AsyncTask<Long, Unit, List<AppEntity>>() {
 
-    override fun doInBackground(vararg params: AppEntity?): Long {
-        return when (dataType) {
+    override fun doInBackground(vararg params: Long?) =
+        when (dataType) {
+            DataType.LOG -> db.logDao().findAllByProfileIdAndDate(params[0]!!, params[1]!!, params[2]!!)
+            DataType.FUEL -> db.fuelConsumptionDao().findAllByProfileIdAndDate(params[0]!!, params[1]!!, params[2]!!)
+        }
+}
+
+class InsertAsyncTask(private val dataType: DataType, private val db: CarLogbookDatabase) : AsyncTask<AppEntity, Unit, Long>() {
+
+    override fun doInBackground(vararg params: AppEntity?) =
+        when (dataType) {
             DataType.LOG -> db.logDao().insert(params[0]!! as LogEntity)
             DataType.FUEL -> db.fuelConsumptionDao().insert(params[0]!! as FuelConsumptionEntity)
         }
-    }
 }
 
-class InsertAllAsyncTask(private val dataType: DataType, private val db: CarLogDatabase) : AsyncTask<List<AppEntity>, Unit, Unit>() {
+class InsertAllAsyncTask(private val dataType: DataType, private val db: CarLogbookDatabase) : AsyncTask<List<AppEntity>, Unit, Unit>() {
 
     @Suppress("UNCHECKED_CAST")
     override fun doInBackground(vararg params: List<AppEntity>?) {
-        return when (dataType) {
+        when (dataType) {
             DataType.LOG -> db.logDao().insertAll(params[0]!! as List<LogEntity>)
             DataType.FUEL -> db.fuelConsumptionDao().insertAll(params[0]!! as List<FuelConsumptionEntity>)
         }
     }
 }
 
-class UpdateAsyncTask(private val dataType: DataType, private val db: CarLogDatabase) : AsyncTask<AppEntity, Unit, Unit>() {
+class UpdateAsyncTask(private val dataType: DataType, private val db: CarLogbookDatabase) : AsyncTask<AppEntity, Unit, Unit>() {
 
     override fun doInBackground(vararg params: AppEntity?) {
         when (dataType) {
@@ -100,7 +106,7 @@ class UpdateAsyncTask(private val dataType: DataType, private val db: CarLogData
     }
 }
 
-class DeleteAsyncTask(private val dataType: DataType, private val db: CarLogDatabase) : AsyncTask<AppEntity, Unit, Unit>() {
+class DeleteAsyncTask(private val dataType: DataType, private val db: CarLogbookDatabase) : AsyncTask<AppEntity, Unit, Unit>() {
 
     override fun doInBackground(vararg params: AppEntity?) {
         when (dataType) {
@@ -110,7 +116,7 @@ class DeleteAsyncTask(private val dataType: DataType, private val db: CarLogData
     }
 }
 
-class DeleteAllAsyncTask(private val dataType: DataType, private val db: CarLogDatabase) : AsyncTask<Unit, Unit, Unit>() {
+class DeleteAllAsyncTask(private val dataType: DataType, private val db: CarLogbookDatabase) : AsyncTask<Unit, Unit, Unit>() {
 
     override fun doInBackground(vararg params: Unit?) {
         when (dataType) {
@@ -119,4 +125,14 @@ class DeleteAllAsyncTask(private val dataType: DataType, private val db: CarLogD
         }
     }
 
+}
+
+class DeleteAllByProfileId(private val dataType: DataType, private val db: CarLogbookDatabase) : AsyncTask<Long, Unit, Unit>() {
+
+    override fun doInBackground(vararg params: Long?) {
+        when (dataType) {
+            DataType.LOG -> db.logDao().deleteAllByProfileId(params[0]!!)
+            DataType.FUEL -> db.fuelConsumptionDao().deleteAllByProfileId(params[0]!!)
+        }
+    }
 }
