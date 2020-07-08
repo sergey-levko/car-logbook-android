@@ -120,20 +120,13 @@ class CarProfilesActivity : AppCompatActivity() {
                         LogRepository(applicationContext).deleteAllByProfileId(id)
                         FuelConsumptionRepository(applicationContext).deleteAllByProfileId(id)
                         if (items.isEmpty()) {
-                            val defaultTitle = getString(R.string.app_name)
-                            getSharedPreferences(getString(R.string.shared_preferences_name), Context.MODE_PRIVATE)
-                                .edit()
-                                .putLong(getString(R.string.car_profile_id_key), -1L)
-                                .putString(getString(R.string.car_profile_name_key), defaultTitle)
-                                .apply()
                             profileId = -1L
-                            profileName = defaultTitle
-                            saveProfileInfo()
+                            profileName = getString(R.string.app_name)
                         } else if (profileId == id) {
                             profileId = items.first().id
                             profileName = items.first().name
-                            saveProfileInfo()
                         }
+                        saveProfileInfo()
                     } else {
                         val name = data.getStringExtra("car_name") ?: EMPTY_STRING
                         val body = data.getStringExtra("body_type") ?: "SEDAN"

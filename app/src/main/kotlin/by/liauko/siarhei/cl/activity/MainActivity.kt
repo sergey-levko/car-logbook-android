@@ -148,8 +148,8 @@ class MainActivity : AppCompatActivity(),
 
     fun loadFragment() {
         when (bottomNavigationView.selectedItemId) {
-            R.id.log_menu_item -> loadFragment(DataFragment())
-            R.id.fuel_menu_item -> loadFragment(DataFragment())
+            R.id.log_menu_item -> loadDataFragment()
+            R.id.fuel_menu_item -> loadDataFragment()
             R.id.settings_menu_item -> loadFragment(SettingsFragment())
         }
     }
@@ -163,11 +163,7 @@ class MainActivity : AppCompatActivity(),
                 CAR_PROFILE_SHOW_LIST -> loadFragment()
             }
         } else if (resultCode == RESULT_CANCELED && requestCode == CAR_PROFILE_SHOW_LIST) {
-            if (profileId != -1L) {
-                loadFragment()
-            } else {
-                //TODO: show activity for creation or importing car profile
-            }
+            loadFragment()
         }
     }
 
@@ -207,9 +203,15 @@ class MainActivity : AppCompatActivity(),
                         .putBoolean(getString(R.string.default_car_profile_dialog_key), true)
                         .apply()
                 }
-            } else {
-                //TODO: show activity for creation or importing car profile
             }
+        }
+    }
+
+    private fun loadDataFragment() {
+        if (profileId != -1L) {
+            loadFragment(DataFragment())
+        } else {
+            //TODO: show activity for creation or importing car profile
         }
     }
 }
