@@ -24,7 +24,7 @@ object ApplicationUtil {
             = MaterialAlertDialogBuilder(context)
         .setTitle(titleId)
         .setMessage(messageId)
-        .setNeutralButton(
+        .setPositiveButton(
             context.getString(R.string.dialog_backup_alert_ok_button)
         ) { dialog, _ -> dialog.dismiss() }
         .create()

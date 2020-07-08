@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,6 +30,7 @@ import by.liauko.siarhei.cl.util.AppResultCodes.LOG_EDIT
 import by.liauko.siarhei.cl.util.ApplicationUtil.EMPTY_STRING
 import by.liauko.siarhei.cl.util.ApplicationUtil.dataPeriod
 import by.liauko.siarhei.cl.util.ApplicationUtil.profileId
+import by.liauko.siarhei.cl.util.ApplicationUtil.profileName
 import by.liauko.siarhei.cl.util.ApplicationUtil.type
 import by.liauko.siarhei.cl.util.DataPeriod
 import by.liauko.siarhei.cl.util.DataType
@@ -37,6 +39,7 @@ import java.util.Calendar
 
 class DataFragment : Fragment() {
 
+    private lateinit var toolbar: Toolbar
     private lateinit var fragmentView: View
     private lateinit var items: ArrayList<AppData>
     private lateinit var rvAdapter: RecyclerViewDataAdapter
@@ -49,6 +52,7 @@ class DataFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        toolbar = (container!!.parent as ViewGroup).getChildAt(0) as Toolbar
         fragmentView = inflater.inflate(R.layout.fragment_data, container, false)
 
         items = arrayListOf()
@@ -207,6 +211,13 @@ class DataFragment : Fragment() {
     }
 
     private fun select(type: DataType) {
+        toolbar.title = profileName ?: getString(R.string.app_name)
+        toolbar.menu.findItem(R.id.period_select_menu_date).isVisible = when (dataPeriod) {
+            DataPeriod.ALL -> false
+            else -> true
+        }
+        toolbar.menu.findItem(R.id.car_profile_menu).isVisible = true
+
         items.clear()
         when (dataPeriod) {
             DataPeriod.ALL -> items.addAll(repositoryCollection.getRepository(type).selectAllByProfileId(profileId))

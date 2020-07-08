@@ -1,6 +1,5 @@
 package by.liauko.siarhei.cl.activity
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -19,6 +18,7 @@ import by.liauko.siarhei.cl.activity.element.PeriodSelectorElement
 import by.liauko.siarhei.cl.activity.fragment.DataFragment
 import by.liauko.siarhei.cl.activity.fragment.SettingsFragment
 import by.liauko.siarhei.cl.database.CarLogbookDatabase
+import by.liauko.siarhei.cl.repository.SelectAllCarProfileAsyncTask
 import by.liauko.siarhei.cl.util.AppResultCodes.CAR_PROFILE_SHOW_LIST
 import by.liauko.siarhei.cl.util.AppResultCodes.PERIOD_DIALOG_RESULT
 import by.liauko.siarhei.cl.util.ApplicationUtil.createAlertDialog
@@ -68,7 +68,6 @@ class MainActivity : AppCompatActivity(),
 
     private fun initToolbar() {
         toolbar = findViewById(R.id.toolbar)
-        toolbar.title = profileName ?: getString(R.string.app_name)
         toolbar.inflateMenu(R.menu.period_select_menu)
         toolbar.setOnMenuItemClickListener {
             var result = false
@@ -88,15 +87,6 @@ class MainActivity : AppCompatActivity(),
 
             return@setOnMenuItemClickListener result
         }
-        updateToolbarMenuState()
-    }
-
-    private fun updateToolbarMenuState() {
-        toolbar.menu.findItem(R.id.period_select_menu_date).isVisible = when (dataPeriod) {
-            DataPeriod.ALL -> false
-            else -> true
-        }
-        toolbar.menu.findItem(R.id.car_profile_menu).isVisible = true
     }
 
     private fun initBottomNavigationView() {
@@ -131,20 +121,16 @@ class MainActivity : AppCompatActivity(),
 
         when (item.itemId) {
             R.id.log_menu_item -> {
-                updateToolbarMenuState()
                 type = DataType.LOG
                 loadFragment(DataFragment())
                 result = true
             }
             R.id.fuel_menu_item -> {
-                updateToolbarMenuState()
                 type = DataType.FUEL
                 loadFragment(DataFragment())
                 result = true
             }
             R.id.settings_menu_item -> {
-                toolbar.menu.findItem(R.id.period_select_menu_date).isVisible = false
-                toolbar.menu.findItem(R.id.car_profile_menu).isVisible = false
                 periodCalendar = Calendar.getInstance()
                 loadFragment(SettingsFragment())
                 result = true
@@ -171,8 +157,17 @@ class MainActivity : AppCompatActivity(),
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (resultCode == Activity.RESULT_OK && data != null && requestCode == PERIOD_DIALOG_RESULT) {
-            periodSelector.updateYear(data.getStringExtra("year"))
+        if (resultCode == RESULT_OK && data != null) {
+            when (requestCode) {
+                PERIOD_DIALOG_RESULT -> periodSelector.updateYear(data.getStringExtra("year"))
+                CAR_PROFILE_SHOW_LIST -> loadFragment()
+            }
+        } else if (resultCode == RESULT_CANCELED && requestCode == CAR_PROFILE_SHOW_LIST) {
+            if (profileId != -1L) {
+                loadFragment()
+            } else {
+                //TODO: show activity for creation or importing car profile
+            }
         }
     }
 
@@ -194,17 +189,23 @@ class MainActivity : AppCompatActivity(),
     private fun checkCarProfile(preferences: SharedPreferences) {
         val dialogShown = preferences.getBoolean(getString(R.string.default_car_profile_dialog_key), false)
         if (profileId == -1L) {
-            val entities = CarLogbookDatabase.invoke(applicationContext).carProfileDao().findAll()
+            val entities = SelectAllCarProfileAsyncTask(CarLogbookDatabase.invoke(applicationContext)).execute().get()
             if (entities.isNotEmpty()) {
                 profileId = entities[0].id!!
                 profileName = entities[0].name
+                preferences.edit()
+                    .putLong(getString(R.string.car_profile_id_key), profileId)
+                    .putString(getString(R.string.car_profile_name_key), profileName)
+                    .apply()
                 if (defaultCarProfileName == profileName && !dialogShown) {
                     createAlertDialog(
-                        applicationContext,
+                        this,
                         R.string.default_car_profile_dialog_title,
                         R.string.default_car_profile_dialog_message
-                    )
-                    preferences.edit().putBoolean(getString(R.string.default_car_profile_dialog_key), true).apply()
+                    ).show()
+                    preferences.edit()
+                        .putBoolean(getString(R.string.default_car_profile_dialog_key), true)
+                        .apply()
                 }
             } else {
                 //TODO: show activity for creation or importing car profile

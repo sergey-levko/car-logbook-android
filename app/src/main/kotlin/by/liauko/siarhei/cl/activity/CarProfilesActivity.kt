@@ -25,8 +25,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class CarProfilesActivity : AppCompatActivity() {
 
-    private val carProfileRepository = CarProfileRepository(applicationContext)
-
+    private lateinit var carProfileRepository: CarProfileRepository
     private lateinit var fab: FloatingActionButton
     private lateinit var rvAdapter: RecyclerViewCarProfileAdapter
     private lateinit var items: ArrayList<CarProfileData>
@@ -34,6 +33,8 @@ class CarProfilesActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_car_profiles)
+
+        carProfileRepository = CarProfileRepository(applicationContext)
 
         items = arrayListOf()
         initToolbar()
@@ -66,22 +67,18 @@ class CarProfilesActivity : AppCompatActivity() {
             object: RecyclerViewCarProfileAdapter.RecyclerViewOnItemClickListener {
                 override fun onItemClick(item: CarProfileData, isSelect: Boolean) {
                     if (isSelect) {
-                        getSharedPreferences(getString(R.string.shared_preferences_name), Context.MODE_PRIVATE)
-                            .edit()
-                            .putLong(getString(R.string.car_profile_id_key), item.id)
-                            .putString(getString(R.string.car_profile_name_key), item.name)
-                            .apply()
                         profileId = item.id
                         profileName = item.name
-                        setResult(RESULT_OK)
+                        saveProfileInfo()
+                        setResult(RESULT_OK, Intent())
                         finish()
                     } else {
-                        val intent = Intent()
+                        val intent = Intent(applicationContext, CarDataActivity::class.java)
                         intent.putExtra("id", item.id)
                         intent.putExtra("car_name", item.name)
-                        intent.putExtra("body_type", item.bodyType)
-                        intent.putExtra("fuel_type", item.fuelType)
-                        intent.putExtra("engine_volume", item.engineVolume)
+                        intent.putExtra("body_type", item.bodyType.name)
+                        intent.putExtra("fuel_type", item.fuelType.name)
+                        intent.putExtra("engine_volume", item.engineVolume?.toString())
                         startActivityForResult(intent, CAR_PROFILE_EDIT)
                     }
                 }
@@ -131,6 +128,11 @@ class CarProfilesActivity : AppCompatActivity() {
                                 .apply()
                             profileId = -1L
                             profileName = defaultTitle
+                            saveProfileInfo()
+                        } else if (profileId == id) {
+                            profileId = items.first().id
+                            profileName = items.first().name
+                            saveProfileInfo()
                         }
                     } else {
                         val name = data.getStringExtra("car_name") ?: EMPTY_STRING
@@ -159,5 +161,13 @@ class CarProfilesActivity : AppCompatActivity() {
         items.clear()
         items.addAll(carProfileRepository.selectAll())
         rvAdapter.notifyDataSetChanged()
+    }
+
+    private fun saveProfileInfo() {
+        getSharedPreferences(getString(R.string.shared_preferences_name), Context.MODE_PRIVATE)
+            .edit()
+            .putLong(getString(R.string.car_profile_id_key), profileId)
+            .putString(getString(R.string.car_profile_name_key), profileName)
+            .apply()
     }
 }

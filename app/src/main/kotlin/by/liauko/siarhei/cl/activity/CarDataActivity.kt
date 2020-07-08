@@ -43,8 +43,11 @@ class CarDataActivity : AppCompatActivity() {
         id = intent.getLongExtra("id", defaultId)
 
         initToolbar()
-        initElements()
         initCarInfo()
+        initElements()
+        if (id != defaultId) {
+            fillData()
+        }
     }
 
     private fun initToolbar() {
@@ -105,14 +108,14 @@ class CarDataActivity : AppCompatActivity() {
         name = findViewById(R.id.car_name)
 
         bodyType = findViewById(R.id.car_body)
-        bodyType.text.append(bodyTypes.first())
+        bodyType.text.append(bodyTypes[carInfo.body.ordinal])
         bodyType.inputType = InputType.TYPE_NULL
         bodyType.setAdapter(bodyAdapter)
         bodyType.setOnFocusChangeListener { view, _ -> hideKeyboard(view) }
         bodyType.setOnItemClickListener { _, _, i, _ -> carInfo.body = CarBodyType.values()[i] }
 
         fuelType = findViewById(R.id.car_fuel_type)
-        fuelType.text.append(fuelTypes.first())
+        fuelType.text.append(fuelTypes[carInfo.fuelType.ordinal])
         fuelType.inputType = InputType.TYPE_NULL
         fuelType.setAdapter(fuelAdapter)
         fuelType.setOnFocusChangeListener { view, _ -> hideKeyboard(view) }
@@ -132,14 +135,13 @@ class CarDataActivity : AppCompatActivity() {
     }
 
     private fun initCarInfo() {
-        if (id != defaultId) {
-            carInfo = CarInfo(
+        carInfo = if (id != defaultId) {
+            CarInfo(
                 CarBodyType.valueOf(intent.getStringExtra("body_type")!!),
                 CarFuelType.valueOf(intent.getStringExtra("fuel_type")!!)
             )
-            fillData()
         } else {
-            carInfo = CarInfo(
+            CarInfo(
                 CarBodyType.SEDAN,
                 CarFuelType.GASOLINE
             )
@@ -148,10 +150,6 @@ class CarDataActivity : AppCompatActivity() {
 
     private fun fillData() {
         name.text.append(intent.getStringExtra("car_name"))
-        bodyType.text.clear()
-        bodyType.text.append(bodyTypes[carInfo.body.ordinal])
-        fuelType.text.clear()
-        fuelType.text.append(fuelTypes[carInfo.fuelType.ordinal])
         val volume = intent.getStringExtra("engine_volume")
         if (volume != null) {
             engineVolume.text.append(volume)
