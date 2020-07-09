@@ -142,4 +142,10 @@
 
     <string name="default_car_profile_dialog_title">Был создан стандартный профиль автомобиля</string>
     <string name="default_car_profile_dialog_message">Теперь приложение поддерживает профили автомобилей. Для уже существующих записей был создан стандартный профиль. Вы можете изменить его на экране списка профилей (кнопка в верхнем правом углу).</string>
+
+    <string name="activity_first_start_create">Создать профиль автомобиля</string>
+    <string name="activity_first_start_drive_import">Импортировать данные из Google Drive</string>
+    <string name="activity_first_start_file_import">Импортировать данные из файла</string>
+    <string name="activity_first_dialog_fail_title">Не удалось создать профиль автомобиля</string>
+    <string name="activity_first_dialog_fail_message">Профиль автомобиля не был создан. Пожалуйста попробуйте ещё раз.</string>
 </resources>

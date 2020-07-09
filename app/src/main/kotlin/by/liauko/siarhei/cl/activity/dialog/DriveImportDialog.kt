@@ -1,5 +1,6 @@
 package by.liauko.siarhei.cl.activity.dialog
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.widget.Button
@@ -16,7 +17,8 @@ import by.liauko.siarhei.cl.recyclerview.adapter.RecyclerViewImportFileAdapter
 class DriveImportDialog(
     private val appContext: Context,
     private val driveServiceHelper: DriveServiceHelper,
-    private val files: DriveFileInfoList
+    private val files: DriveFileInfoList,
+    private val activity: Activity?
 ) : AlertDialog(appContext, R.style.FullScreenDialogDefault) {
 
     private lateinit var rvAdapter: RecyclerViewImportFileAdapter
@@ -44,7 +46,8 @@ class DriveImportDialog(
                         BackupService.importFromDrive(
                             item.second,
                             context,
-                            driveServiceHelper
+                            driveServiceHelper,
+                            activity
                         )
                     }
                 }

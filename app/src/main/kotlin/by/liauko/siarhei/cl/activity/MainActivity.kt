@@ -15,10 +15,12 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import by.liauko.siarhei.cl.R
 import by.liauko.siarhei.cl.activity.element.PeriodSelectorElement
+import by.liauko.siarhei.cl.activity.fragment.BackupSettingsFragment
 import by.liauko.siarhei.cl.activity.fragment.DataFragment
 import by.liauko.siarhei.cl.activity.fragment.SettingsFragment
 import by.liauko.siarhei.cl.database.CarLogbookDatabase
 import by.liauko.siarhei.cl.repository.SelectAllCarProfileAsyncTask
+import by.liauko.siarhei.cl.util.AppResultCodes.CAR_PROFILE_FIRST_START
 import by.liauko.siarhei.cl.util.AppResultCodes.CAR_PROFILE_SHOW_LIST
 import by.liauko.siarhei.cl.util.AppResultCodes.PERIOD_DIALOG_RESULT
 import by.liauko.siarhei.cl.util.ApplicationUtil.createAlertDialog
@@ -44,7 +46,7 @@ class MainActivity : AppCompatActivity(),
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val preferences =  getSharedPreferences(getString(R.string.shared_preferences_name), Context.MODE_PRIVATE)
+        val preferences = getSharedPreferences(getString(R.string.shared_preferences_name), Context.MODE_PRIVATE)
         type = DataType.valueOf(preferences.getString(getString(R.string.main_screen_key), "LOG") ?: "LOG")
         dataPeriod = DataPeriod.valueOf(preferences.getString(getString(R.string.period_key), "MONTH") ?: "MONTH")
         val defaultUiMode = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P)
@@ -122,12 +124,12 @@ class MainActivity : AppCompatActivity(),
         when (item.itemId) {
             R.id.log_menu_item -> {
                 type = DataType.LOG
-                loadFragment(DataFragment())
+                loadDataFragment()
                 result = true
             }
             R.id.fuel_menu_item -> {
                 type = DataType.FUEL
-                loadFragment(DataFragment())
+                loadDataFragment()
                 result = true
             }
             R.id.settings_menu_item -> {
@@ -157,10 +159,13 @@ class MainActivity : AppCompatActivity(),
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (resultCode == RESULT_OK && data != null) {
+        if (resultCode == RESULT_OK) {
             when (requestCode) {
-                PERIOD_DIALOG_RESULT -> periodSelector.updateYear(data.getStringExtra("year"))
+                PERIOD_DIALOG_RESULT -> periodSelector.updateYear(data?.getStringExtra("year"))
                 CAR_PROFILE_SHOW_LIST -> loadFragment()
+                CAR_PROFILE_FIRST_START -> {
+                    loadFragment()
+                }
             }
         } else if (resultCode == RESULT_CANCELED && requestCode == CAR_PROFILE_SHOW_LIST) {
             loadFragment()
@@ -211,7 +216,7 @@ class MainActivity : AppCompatActivity(),
         if (profileId != -1L) {
             loadFragment(DataFragment())
         } else {
-            //TODO: show activity for creation or importing car profile
+            startActivityForResult(Intent(applicationContext, FirstStartActivity::class.java), CAR_PROFILE_FIRST_START)
         }
     }
 }

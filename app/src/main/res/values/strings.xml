@@ -145,6 +145,12 @@
     <string name="default_car_profile_dialog_title">Default car profile was created</string>
     <string name="default_car_profile_dialog_message">Now application supports car profiles. Default car profile was created for your existed records. You can edit it on car profile screen (button in the right top corner).</string>
 
+    <string name="activity_first_start_create">Create car profile</string>
+    <string name="activity_first_start_drive_import">Import data from Google Drive</string>
+    <string name="activity_first_start_file_import">Import data from file</string>
+    <string name="activity_first_dialog_fail_title">Car profile create fail</string>
+    <string name="activity_first_dialog_fail_message">Car profile was not created. Please try again.</string>
+
     <string name="shared_preferences_name" translatable="false">app_preferences</string>
     <string name="main_screen_key" translatable="false">main_screen</string>
     <string name="dark_mode_key" translatable="false">dark_mode</string>

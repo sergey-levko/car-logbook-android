@@ -11,5 +11,5 @@ data class LogEntity(
     val text: String,
     val mileage: Long,
     val time: Long,
-    @ColumnInfo(name = "profile_id") val profileId: Long?
+    @ColumnInfo(name = "profile_id") var profileId: Long?
 ) : AppEntity()

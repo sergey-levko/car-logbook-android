@@ -13,4 +13,5 @@ object AppResultCodes {
     const val CAR_PROFILE_ADD = 0x500
     const val CAR_PROFILE_EDIT = 0x501
     const val CAR_PROFILE_SHOW_LIST = 0x502
+    const val CAR_PROFILE_FIRST_START = 0x503
 }
