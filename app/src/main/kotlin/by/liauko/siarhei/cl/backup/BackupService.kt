@@ -22,7 +22,6 @@ import by.liauko.siarhei.cl.database.entity.LogEntity
 import by.liauko.siarhei.cl.drive.DRIVE_ROOT_FOLDER_ID
 import by.liauko.siarhei.cl.drive.DriveMimeTypes
 import by.liauko.siarhei.cl.drive.DriveServiceHelper
-import by.liauko.siarhei.cl.repository.CarProfileRepository
 import by.liauko.siarhei.cl.repository.DeleteAllAsyncTask
 import by.liauko.siarhei.cl.repository.DeleteAllCarProfilesAsyncTask
 import by.liauko.siarhei.cl.repository.InsertAllAsyncTask
@@ -84,8 +83,8 @@ object BackupService {
             }
         } else {
             executeBackupTask(
-                googleSignInAccount.account,
                 if (activity is Activity) activity else (activity as Fragment).requireContext(),
+                googleSignInAccount.account,
                 if (activity is Activity) activity else null
             )
         }
@@ -103,10 +102,10 @@ object BackupService {
         return GoogleSignIn.getClient(context, googleSignInOptions)
     }
 
-    fun googleSignInResult(data: Intent?, context: Context, activity: Activity?) {
+    fun googleSignInResult(context: Context, data: Intent?, activity: Activity?) {
         val task = GoogleSignIn.getSignedInAccountFromIntent(data)
         task.addOnSuccessListener {
-            executeBackupTask(it.account, context, activity)
+            executeBackupTask(context, it.account, activity)
         }
     }
 
@@ -286,15 +285,15 @@ object BackupService {
         saveProfileValues(context)
     }
 
-    private fun executeBackupTask(account: Account?, context: Context, activity: Activity?) {
-        driveServiceHelper = initDriveServiceHelper(account, context)
+    private fun executeBackupTask(context: Context, account: Account?, activity: Activity?) {
+        driveServiceHelper = initDriveServiceHelper(context, account)
         when (backupTask) {
             BackupTask.IMPORT -> importDataFromDrive(context, activity)
             BackupTask.EXPORT -> exportDataToDrive(context)
         }
     }
 
-    private fun initDriveServiceHelper(account: Account?, context: Context): DriveServiceHelper {
+    private fun initDriveServiceHelper(context: Context, account: Account?): DriveServiceHelper {
         val credential = GoogleAccountCredential.usingOAuth2(context, listOf(DriveScopes.DRIVE))
         credential.selectedAccount = account
         val googleDriveService = Drive.Builder(

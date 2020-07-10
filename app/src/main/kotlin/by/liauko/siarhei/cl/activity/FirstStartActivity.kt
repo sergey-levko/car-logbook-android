@@ -93,7 +93,7 @@ class FirstStartActivity : AppCompatActivity(),
                         showFailDialog()
                     }
                 }
-                GOOGLE_SIGN_IN -> BackupService.googleSignInResult(data, applicationContext, this)
+                GOOGLE_SIGN_IN -> BackupService.googleSignInResult(this, data, this)
                 BACKUP_OPEN_DOCUMENT -> BackupService.importFromFile(data?.data ?: Uri.EMPTY, this, this)
             }
         }

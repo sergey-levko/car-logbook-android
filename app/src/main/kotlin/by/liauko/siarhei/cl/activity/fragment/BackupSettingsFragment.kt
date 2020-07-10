@@ -89,6 +89,7 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
                 if (newValue) {
                     if (PermissionService.checkInternetConnection(appContext)) {
                         BackupService.backupTask = BackupTask.EXPORT
+                        BackupService.repeatInterval = backupFrequencyPreference.value.toLong()
                         BackupService.googleAuth(this)
                     }
                 } else {
@@ -166,7 +167,7 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
         when (requestCode) {
             GOOGLE_SIGN_IN -> {
                 if (resultCode == RESULT_OK) {
-                    BackupService.googleSignInResult(data, appContext, null)
+                    BackupService.googleSignInResult(appContext, data, null)
                 } else {
                     disableSyncPreferenceItems()
                 }
