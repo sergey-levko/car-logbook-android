@@ -111,14 +111,14 @@ class CarDataActivity : AppCompatActivity() {
         bodyType.text.append(bodyTypes[carInfo.body.ordinal])
         bodyType.inputType = InputType.TYPE_NULL
         bodyType.setAdapter(bodyAdapter)
-        bodyType.setOnFocusChangeListener { view, _ -> hideKeyboard(view) }
+        bodyType.setOnFocusChangeListener { view, isFocus -> if (isFocus) hideKeyboard(view) }
         bodyType.setOnItemClickListener { _, _, i, _ -> carInfo.body = CarBodyType.values()[i] }
 
         fuelType = findViewById(R.id.car_fuel_type)
         fuelType.text.append(fuelTypes[carInfo.fuelType.ordinal])
         fuelType.inputType = InputType.TYPE_NULL
         fuelType.setAdapter(fuelAdapter)
-        fuelType.setOnFocusChangeListener { view, _ -> hideKeyboard(view) }
+        fuelType.setOnFocusChangeListener { view, isFocus -> if (isFocus) hideKeyboard(view) }
         fuelType.setOnItemClickListener { _, _, i, _ ->
             carInfo.fuelType = CarFuelType.values()[i]
             if (carInfo.fuelType == CarFuelType.ELECTRICITY
