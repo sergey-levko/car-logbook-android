@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import by.liauko.siarhei.cl.R
 import by.liauko.siarhei.cl.entity.CarProfileData
 import by.liauko.siarhei.cl.recyclerview.holder.RecyclerViewCarProfileViewHolder
+import by.liauko.siarhei.cl.util.ApplicationUtil.profileId
 
 class RecyclerViewCarProfileAdapter(
     val resources: Resources,
@@ -34,6 +35,8 @@ class RecyclerViewCarProfileAdapter(
         val bodyType = resources.getStringArray(R.array.body_types)[profileData.bodyType.ordinal]
         val fuelType = resources.getStringArray(R.array.fuel_type)[profileData.fuelType.ordinal]
 
+        if (profileData.id == profileId) holder.cardView.background =
+            resources.getDrawable(R.drawable.selected_car_profile_background, null)
         holder.profileName.text = profileData.name
         holder.profileDetails.text =
             if (profileData.engineVolume != null) {
