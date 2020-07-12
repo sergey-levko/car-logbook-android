@@ -1,13 +1,10 @@
 package by.liauko.siarhei.cl.activity.fragment
 
-import android.Manifest
-import android.accounts.Account
-import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,43 +12,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
-import androidx.core.app.ActivityCompat
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
-import androidx.work.Constraints
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.NetworkType
-import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import by.liauko.siarhei.cl.R
-import by.liauko.siarhei.cl.activity.dialog.DriveImportDialog
 import by.liauko.siarhei.cl.backup.BackupService
-import by.liauko.siarhei.cl.backup.CoroutineBackupWorker
-import by.liauko.siarhei.cl.drive.DRIVE_ROOT_FOLDER_ID
-import by.liauko.siarhei.cl.drive.DriveServiceHelper
-import by.liauko.siarhei.cl.util.AppResultCodes
-import by.liauko.siarhei.cl.util.ApplicationUtil
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.Scopes
-import com.google.android.gms.common.api.Scope
+import by.liauko.siarhei.cl.backup.BackupTask
+import by.liauko.siarhei.cl.backup.PermissionService
+import by.liauko.siarhei.cl.backup.adapter.toBackupAdapter
+import by.liauko.siarhei.cl.util.AppResultCodes.BACKUP_OPEN_DOCUMENT
+import by.liauko.siarhei.cl.util.AppResultCodes.BACKUP_OPEN_DOCUMENT_TREE
+import by.liauko.siarhei.cl.util.AppResultCodes.GOOGLE_SIGN_IN
+import by.liauko.siarhei.cl.util.AppResultCodes.INTERNET_PERMISSION
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
-import com.google.api.client.http.javanet.NetHttpTransport
-import com.google.api.client.json.gson.GsonFactory
-import com.google.api.services.drive.Drive
-import com.google.api.services.drive.DriveScopes
-import java.util.concurrent.TimeUnit
 
 class BackupSettingsFragment : PreferenceFragmentCompat() {
-
-    private val workTag = "car-logbook-backup-work"
-
-    private var driveServiceHelper: DriveServiceHelper? = null
-    private var backupTask = BackupTask.IMPORT
 
     private lateinit var appContext: Context
     private lateinit var backupSwitcherKey: String
@@ -73,7 +50,7 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
         toolbar.title = getString(R.string.settings_preference_backup_title)
         toolbar.setNavigationIcon(R.drawable.arrow_left_white)
         toolbar.setNavigationOnClickListener {
-            fragmentManager?.popBackStack()
+            parentFragmentManager.popBackStack()
         }
 
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -111,23 +88,25 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
                 backupFrequencyPreference.isEnabled = newValue
 
                 if (newValue) {
-                    if (checkInternetConnection()) {
-                        backupTask = BackupTask.EXPORT
-                        googleAuth()
+                    if (PermissionService.checkInternetConnection(appContext)) {
+                        BackupService.backupTask = BackupTask.EXPORT
+                        BackupService.repeatInterval = backupFrequencyPreference.value.toLong()
+                        BackupService.googleAuth(this.toBackupAdapter())
                     }
                 } else {
-                    WorkManager.getInstance(appContext).cancelAllWorkByTag(workTag)
-                    getGoogleSignInClient().signOut().addOnSuccessListener {
-                        driveServiceHelper = null
+                    WorkManager.getInstance(appContext).cancelAllWorkByTag(BackupService.WORK_TAG)
+                    BackupService.getGoogleSignInClient(appContext).signOut().addOnSuccessListener {
+                        BackupService.driveServiceHelper = null
                     }
                 }
             }
             backupFrequencyKey -> {
                 val repeatInterval = newValue.toString().toLong()
+                BackupService.repeatInterval = repeatInterval
                 if (repeatInterval != 0L) {
-                    startBackupWorker(repeatInterval)
+                    BackupService.startBackupWorker(appContext)
                 } else {
-                    WorkManager.getInstance(appContext).cancelAllWorkByTag(workTag)
+                    WorkManager.getInstance(appContext).cancelAllWorkByTag(BackupService.WORK_TAG)
                 }
             }
         }
@@ -138,7 +117,7 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
     private val preferenceClickListener = Preference.OnPreferenceClickListener {
         when (it.key) {
             backupSwitcherKey -> {
-                if (!checkInternetConnection()) {
+                if (!PermissionService.checkInternetConnection(appContext)) {
                     Toast.makeText(
                         appContext,
                         R.string.settings_preference_backup_internet_access_toast_text,
@@ -148,26 +127,23 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
                 }
             }
             backupDriveImportKey -> {
-                if (!checkInternetConnection()) {
+                if (!PermissionService.checkInternetConnection(appContext)) {
                     Toast.makeText(
                         appContext,
                         R.string.settings_preference_backup_internet_access_toast_text,
                         Toast.LENGTH_LONG
                     ).show()
-                } else if (driveServiceHelper == null) {
-                    backupTask = BackupTask.IMPORT
-                    googleAuth()
+                } else if (BackupService.driveServiceHelper == null) {
+                    BackupService.backupTask = BackupTask.IMPORT
+                    BackupService.googleAuth(this.toBackupAdapter())
                 } else {
-                    importDataFromDrive()
+                    BackupService.importDataFromDrive(appContext, null)
                 }
             }
             backupFileExportKey ->
-                startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), AppResultCodes.BACKUP_OPEN_DOCUMENT_TREE)
+                startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), BACKUP_OPEN_DOCUMENT_TREE)
             backupFileImportKey -> {
-                val openDocumentIntent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-                openDocumentIntent.addCategory(Intent.CATEGORY_OPENABLE)
-                openDocumentIntent.type = "application/*"
-                startActivityForResult(openDocumentIntent, AppResultCodes.BACKUP_OPEN_DOCUMENT)
+                BackupService.openDocument(this.toBackupAdapter())
             }
             backupResetKey -> {
                 MaterialAlertDialogBuilder(appContext)
@@ -187,62 +163,24 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
         true
     }
 
-    private fun checkPermissions() {
-        val internetPermission = ActivityCompat.checkSelfPermission(appContext, Manifest.permission.INTERNET)
-        if (internetPermission != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                this.requireActivity(),
-                arrayOf(Manifest.permission.INTERNET),
-                internetPermission
-            )
-        }
-    }
-
-    private fun googleAuth() {
-        checkPermissions()
-
-        val googleSignInAccount = GoogleSignIn.getLastSignedInAccount(appContext)
-        if (googleSignInAccount == null) {
-            startActivityForResult(
-                getGoogleSignInClient().signInIntent,
-                AppResultCodes.GOOGLE_SIGN_IN
-            )
-        } else {
-            executeBackupTask(googleSignInAccount.account)
-        }
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        when(requestCode) {
-            AppResultCodes.GOOGLE_SIGN_IN -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-                    task.addOnSuccessListener {
-                        executeBackupTask(it.account)
-                    }
+        when (requestCode) {
+            GOOGLE_SIGN_IN -> {
+                if (resultCode == RESULT_OK) {
+                    BackupService.googleSignInResult(appContext, data, null)
                 } else {
                     disableSyncPreferenceItems()
                 }
             }
-            AppResultCodes.BACKUP_OPEN_DOCUMENT_TREE -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    val progressDialog = ApplicationUtil.createProgressDialog(
-                        appContext,
-                        R.string.dialog_backup_progress_export_text
-                    )
-                    progressDialog.show()
-                    BackupService.exportToFile(data?.data ?: Uri.EMPTY, appContext, progressDialog)
+            BACKUP_OPEN_DOCUMENT_TREE -> {
+                if (resultCode == RESULT_OK) {
+                    BackupService.exportToFile(data?.data ?: Uri.EMPTY, appContext)
                 }
             }
-            AppResultCodes.BACKUP_OPEN_DOCUMENT -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    val progressDialog = ApplicationUtil.createProgressDialog(
-                        appContext,
-                        R.string.dialog_backup_progress_import_text
-                    )
-                    progressDialog.show()
-                    BackupService.importFromFile(data?.data ?: Uri.EMPTY, appContext, progressDialog)
+            BACKUP_OPEN_DOCUMENT -> {
+                if (resultCode == RESULT_OK) {
+                    BackupService.importFromFile(data?.data ?: Uri.EMPTY, appContext, null)
                 }
             }
         }
@@ -253,7 +191,7 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        if (requestCode == AppResultCodes.INTERNET_PERMISSION &&
+        if (requestCode == INTERNET_PERMISSION &&
             grantResults.isEmpty() &&
             grantResults[0] == PackageManager.PERMISSION_DENIED) {
             Toast.makeText(
@@ -269,88 +207,4 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
         backupSwitcher.isChecked = false
         backupFrequencyPreference.isEnabled = false
     }
-
-    private fun initDriveServiceHelper(account: Account?): DriveServiceHelper {
-        val credential = GoogleAccountCredential.usingOAuth2(appContext, listOf(DriveScopes.DRIVE))
-        credential.selectedAccount = account
-        val googleDriveService = Drive.Builder(
-            NetHttpTransport(),
-            GsonFactory(),
-            credential
-        ).setApplicationName(appContext.getString(R.string.app_name)).build()
-
-        return DriveServiceHelper(googleDriveService)
-    }
-
-    private fun getGoogleSignInClient(): GoogleSignInClient {
-        val googleSignInOptions =
-            GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .requestScopes(
-                    Scope(Scopes.PROFILE),
-                    Scope("https://www.googleapis.com/auth/drive")
-                )
-                .build()
-        return GoogleSignIn.getClient(appContext, googleSignInOptions)
-    }
-
-    private fun exportDataToDrive() {
-        val repeatInterval = backupFrequencyPreference.value.toLong()
-        if (repeatInterval != 0L) {
-            startBackupWorker(repeatInterval)
-        }
-    }
-
-    private fun importDataFromDrive() {
-        val progressDialog = ApplicationUtil.createProgressDialog(
-            appContext,
-            R.string.dialog_backup_progress_open_file_list
-        )
-        progressDialog.show()
-
-        var folderId = DRIVE_ROOT_FOLDER_ID
-        driveServiceHelper!!.getFolderIdByName("car-logbook-backup")
-            .addOnCompleteListener { searchResult ->
-                folderId = searchResult.result ?: folderId
-            }.continueWithTask {
-                driveServiceHelper!!.getAllFilesInFolderTask(folderId)
-                    .addOnCompleteListener { fileList ->
-                        val files = fileList.result ?: ArrayList()
-                        val driveImportDialog = DriveImportDialog(appContext, driveServiceHelper!!, files)
-                        progressDialog.dismiss()
-                        driveImportDialog.show()
-                    }
-            }
-    }
-
-    private fun startBackupWorker(repeatInterval: Long) {
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-
-        val workRequest = PeriodicWorkRequestBuilder<CoroutineBackupWorker>(repeatInterval, TimeUnit.DAYS)
-            .setConstraints(constraints)
-            .build()
-        WorkManager.getInstance(appContext)
-            .enqueueUniquePeriodicWork(workTag, ExistingPeriodicWorkPolicy.REPLACE, workRequest)
-    }
-
-    // NetworkInfo class is deprecated in Android 10
-    @Suppress("DEPRECATION")
-    private fun checkInternetConnection(): Boolean {
-        val connectivityManager = appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        return connectivityManager.activeNetworkInfo?.isConnectedOrConnecting == true
-    }
-
-    private fun executeBackupTask(account: Account?) {
-        driveServiceHelper = initDriveServiceHelper(account)
-        when (backupTask) {
-            BackupTask.IMPORT -> importDataFromDrive()
-            BackupTask.EXPORT -> exportDataToDrive()
-        }
-    }
-}
-
-enum class BackupTask {
-    IMPORT, EXPORT
 }

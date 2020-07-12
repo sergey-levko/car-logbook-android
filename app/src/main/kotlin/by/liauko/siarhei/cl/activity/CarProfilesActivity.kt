@@ -70,7 +70,7 @@ class CarProfilesActivity : AppCompatActivity() {
                         profileId = item.id
                         profileName = item.name
                         saveProfileInfo()
-                        setResult(RESULT_OK, Intent())
+                        setResult(RESULT_OK)
                         finish()
                     } else {
                         val intent = Intent(applicationContext, CarDataActivity::class.java)
