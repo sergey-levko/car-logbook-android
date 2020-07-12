@@ -12,6 +12,7 @@ import by.liauko.siarhei.cl.R
 import by.liauko.siarhei.cl.backup.BackupService
 import by.liauko.siarhei.cl.backup.BackupTask
 import by.liauko.siarhei.cl.backup.PermissionService
+import by.liauko.siarhei.cl.backup.adapter.toBackupAdapter
 import by.liauko.siarhei.cl.database.entity.CarProfileEntity
 import by.liauko.siarhei.cl.repository.CarProfileRepository
 import by.liauko.siarhei.cl.util.AppResultCodes.BACKUP_OPEN_DOCUMENT
@@ -51,13 +52,13 @@ class FirstStartActivity : AppCompatActivity(),
                         ).show()
                     } else if (BackupService.driveServiceHelper == null) {
                         BackupService.backupTask = BackupTask.IMPORT
-                        BackupService.googleAuth(this)
+                        BackupService.googleAuth(this.toBackupAdapter())
                     } else {
                         BackupService.importDataFromDrive(this, this)
                     }
                 }
                 R.id.activity_first_start_file_import -> {
-                    BackupService.openDocument(this)
+                    BackupService.openDocument(this.toBackupAdapter())
                 }
             }
         }

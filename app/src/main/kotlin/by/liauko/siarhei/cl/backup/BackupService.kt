@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
-import androidx.fragment.app.Fragment
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
@@ -15,6 +14,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import by.liauko.siarhei.cl.R
 import by.liauko.siarhei.cl.activity.dialog.DriveImportDialog
+import by.liauko.siarhei.cl.backup.adapter.BackupAdapter
 import by.liauko.siarhei.cl.database.CarLogbookDatabase
 import by.liauko.siarhei.cl.database.entity.CarProfileEntity
 import by.liauko.siarhei.cl.database.entity.FuelConsumptionEntity
@@ -63,29 +63,22 @@ object BackupService {
     var repeatInterval = 0L
     var backupTask = BackupTask.IMPORT
 
-    fun googleAuth(activity: Any) {
-        val context = if (activity is Activity) activity.applicationContext else (activity as Fragment).requireContext()
+    fun googleAuth(adapter: BackupAdapter) {
+        val context = adapter.getContextForAuth()
 
-        PermissionService.checkPermissions(if (activity is Activity) activity else (activity as Fragment).requireActivity())
+        PermissionService.checkPermissions(adapter.getActivityForPermissions())
 
         val googleSignInAccount = GoogleSignIn.getLastSignedInAccount(context)
         if (googleSignInAccount == null) {
-            if (activity is Activity) {
-                activity.startActivityForResult(
-                    getGoogleSignInClient(context).signInIntent,
-                    GOOGLE_SIGN_IN
-                )
-            } else {
-                (activity as Fragment).startActivityForResult(
-                    getGoogleSignInClient(context).signInIntent,
-                    GOOGLE_SIGN_IN
-                )
-            }
+            adapter.startActivityForResult(
+                getGoogleSignInClient(context).signInIntent,
+                GOOGLE_SIGN_IN
+            )
         } else {
             executeBackupTask(
-                if (activity is Activity) activity else (activity as Fragment).requireContext(),
+                adapter.getContext(),
                 googleSignInAccount.account,
-                if (activity is Activity) activity else null
+                adapter.getActivity()
             )
         }
     }
@@ -114,9 +107,10 @@ object BackupService {
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
-        val workRequest = PeriodicWorkRequestBuilder<CoroutineBackupWorker>(repeatInterval, TimeUnit.DAYS)
-            .setConstraints(constraints)
-            .build()
+        val workRequest =
+            PeriodicWorkRequestBuilder<CoroutineBackupWorker>(repeatInterval, TimeUnit.DAYS)
+                .setConstraints(constraints)
+                .build()
         WorkManager.getInstance(context)
             .enqueueUniquePeriodicWork(WORK_TAG, ExistingPeriodicWorkPolicy.REPLACE, workRequest)
     }
@@ -136,7 +130,8 @@ object BackupService {
                 driveServiceHelper!!.getAllFilesInFolderTask(folderId)
                     .addOnCompleteListener { fileList ->
                         val files = fileList.result ?: ArrayList()
-                        val driveImportDialog = DriveImportDialog(context, driveServiceHelper!!, files, activity)
+                        val driveImportDialog =
+                            DriveImportDialog(context, driveServiceHelper!!, files, activity)
                         progressDialog.dismiss()
                         driveImportDialog.show()
                     }
@@ -155,12 +150,20 @@ object BackupService {
         }
         driveServiceHelper.createFile(
             folderId,
-            "car-logbook-${SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())}.clbdata",
+            "car-logbook-${SimpleDateFormat(
+                "yyyy-MM-dd",
+                Locale.getDefault()
+            ).format(Date())}.clbdata",
             Gson().toJson(backupData)
         )
     }
 
-    fun importFromDrive(fileId: String, context: Context, driveServiceHelper: DriveServiceHelper, activity: Activity?) {
+    fun importFromDrive(
+        fileId: String,
+        context: Context,
+        driveServiceHelper: DriveServiceHelper,
+        activity: Activity?
+    ) {
         val progressDialog = ApplicationUtil.createProgressDialog(
             context,
             R.string.dialog_backup_progress_import_text
@@ -177,9 +180,11 @@ object BackupService {
                     MaterialAlertDialogBuilder(context)
                         .setTitle(R.string.dialog_backup_alert_title_success)
                         .setMessage(R.string.dialog_backup_alert_import_success)
-                        .setPositiveButton(context.getString(
-                            R.string.dialog_backup_alert_ok_button
-                        )) { dialog, _ ->
+                        .setPositiveButton(
+                            context.getString(
+                                R.string.dialog_backup_alert_ok_button
+                            )
+                        ) { dialog, _ ->
                             activity?.setResult(RESULT_OK)
                             activity?.finish()
                             dialog.dismiss()
@@ -214,13 +219,17 @@ object BackupService {
 
         val database = CarLogbookDatabase.invoke(context)
         val logEntities = SelectAsyncTask(DataType.LOG, database).execute().get() as List<LogEntity>
-        val fuelConsumptionEntities = SelectAsyncTask(DataType.FUEL, database).execute().get() as List<FuelConsumptionEntity>
+        val fuelConsumptionEntities =
+            SelectAsyncTask(DataType.FUEL, database).execute().get() as List<FuelConsumptionEntity>
         val carProfileEntities = SelectAllCarProfileAsyncTask(database).execute().get()
         val backUpData = BackupEntity(logEntities, fuelConsumptionEntities, carProfileEntities)
 
         val file = DocumentFile.fromTreeUri(context, directoryUri)?.createFile(
             DriveMimeTypes.TYPE_JSON_FILE,
-            "car-logbook-${SimpleDateFormat("yyyy-MM-dd-HH-mm", Locale.getDefault()).format(Date())}.clbdata"
+            "car-logbook-${SimpleDateFormat(
+                "yyyy-MM-dd-HH-mm",
+                Locale.getDefault()
+            ).format(Date())}.clbdata"
         )
         if (file?.uri != null) {
             context.contentResolver.openOutputStream(file.uri)?.use {
@@ -236,15 +245,11 @@ object BackupService {
         ).show()
     }
 
-    fun openDocument(activity: Any) {
+    fun openDocument(adapter: BackupAdapter) {
         val openDocumentIntent = Intent(Intent.ACTION_OPEN_DOCUMENT)
         openDocumentIntent.addCategory(Intent.CATEGORY_OPENABLE)
         openDocumentIntent.type = "application/*"
-        if (activity is Activity) {
-            activity.startActivityForResult(openDocumentIntent, BACKUP_OPEN_DOCUMENT)
-        } else if (activity is Fragment) {
-            activity.startActivityForResult(openDocumentIntent, BACKUP_OPEN_DOCUMENT)
-        }
+        adapter.startActivityForResult(openDocumentIntent, BACKUP_OPEN_DOCUMENT)
     }
 
     fun importFromFile(fileUri: Uri, context: Context, activity: Activity?) {
@@ -257,7 +262,10 @@ object BackupService {
         context.contentResolver.openInputStream(fileUri)?.bufferedReader().use {
             restoreData(
                 CarLogbookDatabase.invoke(context),
-                Gson().fromJson<BackupEntity>(it?.readLine() ?: EMPTY_JSON_OBJECT, BackupEntity::class.java)
+                Gson().fromJson<BackupEntity>(
+                    it?.readLine() ?: EMPTY_JSON_OBJECT,
+                    BackupEntity::class.java
+                )
             )
         }
         saveProfileValues(context)
@@ -265,9 +273,11 @@ object BackupService {
         MaterialAlertDialogBuilder(context)
             .setTitle(R.string.dialog_backup_alert_title_success)
             .setMessage(R.string.dialog_backup_alert_import_success)
-            .setPositiveButton(context.getString(
-                R.string.dialog_backup_alert_ok_button
-            )) { dialog, _ ->
+            .setPositiveButton(
+                context.getString(
+                    R.string.dialog_backup_alert_ok_button
+                )
+            ) { dialog, _ ->
                 activity?.setResult(RESULT_OK)
                 activity?.finish()
                 dialog.dismiss()
@@ -314,11 +324,12 @@ object BackupService {
     @Suppress("UNCHECKED_CAST")
     private fun prepareBackupData(database: CarLogbookDatabase): BackupEntity {
         val logEntities = SelectAsyncTask(DataType.LOG, database).execute().get() as List<LogEntity>
-        val fuelConsumptionEntities = SelectAsyncTask(DataType.FUEL, database).execute().get() as List<FuelConsumptionEntity>
+        val fuelConsumptionEntities =
+            SelectAsyncTask(DataType.FUEL, database).execute().get() as List<FuelConsumptionEntity>
         val carProfileEntities = SelectAllCarProfileAsyncTask(database).execute().get()
         return BackupEntity(logEntities, fuelConsumptionEntities, carProfileEntities)
     }
-    
+
     private fun restoreData(database: CarLogbookDatabase, backupData: BackupEntity) {
         DeleteAllCarProfilesAsyncTask(database).execute()
         if (backupData.carProfileEntities != null) {
@@ -327,7 +338,8 @@ object BackupService {
             profileName = backupData.carProfileEntities.first().name
         } else { // Case when user try to import file with data
             // which was exported before car profile functionality was implemented
-            val carProfileEntity = CarProfileEntity(null, "Default Car Profile", "SEDAN", "GASOLINE", 1.0)
+            val carProfileEntity =
+                CarProfileEntity(null, "Default Car Profile", "SEDAN", "GASOLINE", 1.0)
             val id = InsertCarProfileAsyncTask(database)
                 .execute(carProfileEntity)
                 .get()
@@ -340,13 +352,16 @@ object BackupService {
         }
 
         DeleteAllAsyncTask(DataType.LOG, database).execute()
-        InsertAllAsyncTask(DataType.LOG,  database).execute(backupData.logEntities)
+        InsertAllAsyncTask(DataType.LOG, database).execute(backupData.logEntities)
         DeleteAllAsyncTask(DataType.FUEL, database).execute()
         InsertAllAsyncTask(DataType.FUEL, database).execute(backupData.fuelConsumptionEntities)
     }
 
     private fun saveProfileValues(context: Context) {
-        context.getSharedPreferences(context.getString(R.string.shared_preferences_name), Context.MODE_PRIVATE)
+        context.getSharedPreferences(
+            context.getString(R.string.shared_preferences_name),
+            Context.MODE_PRIVATE
+        )
             .edit()
             .putLong(context.getString(R.string.car_profile_id_key), profileId)
             .putString(context.getString(R.string.car_profile_name_key), profileName)

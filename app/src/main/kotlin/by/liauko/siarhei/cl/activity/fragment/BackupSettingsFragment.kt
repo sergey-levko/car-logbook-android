@@ -21,6 +21,7 @@ import by.liauko.siarhei.cl.R
 import by.liauko.siarhei.cl.backup.BackupService
 import by.liauko.siarhei.cl.backup.BackupTask
 import by.liauko.siarhei.cl.backup.PermissionService
+import by.liauko.siarhei.cl.backup.adapter.toBackupAdapter
 import by.liauko.siarhei.cl.util.AppResultCodes.BACKUP_OPEN_DOCUMENT
 import by.liauko.siarhei.cl.util.AppResultCodes.BACKUP_OPEN_DOCUMENT_TREE
 import by.liauko.siarhei.cl.util.AppResultCodes.GOOGLE_SIGN_IN
@@ -90,7 +91,7 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
                     if (PermissionService.checkInternetConnection(appContext)) {
                         BackupService.backupTask = BackupTask.EXPORT
                         BackupService.repeatInterval = backupFrequencyPreference.value.toLong()
-                        BackupService.googleAuth(this)
+                        BackupService.googleAuth(this.toBackupAdapter())
                     }
                 } else {
                     WorkManager.getInstance(appContext).cancelAllWorkByTag(BackupService.WORK_TAG)
@@ -134,7 +135,7 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
                     ).show()
                 } else if (BackupService.driveServiceHelper == null) {
                     BackupService.backupTask = BackupTask.IMPORT
-                    BackupService.googleAuth(this)
+                    BackupService.googleAuth(this.toBackupAdapter())
                 } else {
                     BackupService.importDataFromDrive(appContext, null)
                 }
@@ -142,7 +143,7 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
             backupFileExportKey ->
                 startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), BACKUP_OPEN_DOCUMENT_TREE)
             backupFileImportKey -> {
-                BackupService.openDocument(this)
+                BackupService.openDocument(this.toBackupAdapter())
             }
             backupResetKey -> {
                 MaterialAlertDialogBuilder(appContext)
