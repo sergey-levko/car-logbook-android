@@ -126,7 +126,6 @@ class CarProfilesActivity : AppCompatActivity() {
                             profileId = items.first().id
                             profileName = items.first().name
                         }
-                        saveProfileInfo()
                     } else {
                         val name = data.getStringExtra("car_name") ?: EMPTY_STRING
                         val body = data.getStringExtra("body_type") ?: "SEDAN"
@@ -138,8 +137,10 @@ class CarProfilesActivity : AppCompatActivity() {
                         item.engineVolume = volume
                         carProfileRepository.update(item)
                         rvAdapter.notifyDataSetChanged()
+                        profileId = id
+                        profileName = name
                     }
-
+                    saveProfileInfo()
                 }
             }
         }
