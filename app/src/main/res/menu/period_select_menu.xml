@@ -3,6 +3,12 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+            android:id="@+id/export_to_exel"
+            android:title="@string/activity_main_excel_export_menu"
+            android:icon="@drawable/export_variant"
+            app:showAsAction="ifRoom"/>
+
+    <item
             android:id="@+id/period_select_menu_date"
             android:title="@string/activity_main_period_select_menu_date"
             android:icon="@drawable/calendar_white"

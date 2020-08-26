@@ -3,6 +3,7 @@ package by.liauko.siarhei.cl.util
 object AppResultCodes {
     const val LOG_ADD = 0x000
     const val LOG_EDIT = 0x001
+    const val LOG_EXPORT = 0x002
     const val FUEL_CONSUMPTION_ADD = 0x100
     const val FUEL_CONSUMPTION_EDIT = 0x101
     const val PERIOD_DIALOG_RESULT = 0x200
