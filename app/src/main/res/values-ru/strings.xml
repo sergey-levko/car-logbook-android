@@ -8,6 +8,7 @@
     <string name="activity_main_navigation_menu_settings_item">Настройки</string>
     <string name="activity_main_period_select_menu_date">Периуд</string>
     <string name="activity_main_car_profile_menu">Профиль авто</string>
+    <string name="activity_main_excel_export_menu">Экспорт данных в excel файл</string>
 
     <string name="data_fragment_add_fab">Добавить запись</string>
     <string name="data_fragment_snackbar_message">Запись успешно удалена</string>
@@ -148,4 +149,8 @@
     <string name="activity_first_start_file_import">Импортировать данные из файла</string>
     <string name="activity_first_dialog_fail_title">Не удалось создать профиль автомобиля</string>
     <string name="activity_first_dialog_fail_message">Профиль автомобиля не был создан. Пожалуйста попробуйте ещё раз.</string>
+
+    <string name="log_spreadsheet_created_date_label">Дата</string>
+    <string name="log_spreadsheet_mileage_label">Пробег</string>
+    <string name="log_spreadsheet_description_label">Описание</string>
 </resources>

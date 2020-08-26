@@ -20,7 +20,7 @@ import by.liauko.siarhei.cl.database.entity.CarProfileEntity
 import by.liauko.siarhei.cl.database.entity.FuelConsumptionEntity
 import by.liauko.siarhei.cl.database.entity.LogEntity
 import by.liauko.siarhei.cl.drive.DRIVE_ROOT_FOLDER_ID
-import by.liauko.siarhei.cl.drive.DriveMimeTypes
+import by.liauko.siarhei.cl.util.MimeTypes
 import by.liauko.siarhei.cl.drive.DriveServiceHelper
 import by.liauko.siarhei.cl.repository.DeleteAllAsyncTask
 import by.liauko.siarhei.cl.repository.DeleteAllCarProfilesAsyncTask
@@ -225,7 +225,7 @@ object BackupService {
         val backUpData = BackupEntity(logEntities, fuelConsumptionEntities, carProfileEntities)
 
         val file = DocumentFile.fromTreeUri(context, directoryUri)?.createFile(
-            DriveMimeTypes.TYPE_JSON_FILE,
+            MimeTypes.TYPE_JSON_FILE,
             "car-logbook-${SimpleDateFormat(
                 "yyyy-MM-dd-HH-mm",
                 Locale.getDefault()

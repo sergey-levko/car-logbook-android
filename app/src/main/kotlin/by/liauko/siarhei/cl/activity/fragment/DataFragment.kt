@@ -211,12 +211,16 @@ class DataFragment : Fragment() {
     }
 
     private fun select(type: DataType) {
-        toolbar.title = profileName ?: getString(R.string.app_name)
+        toolbar.title = profileName
         toolbar.menu.findItem(R.id.period_select_menu_date).isVisible = when (dataPeriod) {
             DataPeriod.ALL -> false
             else -> true
         }
         toolbar.menu.findItem(R.id.car_profile_menu).isVisible = true
+        toolbar.menu.findItem(R.id.export_to_exel).isVisible = when (type) {
+            DataType.LOG -> true
+            DataType.FUEL -> false
+        }
 
         items.clear()
         when (dataPeriod) {

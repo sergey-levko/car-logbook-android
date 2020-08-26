@@ -15,7 +15,7 @@ object ApplicationUtil {
     var dataPeriod = DataPeriod.MONTH
     var periodCalendar: Calendar = Calendar.getInstance()
     var profileId = -1L
-    var profileName: String? = null
+    var profileName: String = EMPTY_STRING
 
     fun createProgressDialog(context: Context, messageId: Int)
             = ProgressDialog(context, context.getString(messageId))

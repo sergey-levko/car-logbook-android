@@ -3,6 +3,7 @@ package by.liauko.siarhei.cl.activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
@@ -15,14 +16,16 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import by.liauko.siarhei.cl.R
 import by.liauko.siarhei.cl.activity.element.PeriodSelectorElement
-import by.liauko.siarhei.cl.activity.fragment.BackupSettingsFragment
 import by.liauko.siarhei.cl.activity.fragment.DataFragment
 import by.liauko.siarhei.cl.activity.fragment.SettingsFragment
 import by.liauko.siarhei.cl.database.CarLogbookDatabase
+import by.liauko.siarhei.cl.repository.LogRepository
 import by.liauko.siarhei.cl.repository.SelectAllCarProfileAsyncTask
 import by.liauko.siarhei.cl.util.AppResultCodes.CAR_PROFILE_FIRST_START
 import by.liauko.siarhei.cl.util.AppResultCodes.CAR_PROFILE_SHOW_LIST
+import by.liauko.siarhei.cl.util.AppResultCodes.LOG_EXPORT
 import by.liauko.siarhei.cl.util.AppResultCodes.PERIOD_DIALOG_RESULT
+import by.liauko.siarhei.cl.util.ApplicationUtil.EMPTY_STRING
 import by.liauko.siarhei.cl.util.ApplicationUtil.createAlertDialog
 import by.liauko.siarhei.cl.util.ApplicationUtil.dataPeriod
 import by.liauko.siarhei.cl.util.ApplicationUtil.periodCalendar
@@ -31,6 +34,7 @@ import by.liauko.siarhei.cl.util.ApplicationUtil.profileName
 import by.liauko.siarhei.cl.util.ApplicationUtil.type
 import by.liauko.siarhei.cl.util.DataPeriod
 import by.liauko.siarhei.cl.util.DataType
+import by.liauko.siarhei.cl.util.ExportToExcelAsyncTask
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.util.Calendar
 
@@ -60,7 +64,7 @@ class MainActivity : AppCompatActivity(),
         setContentView(R.layout.activity_main)
 
         profileId = preferences.getLong(getString(R.string.car_profile_id_key), -1L)
-        profileName = preferences.getString(getString(R.string.car_profile_name_key), getString(R.string.app_name))
+        profileName = preferences.getString(getString(R.string.car_profile_name_key), getString(R.string.app_name)) ?: EMPTY_STRING
         checkCarProfile(preferences)
 
         periodSelector = PeriodSelectorElement(this, findViewById(R.id.main_coordinator_layout))
@@ -82,9 +86,10 @@ class MainActivity : AppCompatActivity(),
                     }
                     result = true
                 }
-                R.id.car_profile_menu -> {
+                R.id.car_profile_menu ->
                     startActivityForResult(Intent(applicationContext, CarProfilesActivity::class.java), CAR_PROFILE_SHOW_LIST)
-                }
+                R.id.export_to_exel ->
+                    startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), LOG_EXPORT)
             }
 
             return@setOnMenuItemClickListener result
@@ -166,6 +171,7 @@ class MainActivity : AppCompatActivity(),
                 CAR_PROFILE_FIRST_START -> {
                     loadFragment()
                 }
+                LOG_EXPORT -> exportDataToExcelFile(data?.data ?: Uri.EMPTY)
             }
         } else if (resultCode == RESULT_CANCELED && requestCode == CAR_PROFILE_SHOW_LIST) {
             loadFragment()
@@ -218,5 +224,10 @@ class MainActivity : AppCompatActivity(),
         } else {
             startActivityForResult(Intent(applicationContext, FirstStartActivity::class.java), CAR_PROFILE_FIRST_START)
         }
+    }
+
+    private fun exportDataToExcelFile(directoryUri: Uri) {
+        val data = LogRepository(applicationContext).selectAllByProfileId(profileId)
+        ExportToExcelAsyncTask(this, directoryUri, data).execute()
     }
 }

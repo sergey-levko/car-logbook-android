@@ -1,6 +1,7 @@
 package by.liauko.siarhei.cl.drive
 
 import by.liauko.siarhei.cl.backup.BackupEntity
+import by.liauko.siarhei.cl.util.MimeTypes
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.api.client.http.ByteArrayContent
@@ -34,9 +35,9 @@ class DriveServiceHelper(private val mDriveService: Drive) {
     fun createFile(folderId: String, title: String, data: String): String {
         val metadata = File()
             .setParents(listOf(folderId))
-            .setMimeType(DriveMimeTypes.TYPE_JSON_FILE)
+            .setMimeType(MimeTypes.TYPE_JSON_FILE)
             .setName(title)
-        val content = ByteArrayContent.fromString(DriveMimeTypes.TYPE_JSON_FILE, data)
+        val content = ByteArrayContent.fromString(MimeTypes.TYPE_JSON_FILE, data)
         val googleFile = mDriveService.files().create(metadata, content).execute()
             ?: throw IOException("Null result when requesting file creation.")
 
@@ -59,7 +60,7 @@ class DriveServiceHelper(private val mDriveService: Drive) {
         }
         val metadata = File()
             .setParents(listOf("root"))
-            .setMimeType(DriveMimeTypes.TYPE_GOOGLE_DRIVE_FOLDER)
+            .setMimeType(MimeTypes.TYPE_GOOGLE_DRIVE_FOLDER)
             .setName(name)
         val googleFile = mDriveService.files().create(metadata).execute()
             ?: throw IOException("Null result when requesting folder creation.")
@@ -102,7 +103,7 @@ class DriveServiceHelper(private val mDriveService: Drive) {
         var filesData = DriveFileInfoList()
         if (folderId != DRIVE_ROOT_FOLDER_ID) {
             filesData = mDriveService.files().list()
-                .setQ("mimeType = '${DriveMimeTypes.TYPE_JSON_FILE}' and '$folderId' in parents")
+                .setQ("mimeType = '${MimeTypes.TYPE_JSON_FILE}' and '$folderId' in parents")
                 .setSpaces("drive")
                 .execute()
                 .files
@@ -146,7 +147,7 @@ class DriveServiceHelper(private val mDriveService: Drive) {
     }
 
     private fun findFolderByName(name: String) = mDriveService.files().list()
-        .setQ("mimeType = '${DriveMimeTypes.TYPE_GOOGLE_DRIVE_FOLDER}' and name = '$name'")
+        .setQ("mimeType = '${MimeTypes.TYPE_GOOGLE_DRIVE_FOLDER}' and name = '$name'")
         .setSpaces("drive")
         .execute()
         .files
