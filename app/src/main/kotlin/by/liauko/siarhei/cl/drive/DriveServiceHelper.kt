@@ -35,9 +35,9 @@ class DriveServiceHelper(private val mDriveService: Drive) {
     fun createFile(folderId: String, title: String, data: String): String {
         val metadata = File()
             .setParents(listOf(folderId))
-            .setMimeType(MimeTypes.TYPE_JSON_FILE)
+            .setMimeType(MimeTypes.TYPE_CLBDATA_FILE)
             .setName(title)
-        val content = ByteArrayContent.fromString(MimeTypes.TYPE_JSON_FILE, data)
+        val content = ByteArrayContent.fromString(MimeTypes.TYPE_CLBDATA_FILE, data)
         val googleFile = mDriveService.files().create(metadata, content).execute()
             ?: throw IOException("Null result when requesting file creation.")
 
@@ -103,7 +103,7 @@ class DriveServiceHelper(private val mDriveService: Drive) {
         var filesData = DriveFileInfoList()
         if (folderId != DRIVE_ROOT_FOLDER_ID) {
             filesData = mDriveService.files().list()
-                .setQ("mimeType = '${MimeTypes.TYPE_JSON_FILE}' and '$folderId' in parents")
+                .setQ("mimeType = '${MimeTypes.TYPE_CLBDATA_FILE}' and '$folderId' in parents")
                 .setSpaces("drive")
                 .execute()
                 .files

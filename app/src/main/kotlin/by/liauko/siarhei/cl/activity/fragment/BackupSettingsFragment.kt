@@ -26,6 +26,7 @@ import by.liauko.siarhei.cl.util.AppResultCodes.BACKUP_OPEN_DOCUMENT
 import by.liauko.siarhei.cl.util.AppResultCodes.BACKUP_OPEN_DOCUMENT_TREE
 import by.liauko.siarhei.cl.util.AppResultCodes.GOOGLE_SIGN_IN
 import by.liauko.siarhei.cl.util.AppResultCodes.INTERNET_PERMISSION
+import by.liauko.siarhei.cl.util.ImportFromFileAsyncTask
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class BackupSettingsFragment : PreferenceFragmentCompat() {
@@ -180,7 +181,7 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
             }
             BACKUP_OPEN_DOCUMENT -> {
                 if (resultCode == RESULT_OK) {
-                    BackupService.importFromFile(data?.data ?: Uri.EMPTY, appContext, null)
+                    ImportFromFileAsyncTask(data?.data ?: Uri.EMPTY, appContext, null).execute()
                 }
             }
         }

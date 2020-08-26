@@ -22,6 +22,7 @@ import by.liauko.siarhei.cl.util.ApplicationUtil
 import by.liauko.siarhei.cl.util.ApplicationUtil.EMPTY_STRING
 import by.liauko.siarhei.cl.util.ApplicationUtil.profileId
 import by.liauko.siarhei.cl.util.ApplicationUtil.profileName
+import by.liauko.siarhei.cl.util.ImportFromFileAsyncTask
 
 class FirstStartActivity : AppCompatActivity(),
     View.OnClickListener {
@@ -95,7 +96,7 @@ class FirstStartActivity : AppCompatActivity(),
                     }
                 }
                 GOOGLE_SIGN_IN -> BackupService.googleSignInResult(this, data, this)
-                BACKUP_OPEN_DOCUMENT -> BackupService.importFromFile(data?.data ?: Uri.EMPTY, this, this)
+                BACKUP_OPEN_DOCUMENT -> ImportFromFileAsyncTask(data?.data ?: Uri.EMPTY, this, this).execute()
             }
         }
     }
