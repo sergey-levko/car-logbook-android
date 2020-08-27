@@ -6,7 +6,6 @@ import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import androidx.documentfile.provider.DocumentFile
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
@@ -20,7 +19,6 @@ import by.liauko.siarhei.cl.database.entity.CarProfileEntity
 import by.liauko.siarhei.cl.database.entity.FuelConsumptionEntity
 import by.liauko.siarhei.cl.database.entity.LogEntity
 import by.liauko.siarhei.cl.drive.DRIVE_ROOT_FOLDER_ID
-import by.liauko.siarhei.cl.util.MimeTypes
 import by.liauko.siarhei.cl.drive.DriveServiceHelper
 import by.liauko.siarhei.cl.repository.DeleteAllAsyncTask
 import by.liauko.siarhei.cl.repository.DeleteAllCarProfilesAsyncTask
@@ -35,6 +33,7 @@ import by.liauko.siarhei.cl.util.ApplicationUtil
 import by.liauko.siarhei.cl.util.ApplicationUtil.profileId
 import by.liauko.siarhei.cl.util.ApplicationUtil.profileName
 import by.liauko.siarhei.cl.util.DataType
+import by.liauko.siarhei.cl.util.ExportToFileAsyncTask
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -55,7 +54,6 @@ import java.util.concurrent.TimeUnit
 object BackupService {
 
     private const val MAX_FILE_COUNT = 16
-    private const val EMPTY_JSON_OBJECT = "{}"
 
     const val WORK_TAG = "car-logbook-backup-work"
 
@@ -224,25 +222,12 @@ object BackupService {
         val carProfileEntities = SelectAllCarProfileAsyncTask(database).execute().get()
         val backUpData = BackupEntity(logEntities, fuelConsumptionEntities, carProfileEntities)
 
-        val file = DocumentFile.fromTreeUri(context, directoryUri)?.createFile(
-            MimeTypes.TYPE_JSON_FILE,
-            "car-logbook-${SimpleDateFormat(
-                "yyyy-MM-dd-HH-mm",
-                Locale.getDefault()
-            ).format(Date())}.clbdata"
-        )
-        if (file?.uri != null) {
-            context.contentResolver.openOutputStream(file.uri)?.use {
-                it.write(Gson().toJson(backUpData).toByteArray())
-                it.flush()
-            }
-        }
-        progressDialog.dismiss()
-        ApplicationUtil.createAlertDialog(
+        ExportToFileAsyncTask(
+            directoryUri,
             context,
-            R.string.dialog_backup_alert_title_success,
-            R.string.dialog_backup_alert_export_success
-        ).show()
+            backUpData,
+            progressDialog
+        ).execute()
     }
 
     fun openDocument(adapter: BackupAdapter) {
@@ -250,39 +235,6 @@ object BackupService {
         openDocumentIntent.addCategory(Intent.CATEGORY_OPENABLE)
         openDocumentIntent.type = "application/*"
         adapter.startActivityForResult(openDocumentIntent, BACKUP_OPEN_DOCUMENT)
-    }
-
-    fun importFromFile(fileUri: Uri, context: Context, activity: Activity?) {
-        val progressDialog = ApplicationUtil.createProgressDialog(
-            context,
-            R.string.dialog_backup_progress_import_text
-        )
-        progressDialog.show()
-
-        context.contentResolver.openInputStream(fileUri)?.bufferedReader().use {
-            restoreData(
-                CarLogbookDatabase.invoke(context),
-                Gson().fromJson<BackupEntity>(
-                    it?.readLine() ?: EMPTY_JSON_OBJECT,
-                    BackupEntity::class.java
-                )
-            )
-        }
-        saveProfileValues(context)
-        progressDialog.dismiss()
-        MaterialAlertDialogBuilder(context)
-            .setTitle(R.string.dialog_backup_alert_title_success)
-            .setMessage(R.string.dialog_backup_alert_import_success)
-            .setPositiveButton(
-                context.getString(
-                    R.string.dialog_backup_alert_ok_button
-                )
-            ) { dialog, _ ->
-                activity?.setResult(RESULT_OK)
-                activity?.finish()
-                dialog.dismiss()
-            }
-            .create().show()
     }
 
     fun eraseAllData(context: Context) {
@@ -330,7 +282,7 @@ object BackupService {
         return BackupEntity(logEntities, fuelConsumptionEntities, carProfileEntities)
     }
 
-    private fun restoreData(database: CarLogbookDatabase, backupData: BackupEntity) {
+    fun restoreData(database: CarLogbookDatabase, backupData: BackupEntity) {
         DeleteAllCarProfilesAsyncTask(database).execute()
         if (backupData.carProfileEntities != null) {
             InsertAllCarProfileAsyncTask(database).execute(backupData.carProfileEntities)
@@ -357,7 +309,7 @@ object BackupService {
         InsertAllAsyncTask(DataType.FUEL, database).execute(backupData.fuelConsumptionEntities)
     }
 
-    private fun saveProfileValues(context: Context) {
+    fun saveProfileValues(context: Context) {
         context.getSharedPreferences(
             context.getString(R.string.shared_preferences_name),
             Context.MODE_PRIVATE
