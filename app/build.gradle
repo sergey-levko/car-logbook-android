@@ -85,7 +85,7 @@ dependencies {
     def work_version = "2.4.0"
     def documentfile_version = "1.0.1"
     def stax_api_version = "1.0-2"
-    def poi_ooxml_version = "4.1.2"
+    def poi_ooxml_version = "4.0.1"
 
     // Test dependency versions
     def junit_version = '4.13'
