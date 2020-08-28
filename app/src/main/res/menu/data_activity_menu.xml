@@ -3,14 +3,14 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-            android:id="@+id/log_menu_save"
+            android:id="@+id/data_menu_save"
             android:orderInCategory="1"
             android:title="@string/activity_log_save_button"
             android:icon="@drawable/check_white"
             app:showAsAction="ifRoom"/>
 
     <item
-            android:id="@+id/log_menu_delete"
+            android:id="@+id/data_menu_delete"
             android:orderInCategory="1"
             android:title="@string/activity_log_delete_button"
             android:icon="@drawable/delete_white"

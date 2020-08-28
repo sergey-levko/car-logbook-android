@@ -15,18 +15,19 @@
                 android:name=".activity.YearSelectorDialogActivity"
                 android:theme="@style/DialogDefault"
                 android:windowSoftInputMode="stateVisible" />
-        <activity
-                android:name=".activity.LogDataActivity" />
+        <activity android:name=".activity.LogDataActivity" />
         <activity
                 android:name=".activity.FuelDataDialogActivity"
                 android:theme="@style/DialogDefault" />
-        <activity
-                android:name=".activity.MainActivity">
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activity.CarDataActivity" />
+        <activity android:name=".activity.CarProfilesActivity" />
+        <activity android:name=".activity.FirstStartActivity" />
     </application>
 
 </manifest>

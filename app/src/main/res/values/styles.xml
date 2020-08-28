@@ -35,7 +35,7 @@
         <item name="colorOnError">@color/onError</item>
     </style>
 
-    <style name="DatePickerDialog" parent="Theme.MaterialComponents.DayNight.Dialog.Alert">
+    <style name="DatePickerDialog" parent="Theme.MaterialComponents.DayNight.Dialog">
         <item name="colorPrimary">@color/datePickerBackground</item>
         <item name="colorOnPrimary">@color/primary</item>
         <item name="android:windowBackground">@color/datePickerBackground</item>

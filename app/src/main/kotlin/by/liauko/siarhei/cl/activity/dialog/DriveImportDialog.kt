@@ -1,5 +1,6 @@
 package by.liauko.siarhei.cl.activity.dialog
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.widget.Button
@@ -11,12 +12,13 @@ import by.liauko.siarhei.cl.R
 import by.liauko.siarhei.cl.backup.BackupService
 import by.liauko.siarhei.cl.drive.DriveFileInfoList
 import by.liauko.siarhei.cl.drive.DriveServiceHelper
-import by.liauko.siarhei.cl.recyclerview.RecyclerViewImportFileAdapter
+import by.liauko.siarhei.cl.recyclerview.adapter.RecyclerViewImportFileAdapter
 
 class DriveImportDialog(
     private val appContext: Context,
     private val driveServiceHelper: DriveServiceHelper,
-    private val files: DriveFileInfoList
+    private val files: DriveFileInfoList,
+    private val activity: Activity?
 ) : AlertDialog(appContext, R.style.FullScreenDialogDefault) {
 
     private lateinit var rvAdapter: RecyclerViewImportFileAdapter
@@ -32,18 +34,24 @@ class DriveImportDialog(
     private fun initRecyclerView() {
         noFileTextView = findViewById(R.id.no_files_for_import)!!
 
-        rvAdapter = RecyclerViewImportFileAdapter(appContext, files, noFileTextView, driveServiceHelper,
-            object : RecyclerViewImportFileAdapter.RecyclerViewOnItemClickListener {
-                override fun onItemClick(item: Pair<String, String>) {
-                    dismiss()
-                    BackupService.importFromDrive(
-                        item.second,
-                        context,
-                        driveServiceHelper
-                    )
+        rvAdapter =
+            RecyclerViewImportFileAdapter(
+                appContext,
+                files,
+                noFileTextView,
+                driveServiceHelper,
+                object : RecyclerViewImportFileAdapter.RecyclerViewOnItemClickListener {
+                    override fun onItemClick(item: Pair<String, String>) {
+                        dismiss()
+                        BackupService.importFromDrive(
+                            item.second,
+                            context,
+                            driveServiceHelper,
+                            activity
+                        )
+                    }
                 }
-            }
-        )
+            )
 
         findViewById<RecyclerView>(R.id.import_data_recycler_view)!!.apply {
             setHasFixedSize(true)

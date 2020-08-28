@@ -17,4 +17,24 @@
         <item>Еженедельно</item>
         <item>Ежемесячно</item>
     </string-array>
+
+    <string-array name="body_types">
+        <item>Седан</item>
+        <item>Хэтчбек</item>
+        <item>Кроссовер</item>
+        <item>Универсал</item>
+        <item>Купе</item>
+        <item>Микроавтобус</item>
+        <item>Внедорожник</item>
+        <item>Кабриолет</item>
+    </string-array>
+
+    <string-array name="fuel_type">
+        <item>Бензин</item>
+        <item>Дизель</item>
+        <item>Газ</item>
+        <item>Этанол</item>
+        <item>Гибрид</item>
+        <item>Электричество</item>
+    </string-array>
 </resources>

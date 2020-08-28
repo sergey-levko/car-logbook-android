@@ -7,14 +7,20 @@
         android:padding="8dp"
         android:gravity="center" >
 
-    <com.google.android.material.button.MaterialButton
-            android:id="@+id/fuel_date"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:textColor="@color/onBackground"
+    <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="24sp"
-            android:layout_marginBottom="4dp" />
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/fuel_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/data_dialog_date_hint"
+                android:drawableStart="@drawable/calendar_accent"
+                android:drawablePadding="8dp"
+                android:cursorVisible="false" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -59,7 +65,7 @@
                 android:id="@+id/fuel_dialog_negative_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/data_dialog_negative_button"
+                android:text="@string/cancel"
                 android:layout_marginEnd="4dp"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 app:strokeColor="@color/primary"

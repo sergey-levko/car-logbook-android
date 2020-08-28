@@ -22,8 +22,8 @@ android {
         applicationId "by.liauko.siarhei.cl"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 10
-        versionName "3.4"
+        versionCode 12
+        versionName "4.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.release
         javaCompileOptions {
@@ -58,6 +58,9 @@ android {
     }
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
+
+        androidTest.java.srcDirs += 'src/androidTest/kotlin'
+        androidTest.assets.srcDirs += files('schemas'.toString())
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -70,17 +73,19 @@ android {
 }
 
 dependencies {
-    def material_version = "1.2.0-alpha05"
-    def constraintlayout_version = "1.1.3"
+    def material_version = "1.3.0-alpha02"
+    def constraintlayout_version = "2.0.1"
     def room_version = "2.2.5"
-    def preference_version = "1.1.0"
-    def play_service_auth_version = "18.0.0"
+    def preference_version = "1.1.1"
+    def play_service_auth_version = "18.1.0"
     def api_client_version = "1.30.8"
     def gson_version = "1.34.1"
     def api_service_drive_version = "v3-rev99-1.23.0"
     def commons_io_version = "2.6"
-    def work_version = "2.3.0"
+    def work_version = "2.4.0"
     def documentfile_version = "1.0.1"
+    def stax_api_version = "1.0-2"
+    def poi_ooxml_version = "4.0.1"
 
     // Test dependency versions
     def junit_version = '4.13'
@@ -114,14 +119,16 @@ dependencies {
         exclude group: 'com.google.guava'
     }
     implementation "androidx.documentfile:documentfile:$documentfile_version"
+    implementation "javax.xml.stream:stax-api:$stax_api_version"
+    implementation "org.apache.poi:poi-ooxml:$poi_ooxml_version"
 
     api "com.google.android.material:material:$material_version"
 
     kapt "androidx.room:room-compiler:$room_version"
 
     testImplementation "junit:junit:$junit_version"
-    testImplementation "androidx.room:room-testing:$room_version"
 
+    androidTestImplementation "androidx.room:room-testing:$room_version"
     androidTestImplementation "androidx.test:runner:$test_runner_version"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_core_version"
 }

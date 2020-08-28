@@ -1,4 +1,4 @@
-package by.liauko.siarhei.cl.recyclerview
+package by.liauko.siarhei.cl.recyclerview.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import by.liauko.siarhei.cl.R
 import by.liauko.siarhei.cl.drive.DriveFileInfoList
 import by.liauko.siarhei.cl.drive.DriveServiceHelper
+import by.liauko.siarhei.cl.recyclerview.holder.RecyclerViewImportFileViewHolder
 import by.liauko.siarhei.cl.util.ApplicationUtil
 
 class RecyclerViewImportFileAdapter(

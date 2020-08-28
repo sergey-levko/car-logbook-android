@@ -1,4 +1,4 @@
-package by.liauko.siarhei.cl.recyclerview
+package by.liauko.siarhei.cl.recyclerview.adapter
 
 import android.content.res.Resources
 import android.view.LayoutInflater
@@ -10,6 +10,9 @@ import by.liauko.siarhei.cl.R
 import by.liauko.siarhei.cl.entity.AppData
 import by.liauko.siarhei.cl.entity.FuelConsumptionData
 import by.liauko.siarhei.cl.entity.LogData
+import by.liauko.siarhei.cl.recyclerview.holder.FuelDataViewHolder
+import by.liauko.siarhei.cl.recyclerview.holder.LogDataViewHolder
+import by.liauko.siarhei.cl.recyclerview.holder.RecyclerViewDataViewHolder
 import by.liauko.siarhei.cl.repository.AppRepositoryCollection
 import by.liauko.siarhei.cl.util.ApplicationUtil.type
 import by.liauko.siarhei.cl.util.DataType

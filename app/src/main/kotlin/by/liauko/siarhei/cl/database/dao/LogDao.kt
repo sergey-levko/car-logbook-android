@@ -10,11 +10,14 @@ import by.liauko.siarhei.cl.database.entity.LogEntity
 @Dao
 interface LogDao {
 
-    @Query("SELECT id, title, text, mileage, time FROM log")
+    @Query("SELECT id, title, text, mileage, time, profile_id FROM log")
     fun findAll(): List<LogEntity>
 
-    @Query("SELECT id, title, text, mileage, time FROM log WHERE time BETWEEN :startTime AND :endTime")
-    fun findAllByDate(startTime: Long, endTime: Long): List<LogEntity>
+    @Query("SELECT id, title, text, mileage, time FROM log WHERE profile_id = :profileId")
+    fun findAllByProfileId(profileId: Long): List<LogEntity>
+
+    @Query("SELECT id, title, text, mileage, time FROM log WHERE profile_id = :profileId AND time BETWEEN :startTime AND :endTime")
+    fun findAllByProfileIdAndDate(profileId: Long, startTime: Long, endTime: Long): List<LogEntity>
 
     @Insert
     fun insert(item: LogEntity): Long
@@ -30,4 +33,7 @@ interface LogDao {
 
     @Query("DELETE FROM log")
     fun deleteAll()
+
+    @Query("DELETE FROM log WHERE profile_id = :profileId")
+    fun deleteAllByProfileId(profileId: Long)
 }

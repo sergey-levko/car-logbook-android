@@ -15,5 +15,7 @@ class ProgressDialog(
         super.onCreate(savedInstanceState)
         setContentView(R.layout.dialog_progress)
         findViewById<TextView>(R.id.progress_dialog_text)!!.text = message
+        setCancelable(false)
+        setCanceledOnTouchOutside(false)
     }
 }

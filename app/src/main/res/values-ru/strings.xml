@@ -7,9 +7,9 @@
     <string name="activity_main_navigation_menu_fuel_item">Топливо</string>
     <string name="activity_main_navigation_menu_settings_item">Настройки</string>
     <string name="activity_main_period_select_menu_date">Периуд</string>
+    <string name="activity_main_car_profile_menu">Профиль авто</string>
+    <string name="activity_main_excel_export_menu">Экспорт данных в excel файл</string>
 
-    <string name="data_fragment_log_title">Бортовой журнал</string>
-    <string name="data_fragment_fuel_title">Расход топлива</string>
     <string name="data_fragment_add_fab">Добавить запись</string>
     <string name="data_fragment_snackbar_message">Запись успешно удалена</string>
     <string name="data_fragment_snackbar_undo">ОТМЕНА</string>
@@ -22,7 +22,6 @@
     <string name="data_dialog_date_hint">Дата</string>
     <string name="data_dialog_positive_button_add">Добавить</string>
     <string name="data_dialog_positive_button_edit">Сохранить</string>
-    <string name="data_dialog_negative_button">Отмена</string>
     <string name="data_dialog_volume_parameter_error">Объём - обязательное значение и не может быть 0</string>
     <string name="data_dialog_distance_parameter_error">Расстояние - обязательное значение и не может быть 0</string>
 
@@ -70,7 +69,6 @@
     <string name="period_dialog_dec">ДЕК</string>
     <string name="period_dialog_positive_button_month">Текущий месяц</string>
     <string name="period_dialog_positive_button_year">Выбрать</string>
-    <string name="period_dialog_negative_button">Отмена</string>
     <string name="period_dialog_previous_year_button_content_description">Предыдущий</string>
     <string name="period_dialog_next_year_button_content_description">Следующий</string>
 
@@ -78,7 +76,6 @@
     <string name="year_selector_dialog_year_hint">Год</string>
     <string name="year_selector_dialog_error_text">Значение года должно быть между 1970 и</string>
     <string name="year_selector_dialog_positive_button">Выбрать</string>
-    <string name="year_selector_dialog_negative_button">Отмена</string>
 
     <string name="dialog_backup_progress_export_text">Экспортирование данных…</string>
     <string name="dialog_backup_progress_import_text">Импортирование данных…</string>
@@ -98,6 +95,8 @@
     <string name="settings_preference_backup_manual_group_title">Ручное резервное копирование</string>
     <string name="settings_preference_backup_export_to_file">Экспорт в файл</string>
     <string name="settings_preference_backup_export_to_file_summary">Экспорт данных из базы данных в файл</string>
+    <string name="settings_preference_backup_export_to_drive">Экспорт в Google Drive</string>
+    <string name="settings_preference_backup_export_to_drive_summary">Экспорт данных из базы данных в Google Drive файл</string>
     <string name="settings_preference_backup_import_from_drive">Импорт из Google Drive</string>
     <string name="settings_preference_backup_import_from_drive_summary">Импорт данных из Google Drive файла в базу данных</string>
     <string name="settings_preference_backup_import_from_file">Импорт из файла</string>
@@ -111,17 +110,49 @@
     <string name="dialog_drive_import_title">Импорт данных из Google Drive</string>
     <string name="dialog_drive_import_no_files">Нет файлов для импорта</string>
     <string name="dialog_drive_import_recycler_view_item_remove_button_content_description">Удалить</string>
-    <string name="dialog_drive_import_negative_button">Отмена</string>
 
     <string name="dialog_progress_delete_file">Удаление файла…</string>
 
-    <string name="dialog_reset_title">Удалить все данные</string>
+    <string name="dialog_reset_title">Удаление всех данных</string>
     <string name="dialog_reset_message">Вы уверены, что хотите удалить все данные?</string>
-    <string name="dialog_reset_positive_button">Да</string>
-    <string name="dialog_reset_negative_button">Нет</string>
     <string name="dialog_reset_toast_message">Вся информация была удалена</string>
+
+    <string name="activity_car_profile_title">Профили автомобилей</string>
+    <string name="activity_car_profile_add_fab">Добавить профиль</string>
+    <string name="activity_car_profile_edit">Изменить</string>
 
     <string name="km">км</string>
     <string name="liters">л</string>
     <string name="consumption_value">л / 100км</string>
+    <string name="cancel">Отмена</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+
+    <string name="activity_car_title_create">Создать новый профиль авто</string>
+    <string name="activity_car_title_edit">Изменить профиль авто</string>
+    <string name="activity_car_name_hint">Имя профиля</string>
+    <string name="activity_car_body_hint">Тип кузова</string>
+    <string name="activity_car_fuel_hint">Тип топлива</string>
+    <string name="activity_car_engine_hint">Объём двигателя (л)</string>
+    <string name="activity_car_save_button">Сохранить</string>
+    <string name="activity_car_delete_button">Удалить</string>
+    <string name="activity_car_name_error">Поле имя профиля обязательное</string>
+    <string name="activity_car_engine_error">Значение поля объём двигателя обязательное и не может быть 0</string>
+
+    <string name="dialog_delete_car_title">Удаление профиля автомобиля</string>
+    <string name="dialog_delete_car_message">Вы уверены, что хотите удалить профиль автомобиля? Все данные из журнала и о расходе топлива, связанные с этим автомобилем, будут так же удалены.</string>
+    <string name="dialog_delete_car_toast_message">Профиль автомобиля был удалён</string>
+
+    <string name="default_car_profile_dialog_title">Был создан стандартный профиль автомобиля</string>
+    <string name="default_car_profile_dialog_message">Теперь приложение поддерживает профили автомобилей. Для уже существующих записей был создан стандартный профиль. Вы можете изменить его на экране списка профилей (кнопка в верхнем правом углу).</string>
+
+    <string name="activity_first_start_create">Создать профиль автомобиля</string>
+    <string name="activity_first_start_drive_import">Импортировать данные из Google Drive</string>
+    <string name="activity_first_start_file_import">Импортировать данные из файла</string>
+    <string name="activity_first_dialog_fail_title">Не удалось создать профиль автомобиля</string>
+    <string name="activity_first_dialog_fail_message">Профиль автомобиля не был создан. Пожалуйста попробуйте ещё раз.</string>
+
+    <string name="log_spreadsheet_created_date_label">Дата</string>
+    <string name="log_spreadsheet_mileage_label">Пробег</string>
+    <string name="log_spreadsheet_description_label">Описание</string>
 </resources>

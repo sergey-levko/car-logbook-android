@@ -20,6 +20,7 @@ import by.liauko.siarhei.cl.util.DataPeriod
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
+    private lateinit var toolbar: Toolbar
     private lateinit var appContext: Context
     private lateinit var appVersion: String
     private lateinit var sharedPreferences: SharedPreferences
@@ -32,10 +33,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val toolbar = (container!!.parent as ViewGroup).getChildAt(0) as Toolbar
-        toolbar.navigationIcon = null
-        toolbar.title = getString(R.string.settings_fragment_title)
-
+        toolbar = (container!!.parent as ViewGroup).getChildAt(0) as Toolbar
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -58,6 +56,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
             sendFeedback()
             true
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        toolbar.navigationIcon = null
+        toolbar.title = getString(R.string.settings_fragment_title)
+        toolbar.menu.findItem(R.id.period_select_menu_date).isVisible = false
+        toolbar.menu.findItem(R.id.car_profile_menu).isVisible = false
     }
 
     private val preferenceChangeListener = Preference.OnPreferenceChangeListener { preference, newValue ->

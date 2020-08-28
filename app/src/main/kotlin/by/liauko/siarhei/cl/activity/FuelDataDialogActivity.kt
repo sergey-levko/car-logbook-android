@@ -1,10 +1,13 @@
 package by.liauko.siarhei.cl.activity
 
 import android.app.DatePickerDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType
 import android.view.View
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.DatePicker
 import android.widget.EditText
@@ -16,13 +19,15 @@ import java.util.Calendar.DAY_OF_MONTH
 import java.util.Calendar.MONTH
 import java.util.Calendar.YEAR
 
-class FuelDataDialogActivity : AppCompatActivity(), View.OnClickListener, DatePickerDialog.OnDateSetListener {
+class FuelDataDialogActivity : AppCompatActivity(),
+    View.OnClickListener,
+    DatePickerDialog.OnDateSetListener {
 
     private val defaultId = -1L
 
     private lateinit var litres: EditText
     private lateinit var distance: EditText
-    private lateinit var dateButton: Button
+    private lateinit var date: EditText
     private lateinit var calendar: Calendar
 
     private var id = defaultId
@@ -48,14 +53,32 @@ class FuelDataDialogActivity : AppCompatActivity(), View.OnClickListener, DatePi
     private fun initElements() {
         litres = findViewById(R.id.litres)
         distance = findViewById(R.id.distance)
-        dateButton = findViewById(R.id.fuel_date)
-        dateButton.setOnClickListener(this)
+        date = findViewById(R.id.fuel_date)
+        date.inputType = InputType.TYPE_NULL
+        date.setOnClickListener { showDatePickerDialog(it) }
+        date.setOnFocusChangeListener { view, isFocused ->
+            if (isFocused) {
+                (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(view.windowToken, 0)
+                showDatePickerDialog(view)
+            }
+        }
 
         val positiveButton = findViewById<Button>(R.id.fuel_dialog_positive_button)
         positiveButton.setOnClickListener(this)
         positiveButton.setText(intent.getIntExtra("positive_button", R.string.data_dialog_positive_button_add))
 
         findViewById<Button>(R.id.fuel_dialog_negative_button).setOnClickListener(this)
+    }
+
+    private fun showDatePickerDialog(view: View) {
+        DatePickerDialog(
+            view.context,
+            R.style.DatePickerDialog,
+            this,
+            calendar.get(YEAR),
+            calendar.get(MONTH),
+            calendar.get(DAY_OF_MONTH)
+        ).show()
     }
 
     private fun fillData() {
@@ -83,16 +106,6 @@ class FuelDataDialogActivity : AppCompatActivity(), View.OnClickListener, DatePi
     override fun onClick(v: View?) {
         if (v != null) {
             when (v.id) {
-                R.id.fuel_date -> {
-                    DatePickerDialog(
-                        this@FuelDataDialogActivity,
-                        R.style.DatePickerDialog,
-                        this,
-                        calendar.get(YEAR),
-                        calendar.get(MONTH),
-                        calendar.get(DAY_OF_MONTH)
-                    ).show()
-                }
                 R.id.fuel_dialog_positive_button -> {
                     if (validateFields()) {
                         val intent = Intent()
@@ -120,6 +133,7 @@ class FuelDataDialogActivity : AppCompatActivity(), View.OnClickListener, DatePi
     }
 
     private fun updateDateButtonText() {
-        dateButton.text = DateConverter.convert(calendar)
+        date.text.clear()
+        date.text.append(DateConverter.convert(calendar))
     }
 }

@@ -1,10 +1,12 @@
 package by.liauko.siarhei.cl.activity
 
 import android.app.DatePickerDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType
 import android.view.View
-import android.widget.Button
+import android.view.inputmethod.InputMethodManager
 import android.widget.DatePicker
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
@@ -16,7 +18,8 @@ import java.util.Calendar.DAY_OF_MONTH
 import java.util.Calendar.MONTH
 import java.util.Calendar.YEAR
 
-class LogDataActivity : AppCompatActivity(), View.OnClickListener, DatePickerDialog.OnDateSetListener {
+class LogDataActivity : AppCompatActivity(),
+    DatePickerDialog.OnDateSetListener {
 
     private val defaultId = -1L
 
@@ -24,7 +27,7 @@ class LogDataActivity : AppCompatActivity(), View.OnClickListener, DatePickerDia
     private lateinit var title: EditText
     private lateinit var text: EditText
     private lateinit var mileage: EditText
-    private lateinit var date: Button
+    private lateinit var date: EditText
     private lateinit var toolbar: Toolbar
 
     private var id = defaultId
@@ -51,23 +54,20 @@ class LogDataActivity : AppCompatActivity(), View.OnClickListener, DatePickerDia
         toolbar.setNavigationOnClickListener {
             handleBackAction()
         }
-        toolbar.inflateMenu(R.menu.log_menu_save)
+        toolbar.inflateMenu(R.menu.data_activity_menu)
         toolbar.setOnMenuItemClickListener {
             var result = false
             when (it.itemId) {
-                R.id.log_menu_save -> {
+                R.id.data_menu_save -> {
                     if (validateFields()) {
                         val intent = Intent()
-                        intent.putExtra("title", title.text.toString())
-                        intent.putExtra("mileage", mileage.text.toString())
-                        intent.putExtra("text", text.text.toString())
-                        intent.putExtra("time", calendar.timeInMillis)
+                        fillIntent(intent)
                         setResult(RESULT_OK, intent)
                         finish()
                         result = true
                     }
                 }
-                R.id.log_menu_delete -> {
+                R.id.data_menu_delete -> {
                     val intent = Intent()
                     intent.putExtra("remove", true)
                     intent.putExtra("id", id)
@@ -80,11 +80,11 @@ class LogDataActivity : AppCompatActivity(), View.OnClickListener, DatePickerDia
             return@setOnMenuItemClickListener result
         }
         if (id == defaultId) {
-            toolbar.menu.findItem(R.id.log_menu_save).isVisible = true
-            toolbar.menu.findItem(R.id.log_menu_delete).isVisible = false
+            toolbar.menu.findItem(R.id.data_menu_save).isVisible = true
+            toolbar.menu.findItem(R.id.data_menu_delete).isVisible = false
         } else {
-            toolbar.menu.findItem(R.id.log_menu_save).isVisible = false
-            toolbar.menu.findItem(R.id.log_menu_delete).isVisible = true
+            toolbar.menu.findItem(R.id.data_menu_save).isVisible = false
+            toolbar.menu.findItem(R.id.data_menu_delete).isVisible = true
         }
     }
 
@@ -93,11 +93,30 @@ class LogDataActivity : AppCompatActivity(), View.OnClickListener, DatePickerDia
         text = findViewById(R.id.log_text)
         mileage = findViewById(R.id.log_mileage)
         date = findViewById(R.id.log_date)
-        date.setOnClickListener(this)
+        date.inputType = InputType.TYPE_NULL
+        date.setOnClickListener { showDatePickerDialog(it) }
+        date.setOnFocusChangeListener { view, isFocused ->
+            if (isFocused) {
+                (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(view.windowToken, 0)
+                showDatePickerDialog(view)
+            }
+        }
+    }
+
+    private fun showDatePickerDialog(view: View) {
+        DatePickerDialog(
+            view.context,
+            R.style.DatePickerDialog,
+            this,
+            calendar.get(YEAR),
+            calendar.get(MONTH),
+            calendar.get(DAY_OF_MONTH)
+        ).show()
     }
 
     private fun updateDateButtonText() {
-        date.text = DateConverter.convert(calendar)
+        date.text.clear()
+        date.text.append(DateConverter.convert(calendar))
     }
 
     private fun fillData() {
@@ -110,13 +129,12 @@ class LogDataActivity : AppCompatActivity(), View.OnClickListener, DatePickerDia
     private fun validateFields(): Boolean {
         var result = true
 
-        val text = title.text.trim()
-        if (text.isEmpty()) {
+        if (title.text.isBlank()) {
             title.error = getString(R.string.activity_log_title_error)
             result = false
         }
 
-        if (mileage.text.isNullOrEmpty() || mileage.text.toString().toLong() == 0L) {
+        if (mileage.text.isNullOrBlank() || mileage.text.toString().toLong() == 0L) {
             mileage.error = getString(R.string.activity_log_mileage_error)
             result = false
         }
@@ -129,10 +147,7 @@ class LogDataActivity : AppCompatActivity(), View.OnClickListener, DatePickerDia
             if (validateFields()) {
                 val intent = Intent()
                 intent.putExtra("id", id)
-                intent.putExtra("title", title.text.toString())
-                intent.putExtra("mileage", mileage.text.toString())
-                intent.putExtra("text", text.text.toString())
-                intent.putExtra("time", calendar.timeInMillis)
+                fillIntent(intent)
                 setResult(RESULT_OK, intent)
                 finish()
             }
@@ -142,17 +157,11 @@ class LogDataActivity : AppCompatActivity(), View.OnClickListener, DatePickerDia
         }
     }
 
-    override fun onClick(v: View?) {
-        if (v != null && v.id == R.id.log_date) {
-            DatePickerDialog(
-                this@LogDataActivity,
-                R.style.DatePickerDialog,
-                this,
-                calendar.get(YEAR),
-                calendar.get(MONTH),
-                calendar.get(DAY_OF_MONTH)
-            ).show()
-        }
+    private fun fillIntent(intent: Intent) {
+        intent.putExtra("title", title.text.toString())
+        intent.putExtra("mileage", mileage.text.toString())
+        intent.putExtra("text", text.text.toString())
+        intent.putExtra("time", calendar.timeInMillis)
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {

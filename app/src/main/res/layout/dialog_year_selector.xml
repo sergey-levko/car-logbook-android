@@ -34,7 +34,7 @@
                 android:id="@+id/year_dialog_negative_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/year_selector_dialog_negative_button"
+                android:text="@string/cancel"
                 android:layout_marginEnd="4dp"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 app:strokeColor="@color/primary"
