@@ -38,6 +38,11 @@
                 android:title="@string/settings_preference_backup_import_from_drive"
                 android:summary="@string/settings_preference_backup_import_from_drive_summary" />
 
+        <Preference
+                android:key="@string/backup_drive_export_key"
+                android:title="@string/settings_preference_backup_export_to_drive"
+                android:summary="@string/settings_preference_backup_export_to_drive_summary" />
+
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/settings_preference_backup_reset_group_title">

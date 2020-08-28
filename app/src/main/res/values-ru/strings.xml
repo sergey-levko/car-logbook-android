@@ -95,6 +95,8 @@
     <string name="settings_preference_backup_manual_group_title">Ручное резервное копирование</string>
     <string name="settings_preference_backup_export_to_file">Экспорт в файл</string>
     <string name="settings_preference_backup_export_to_file_summary">Экспорт данных из базы данных в файл</string>
+    <string name="settings_preference_backup_export_to_drive">Экспорт в Google Drive</string>
+    <string name="settings_preference_backup_export_to_drive_summary">Экспорт данных из базы данных в Google Drive файл</string>
     <string name="settings_preference_backup_import_from_drive">Импорт из Google Drive</string>
     <string name="settings_preference_backup_import_from_drive_summary">Импорт данных из Google Drive файла в базу данных</string>
     <string name="settings_preference_backup_import_from_file">Импорт из файла</string>
