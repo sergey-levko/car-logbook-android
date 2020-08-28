@@ -24,6 +24,16 @@
     <PreferenceCategory android:title="@string/settings_preference_backup_manual_group_title">
 
         <Preference
+                android:key="@string/backup_drive_export_key"
+                android:title="@string/settings_preference_backup_export_to_drive"
+                android:summary="@string/settings_preference_backup_export_to_drive_summary" />
+
+        <Preference
+                android:key="@string/backup_drive_import_key"
+                android:title="@string/settings_preference_backup_import_from_drive"
+                android:summary="@string/settings_preference_backup_import_from_drive_summary" />
+
+        <Preference
                 android:key="@string/backup_file_export_key"
                 android:title="@string/settings_preference_backup_export_to_file"
                 android:summary="@string/settings_preference_backup_export_to_file_summary" />
@@ -32,16 +42,6 @@
                 android:key="@string/backup_file_import_key"
                 android:title="@string/settings_preference_backup_import_from_file"
                 android:summary="@string/settings_preference_backup_import_from_file_summary" />
-
-        <Preference
-                android:key="@string/backup_drive_import_key"
-                android:title="@string/settings_preference_backup_import_from_drive"
-                android:summary="@string/settings_preference_backup_import_from_drive_summary" />
-
-        <Preference
-                android:key="@string/backup_drive_export_key"
-                android:title="@string/settings_preference_backup_export_to_drive"
-                android:summary="@string/settings_preference_backup_export_to_drive_summary" />
 
     </PreferenceCategory>
 
