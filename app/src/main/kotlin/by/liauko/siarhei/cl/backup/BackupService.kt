@@ -54,6 +54,7 @@ import java.util.concurrent.TimeUnit
 object BackupService {
 
     private const val MAX_FILE_COUNT = 16
+    private const val DRIVE_FILE_NAME_PATTERN = "yyyy-MM-dd-HH.mm"
 
     const val WORK_TAG = "car-logbook-backup-work"
 
@@ -136,6 +137,57 @@ object BackupService {
             }
     }
 
+    fun exportToDrive(context: Context) {
+        val progressDialog = ApplicationUtil.createProgressDialog(
+            context,
+            R.string.dialog_backup_progress_export_text
+        )
+        progressDialog.show()
+
+        val backupData = prepareBackupData(CarLogbookDatabase.invoke(context))
+
+        var folderId = DRIVE_ROOT_FOLDER_ID
+        driveServiceHelper!!.createFolderIfNotExistTask("car-logbook-backup")
+            .addOnCompleteListener {
+                folderId = it.result ?: folderId
+            }
+            .continueWithTask {
+                driveServiceHelper!!.getAllFilesInFolderTask(folderId)
+                    .addOnCompleteListener {
+                        val files = it.result?.sortedBy { item -> item.first } ?: emptyList()
+                        if (files.size >= MAX_FILE_COUNT) {
+                            for (item in files.subList(0, files.size - MAX_FILE_COUNT + 1)) {
+                                driveServiceHelper!!.deleteFile(item.second)
+                            }
+                        }
+                    }
+                    .continueWithTask {
+                        driveServiceHelper!!.createFileTask(
+                            folderId,
+                            "car-logbook-${SimpleDateFormat(
+                                DRIVE_FILE_NAME_PATTERN,
+                                Locale.getDefault()
+                            ).format(Date())}.clbdata",
+                            Gson().toJson(backupData)
+                        ).addOnCompleteListener {
+                            progressDialog.dismiss()
+                            ApplicationUtil.createAlertDialog(
+                                context,
+                                R.string.dialog_backup_alert_title_success,
+                                R.string.dialog_backup_alert_export_success
+                            ).show()
+                        }.addOnFailureListener {
+                            progressDialog.dismiss()
+                            ApplicationUtil.createAlertDialog(
+                                context,
+                                R.string.dialog_backup_alert_title_success,
+                                R.string.dialog_backup_alert_export_fail
+                            ).show()
+                        }
+                    }
+            }
+    }
+
     fun exportToDrive(context: Context, driveServiceHelper: DriveServiceHelper) {
         val backupData = prepareBackupData(CarLogbookDatabase.invoke(context))
 
@@ -149,7 +201,7 @@ object BackupService {
         driveServiceHelper.createFile(
             folderId,
             "car-logbook-${SimpleDateFormat(
-                "yyyy-MM-dd",
+                DRIVE_FILE_NAME_PATTERN,
                 Locale.getDefault()
             ).format(Date())}.clbdata",
             Gson().toJson(backupData)
@@ -252,6 +304,7 @@ object BackupService {
         when (backupTask) {
             BackupTask.IMPORT -> importDataFromDrive(context, activity)
             BackupTask.EXPORT -> exportDataToDrive(context)
+            BackupTask.MANUAL_EXPORT -> exportToDrive(context)
         }
     }
 
@@ -322,5 +375,5 @@ object BackupService {
 }
 
 enum class BackupTask {
-    IMPORT, EXPORT
+    IMPORT, EXPORT, MANUAL_EXPORT
 }

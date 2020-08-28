@@ -36,6 +36,7 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
     private lateinit var backupFrequencyKey: String
     private lateinit var backupFileExportKey: String
     private lateinit var backupFileImportKey: String
+    private lateinit var backupDriveExportKey: String
     private lateinit var backupDriveImportKey: String
     private lateinit var backupResetKey: String
     private lateinit var backupSwitcher: SwitchPreference
@@ -67,6 +68,7 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
         backupFrequencyKey = getString(R.string.backup_frequency_key)
         backupFileExportKey = getString(R.string.backup_file_export_key)
         backupFileImportKey = getString(R.string.backup_file_import_key)
+        backupDriveExportKey = getString(R.string.backup_drive_export_key)
         backupDriveImportKey = getString(R.string.backup_drive_import_key)
         backupResetKey = getString(R.string.backup_reset_key)
 
@@ -78,6 +80,7 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
         backupFrequencyPreference.onPreferenceChangeListener = preferenceChangeListener
         findPreference<Preference>(backupFileExportKey)!!.onPreferenceClickListener = preferenceClickListener
         findPreference<Preference>(backupFileImportKey)!!.onPreferenceClickListener = preferenceClickListener
+        findPreference<Preference>(backupDriveExportKey)!!.onPreferenceClickListener = preferenceClickListener
         findPreference<Preference>(backupDriveImportKey)!!.onPreferenceClickListener = preferenceClickListener
         findPreference<Preference>(backupResetKey)!!.onPreferenceClickListener = preferenceClickListener
     }
@@ -125,6 +128,20 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
                         Toast.LENGTH_LONG
                     ).show()
                     disableSyncPreferenceItems()
+                }
+            }
+            backupDriveExportKey -> {
+                if (!PermissionService.checkInternetConnection(appContext)) {
+                    Toast.makeText(
+                        appContext,
+                        R.string.settings_preference_backup_internet_access_toast_text,
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else if (BackupService.driveServiceHelper == null) {
+                    BackupService.backupTask = BackupTask.MANUAL_EXPORT
+                    BackupService.googleAuth(this.toBackupAdapter())
+                } else {
+                    BackupService.exportToDrive(appContext)
                 }
             }
             backupDriveImportKey -> {
