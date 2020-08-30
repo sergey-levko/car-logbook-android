@@ -6,9 +6,9 @@
     <string name="activity_main_navigation_menu_log_item">Log</string>
     <string name="activity_main_navigation_menu_fuel_item">Fuel</string>
     <string name="activity_main_navigation_menu_settings_item">Settings</string>
-    <string name="activity_main_period_select_menu_date">Period</string>
-    <string name="activity_main_car_profile_menu">Car profile</string>
-    <string name="activity_main_excel_export_menu">Export data to excel file</string>
+    <string name="activity_main_period_select_menu_date">Filter</string>
+    <string name="activity_main_car_profile_menu">Car profile list</string>
+    <string name="activity_main_pdf_export_menu">Export data to PDF file</string>
 
     <string name="data_fragment_add_fab">Add record</string>
     <string name="data_fragment_snackbar_message">Record successfully removed</string>
@@ -154,9 +154,12 @@
     <string name="activity_first_dialog_fail_title">Car profile create fail</string>
     <string name="activity_first_dialog_fail_message">Car profile was not created. Please try again.</string>
 
-    <string name="log_spreadsheet_created_date_label">Date</string>
-    <string name="log_spreadsheet_mileage_label">Mileage</string>
-    <string name="log_spreadsheet_description_label">Description</string>
+    <string name="log_export_car_body_text">Body:</string>
+    <string name="log_export_engine_text">Engine:</string>
+    <string name="log_export_created_date_label">Date</string>
+    <string name="log_export_mileage_label">Mileage</string>
+    <string name="log_export_description_label">Description</string>
+    <string name="log_export_no_entries">No entries</string>
 
     <string name="shared_preferences_name" translatable="false">app_preferences</string>
     <string name="main_screen_key" translatable="false">main_screen</string>
