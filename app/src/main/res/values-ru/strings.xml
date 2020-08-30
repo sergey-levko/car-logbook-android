@@ -6,9 +6,9 @@
     <string name="activity_main_navigation_menu_log_item">Журнал</string>
     <string name="activity_main_navigation_menu_fuel_item">Топливо</string>
     <string name="activity_main_navigation_menu_settings_item">Настройки</string>
-    <string name="activity_main_period_select_menu_date">Периуд</string>
-    <string name="activity_main_car_profile_menu">Профиль авто</string>
-    <string name="activity_main_excel_export_menu">Экспорт данных в excel файл</string>
+    <string name="activity_main_period_select_menu_date">Фильтр</string>
+    <string name="activity_main_car_profile_menu">Список профилей авто</string>
+    <string name="activity_main_pdf_export_menu">Экспорт данных в PDF файл</string>
 
     <string name="data_fragment_add_fab">Добавить запись</string>
     <string name="data_fragment_snackbar_message">Запись успешно удалена</string>
@@ -152,7 +152,10 @@
     <string name="activity_first_dialog_fail_title">Не удалось создать профиль автомобиля</string>
     <string name="activity_first_dialog_fail_message">Профиль автомобиля не был создан. Пожалуйста попробуйте ещё раз.</string>
 
-    <string name="log_spreadsheet_created_date_label">Дата</string>
-    <string name="log_spreadsheet_mileage_label">Пробег</string>
-    <string name="log_spreadsheet_description_label">Описание</string>
+    <string name="log_export_car_body_text">Кузов:</string>
+    <string name="log_export_engine_text">Двигатель:</string>
+    <string name="log_export_created_date_label">Дата</string>
+    <string name="log_export_mileage_label">Пробег</string>
+    <string name="log_export_description_label">Описание</string>
+    <string name="log_export_no_entries">Записей нет</string>
 </resources>

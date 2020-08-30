@@ -12,6 +12,9 @@ class CarProfileRepository(context: Context) : Repository<CarProfileData, CarPro
 
     private val database = CarLogbookDatabase(context)
 
+    fun selectById(id: Long) =
+        SelectByIdAsyncTask(database).execute(id).get().let { convertToData(it) }
+
     override fun selectAll() =
         SelectAllCarProfileAsyncTask(database).execute().get().map { convertToData(it) }
 
@@ -43,6 +46,12 @@ class CarProfileRepository(context: Context) : Repository<CarProfileData, CarPro
             CarFuelType.valueOf(entity.fuelType),
             entity.engineVolume
         )
+}
+
+class SelectByIdAsyncTask(private val db: CarLogbookDatabase) : AsyncTask<Long, Unit, CarProfileEntity>() {
+
+    override fun doInBackground(vararg params: Long?) =
+        db.carProfileDao().findById(params[0]!!)
 }
 
 class SelectAllCarProfileAsyncTask(private val db: CarLogbookDatabase) : AsyncTask<Unit, Unit, List<CarProfileEntity>>() {
