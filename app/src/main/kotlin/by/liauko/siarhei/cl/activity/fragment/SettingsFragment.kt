@@ -65,6 +65,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         toolbar.title = getString(R.string.settings_fragment_title)
         toolbar.menu.findItem(R.id.period_select_menu_date).isVisible = false
         toolbar.menu.findItem(R.id.car_profile_menu).isVisible = false
+        toolbar.menu.findItem(R.id.export_to_exel).isVisible = false
     }
 
     private val preferenceChangeListener = Preference.OnPreferenceChangeListener { preference, newValue ->
