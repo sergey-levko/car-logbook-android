@@ -19,6 +19,7 @@ import by.liauko.siarhei.cl.activity.element.PeriodSelectorElement
 import by.liauko.siarhei.cl.activity.fragment.DataFragment
 import by.liauko.siarhei.cl.activity.fragment.SettingsFragment
 import by.liauko.siarhei.cl.database.CarLogbookDatabase
+import by.liauko.siarhei.cl.repository.CarProfileRepository
 import by.liauko.siarhei.cl.repository.LogRepository
 import by.liauko.siarhei.cl.repository.SelectAllCarProfileAsyncTask
 import by.liauko.siarhei.cl.util.AppResultCodes.CAR_PROFILE_FIRST_START
@@ -34,7 +35,7 @@ import by.liauko.siarhei.cl.util.ApplicationUtil.profileName
 import by.liauko.siarhei.cl.util.ApplicationUtil.type
 import by.liauko.siarhei.cl.util.DataPeriod
 import by.liauko.siarhei.cl.util.DataType
-import by.liauko.siarhei.cl.util.ExportToExcelAsyncTask
+import by.liauko.siarhei.cl.util.ExportToPdfAsyncTask
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.util.Calendar
 
@@ -227,7 +228,8 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun exportDataToExcelFile(directoryUri: Uri) {
-        val data = LogRepository(applicationContext).selectAllByProfileId(profileId)
-        ExportToExcelAsyncTask(this, directoryUri, data).execute()
+        val data = LogRepository(applicationContext).selectAllByProfileId(profileId).sortedBy { it.time }
+        val carData = CarProfileRepository(applicationContext).selectById(profileId)
+        ExportToPdfAsyncTask(this, directoryUri, data, carData).execute()
     }
 }
