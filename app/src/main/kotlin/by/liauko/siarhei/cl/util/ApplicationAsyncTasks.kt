@@ -62,24 +62,18 @@ class ExportToPdfAsyncTask(
         val canvas = page.canvas
 
         // Print document title
-        val titlePaint = Paint()
-        titlePaint.textAlign = Paint.Align.CENTER
+        val titlePaint = createPaint(80f, Paint.Align.CENTER)
         titlePaint.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-        titlePaint.textSize = 80f
         canvas.drawText(carData.name, a4Width / 2f, 150f, titlePaint)
 
         // Print information about car
-        val carInfoPaint = Paint()
-        carInfoPaint.textAlign = Paint.Align.CENTER
-        carInfoPaint.typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL)
-        carInfoPaint.textSize = 60f
         val engineVolume = if (carData.engineVolume != null) carData.engineVolume.toString() + space else EMPTY_STRING
         val carInfoText = context.getString(R.string.log_export_car_body_text) + space +
                 bodyTypes[carData.bodyType.ordinal] + "," + space +
                 context.getString(R.string.log_export_engine_text) + space +
                 engineVolume +
                 fuelTypes[carData.fuelType.ordinal]
-        canvas.drawText(carInfoText, a4Width/2f, 240f, carInfoPaint)
+        canvas.drawText(carInfoText, a4Width/2f, 240f, createPaint(60f, Paint.Align.CENTER))
 
         // Print table header or notification that nothing to show
         val finalPage: PdfDocument.Page
@@ -87,11 +81,7 @@ class ExportToPdfAsyncTask(
             finalPage = printLogData(document, page)
         } else {
             finalPage = page
-            val textPaint = Paint()
-            textPaint.textSize = 50f
-            textPaint.textAlign = Paint.Align.CENTER
-            textPaint.style = Paint.Style.FILL
-            canvas.drawText(context.getString(R.string.log_export_no_entries), a4Width / 2f, 370f, textPaint)
+            canvas.drawText(context.getString(R.string.log_export_no_entries), a4Width / 2f, 370f, createPaint(50f, Paint.Align.CENTER))
         }
 
         document.finishPage(finalPage)
@@ -130,10 +120,7 @@ class ExportToPdfAsyncTask(
         drawTableHeader(canvas, 300f, 400f)
 
         // Prepare style for log data text
-        val textPaint = Paint()
-        textPaint.textSize = 50f
-        textPaint.textAlign = Paint.Align.LEFT
-        textPaint.style = Paint.Style.FILL
+        val textPaint = createPaint(50f, Paint.Align.LEFT)
 
         // Prepare style for long text
         val longTextPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
@@ -177,10 +164,7 @@ class ExportToPdfAsyncTask(
         tablePaint.strokeWidth = 2f
         canvas.drawRect(40f, top, a4Width-40f, bottom, tablePaint)
 
-        val tableHeaderPaint = Paint()
-        tableHeaderPaint.textSize = 50f
-        tableHeaderPaint.textAlign = Paint.Align.LEFT
-        tableHeaderPaint.style = Paint.Style.FILL
+        val tableHeaderPaint = createPaint(50f, Paint.Align.LEFT)
         canvas.drawText(context.getString(R.string.log_export_created_date_label), 60f, bottom - 30, tableHeaderPaint)
         canvas.drawText(context.getString(R.string.log_export_mileage_label), 360f, bottom - 30, tableHeaderPaint)
         canvas.drawText(context.getString(R.string.log_export_description_label), 660f, bottom - 30, tableHeaderPaint)
@@ -207,6 +191,14 @@ class ExportToPdfAsyncTask(
                 false
             )
         }
+
+    private fun createPaint(textSize: Float, textAlign: Paint.Align): Paint {
+        val textPaint = Paint()
+        textPaint.textSize = textSize
+        textPaint.textAlign = textAlign
+
+        return textPaint
+    }
 }
 
 /**
