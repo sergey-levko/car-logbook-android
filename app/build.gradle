@@ -23,7 +23,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 12
-        versionName "4.1"
+        versionName "4.2-SNAPSHOT"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.release
         javaCompileOptions {
