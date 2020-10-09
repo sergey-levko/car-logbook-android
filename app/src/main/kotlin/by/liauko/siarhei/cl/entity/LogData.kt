@@ -5,5 +5,6 @@ class LogData(
     time: Long,
     var title: String,
     var text: String,
-    var mileage: Long
+    var mileage: Long,
+    var profileId: Long?
 ) : AppData (id, time)

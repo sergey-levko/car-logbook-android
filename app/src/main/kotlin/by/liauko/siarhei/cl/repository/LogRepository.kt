@@ -50,7 +50,7 @@ class LogRepository(context: Context) : DataRepository {
             data.text,
             data.mileage,
             data.time,
-            null
+            data.profileId
         )
 
     private fun convertToData(entity: LogEntity) =
@@ -59,6 +59,7 @@ class LogRepository(context: Context) : DataRepository {
             entity.time,
             entity.title,
             entity.text,
-            entity.mileage
+            entity.mileage,
+            entity.profileId
         )
 }

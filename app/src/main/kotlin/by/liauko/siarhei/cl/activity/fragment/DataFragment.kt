@@ -135,7 +135,7 @@ class DataFragment : Fragment() {
                         FuelConsumptionEntity(null, fuelConsumption, litres, distance, time, profileId)
                     )
                     if (id != -1L) {
-                        items.add(FuelConsumptionData(id, time, fuelConsumption, litres, distance))
+                        items.add(FuelConsumptionData(id, time, fuelConsumption, litres, distance, profileId))
                         rvAdapter.refreshRecyclerView()
                     }
                 }
@@ -160,7 +160,7 @@ class DataFragment : Fragment() {
                         LogEntity(null, title, text, mileage, time, profileId)
                     )
                     if (id != -1L) {
-                        items.add(LogData(id, time, title, text, mileage))
+                        items.add(LogData(id, time, title, text, mileage, profileId))
                         rvAdapter.refreshRecyclerView()
                     }
                 }
