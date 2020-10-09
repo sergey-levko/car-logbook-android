@@ -50,7 +50,7 @@ class FuelConsumptionRepository(context: Context) : DataRepository {
             data.litres,
             data.distance,
             data.time,
-            null
+            data.profileId
         )
 
     private fun convertToData(entity: FuelConsumptionEntity) =
@@ -59,6 +59,7 @@ class FuelConsumptionRepository(context: Context) : DataRepository {
             entity.time,
             entity.fuelConsumption,
             entity.litres,
-            entity.distance
+            entity.distance,
+            entity.profileId
         )
 }

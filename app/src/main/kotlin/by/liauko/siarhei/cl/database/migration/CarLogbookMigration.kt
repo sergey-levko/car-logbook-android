@@ -17,7 +17,7 @@ object CarLogbookMigration {
                 )
             """.trimIndent())
             database.execSQL("ALTER TABLE fuel_consumption ADD COLUMN profile_id INTEGER")
-            database.execSQL("ALTER TABLE log ADD COLUMN profile_id INTEGER ")
+            database.execSQL("ALTER TABLE log ADD COLUMN profile_id INTEGER")
             database.execSQL("""
                 INSERT INTO car_profile (name, body_type, fuel_type, engine_volume) 
                 VALUES ('Default Car Profile', 'SEDAN', 'GASOLINE', 1.0)
