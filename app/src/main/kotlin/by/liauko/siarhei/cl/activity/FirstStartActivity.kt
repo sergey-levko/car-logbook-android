@@ -101,6 +101,10 @@ class FirstStartActivity : AppCompatActivity(),
         }
     }
 
+    override fun onBackPressed() {
+        finishAffinity()
+    }
+
     private fun showFailDialog() {
         ApplicationUtil.createAlertDialog(
             applicationContext,
