@@ -37,4 +37,10 @@
         <item>Гибрид</item>
         <item>Электричество</item>
     </string-array>
+
+    <string-array name="theme_mode">
+        <item>Системная</item>
+        <item>Светлая</item>
+        <item>Тёмная</item>
+    </string-array>
 </resources>

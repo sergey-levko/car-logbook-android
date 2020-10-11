@@ -20,9 +20,8 @@ import by.liauko.siarhei.cl.util.DateConverter
 import java.util.Calendar
 
 class RecyclerViewDataAdapter(
-    val dataSet: ArrayList<AppData>,
-    val resources: Resources,
-    val repositoryCollection: AppRepositoryCollection,
+    private val dataSet: ArrayList<AppData>,
+    private val resources: Resources,
     private val noDataTextView: TextView,
     private val listener: RecyclerViewOnItemClickListener
 ) : RecyclerView.Adapter<RecyclerViewDataViewHolder>() {

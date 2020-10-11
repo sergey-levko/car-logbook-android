@@ -8,12 +8,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.liauko.siarhei.cl.R
-import by.liauko.siarhei.cl.activity.FuelDataDialogActivity
+import by.liauko.siarhei.cl.activity.FuelDataActivity
 import by.liauko.siarhei.cl.activity.LogDataActivity
 import by.liauko.siarhei.cl.database.entity.FuelConsumptionEntity
 import by.liauko.siarhei.cl.database.entity.LogEntity
@@ -21,7 +21,6 @@ import by.liauko.siarhei.cl.entity.AppData
 import by.liauko.siarhei.cl.entity.FuelConsumptionData
 import by.liauko.siarhei.cl.entity.LogData
 import by.liauko.siarhei.cl.recyclerview.adapter.RecyclerViewDataAdapter
-import by.liauko.siarhei.cl.recyclerview.RecyclerViewSwipeController
 import by.liauko.siarhei.cl.repository.AppRepositoryCollection
 import by.liauko.siarhei.cl.util.AppResultCodes.FUEL_CONSUMPTION_ADD
 import by.liauko.siarhei.cl.util.AppResultCodes.LOG_ADD
@@ -35,6 +34,7 @@ import by.liauko.siarhei.cl.util.ApplicationUtil.type
 import by.liauko.siarhei.cl.util.DataPeriod
 import by.liauko.siarhei.cl.util.DataType
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import java.util.Calendar
 
 class DataFragment : Fragment() {
@@ -66,7 +66,7 @@ class DataFragment : Fragment() {
                     LOG_ADD
                 )
                 DataType.FUEL -> startActivityForResult(
-                    Intent(requireContext(), FuelDataDialogActivity::class.java),
+                    Intent(requireContext(), FuelDataActivity::class.java),
                     FUEL_CONSUMPTION_ADD
                 )
             }
@@ -85,14 +85,13 @@ class DataFragment : Fragment() {
             RecyclerViewDataAdapter(
                 items,
                 resources,
-                repositoryCollection,
                 noDataTextView,
                 object : RecyclerViewDataAdapter.RecyclerViewOnItemClickListener {
                     override fun onItemClick(item: AppData) {
                         if (item is LogData) {
                             callLogEditActivityForResult(LogDataActivity::class.java, item)
                         } else if (item is FuelConsumptionData) {
-                            callFuelConsumptionEditActivityForResult(FuelDataDialogActivity::class.java, item)
+                            callFuelConsumptionEditActivityForResult(FuelDataActivity::class.java, item)
                         }
                     }
                 })
@@ -112,13 +111,6 @@ class DataFragment : Fragment() {
                 }
             }
         })
-
-        val helper = ItemTouchHelper(
-            RecyclerViewSwipeController(
-                rvAdapter
-            )
-        )
-        helper.attachToRecyclerView(recyclerView)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -141,16 +133,23 @@ class DataFragment : Fragment() {
                 }
                 FUEL_CONSUMPTION_EDIT -> {
                     val id = data.getLongExtra("id", -1L)
-                    val litres = data.getStringExtra("litres")?.toDouble() ?: Double.MIN_VALUE
-                    val distance = data.getStringExtra("distance")?.toDouble() ?: Double.MIN_VALUE
-                    val fuelConsumption = litres * 100 / distance
                     val item = items.find { it.id == id } as FuelConsumptionData
-                    item.litres = litres
-                    item.distance = distance
-                    item.fuelConsumption = fuelConsumption
-                    item.time = time
-                    repositoryCollection.getRepository(type).update(item)
-                    rvAdapter.refreshRecyclerView()
+
+                    if (data.getBooleanExtra("remove", false)) {
+                        val position = items.indexOf(item)
+                        rvAdapter.removeItem(position)
+                        showRemoveItemSnackbar(item, position)
+                    } else {
+                        val litres = data.getStringExtra("litres")?.toDouble() ?: Double.MIN_VALUE
+                        val distance = data.getStringExtra("distance")?.toDouble() ?: Double.MIN_VALUE
+                        val fuelConsumption = litres * 100 / distance
+                        item.litres = litres
+                        item.distance = distance
+                        item.fuelConsumption = fuelConsumption
+                        item.time = time
+                        repositoryCollection.getRepository(type).update(item)
+                        rvAdapter.refreshRecyclerView()
+                    }
                 }
                 LOG_ADD -> {
                     val title = data.getStringExtra("title")?.trim() ?: EMPTY_STRING
@@ -171,7 +170,7 @@ class DataFragment : Fragment() {
                     if (data.getBooleanExtra("remove", false)) {
                         val position = items.indexOf(item)
                         rvAdapter.removeItem(position)
-                        repositoryCollection.getRepository(type).delete(item)
+                        showRemoveItemSnackbar(item, position)
                     } else {
                         val title = data.getStringExtra("title") ?: EMPTY_STRING
                         val text = data.getStringExtra("text") ?: EMPTY_STRING
@@ -202,7 +201,6 @@ class DataFragment : Fragment() {
     private fun callFuelConsumptionEditActivityForResult(activityClass: Class<*>, item: FuelConsumptionData) {
         val intent = Intent(requireContext(), activityClass)
         intent.putExtra("title", R.string.data_dialog_title_edit)
-        intent.putExtra("positive_button", R.string.data_dialog_positive_button_edit)
         intent.putExtra("id", item.id)
         intent.putExtra("time", item.time)
         intent.putExtra("litres", item.litres)
@@ -217,7 +215,7 @@ class DataFragment : Fragment() {
             else -> true
         }
         toolbar.menu.findItem(R.id.car_profile_menu).isVisible = true
-        toolbar.menu.findItem(R.id.export_to_exel).isVisible = when (type) {
+        toolbar.menu.findItem(R.id.export_to_pdf).isVisible = when (type) {
             DataType.LOG -> true
             DataType.FUEL -> false
         }
@@ -228,5 +226,21 @@ class DataFragment : Fragment() {
             else -> items.addAll(repositoryCollection.getRepository(type).selectAllByProfileIdAndPeriod(profileId))
         }
         rvAdapter.refreshRecyclerView()
+    }
+
+    private fun showRemoveItemSnackbar(item: AppData, position: Int) {
+        val view = fragmentView.findViewById<CoordinatorLayout>(R.id.recyclerview_coordinator_layout)
+        Snackbar.make(view, R.string.data_fragment_snackbar_message,
+            Snackbar.LENGTH_LONG
+        ).setAction(R.string.data_fragment_snackbar_undo) {
+            rvAdapter.restoreItem(item, position)
+        }.addCallback(object : Snackbar.Callback() {
+            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                super.onDismissed(transientBottomBar, event)
+                if (event != DISMISS_EVENT_ACTION) {
+                    repositoryCollection.getRepository(type).delete(item)
+                }
+            }
+        }).show()
     }
 }

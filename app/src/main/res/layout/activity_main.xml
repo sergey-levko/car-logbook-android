@@ -12,8 +12,7 @@
             android:layout_height="?attr/actionBarSize"
             android:elevation="4dp"
             android:background="@color/toolbarPrimary"
-            android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.MaterialComponents" />
+            android:theme="@style/ThemeOverlay.MaterialComponents.ActionBar" />
 
     <FrameLayout
             android:id="@+id/main_frame_container"

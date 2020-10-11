@@ -45,3 +45,7 @@ enum class CarBodyType {
 enum class CarFuelType {
     GASOLINE, DIESEL, GAS, ETHANOL, HYBRID, ELECTRICITY
 }
+
+enum class ThemeMode {
+    SYSTEM, LIGHT, DARK
+}

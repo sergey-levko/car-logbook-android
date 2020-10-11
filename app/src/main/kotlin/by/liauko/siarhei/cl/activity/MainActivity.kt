@@ -15,7 +15,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import by.liauko.siarhei.cl.R
-import by.liauko.siarhei.cl.activity.element.PeriodSelectorElement
 import by.liauko.siarhei.cl.activity.fragment.DataFragment
 import by.liauko.siarhei.cl.activity.fragment.SettingsFragment
 import by.liauko.siarhei.cl.database.CarLogbookDatabase
@@ -47,8 +46,6 @@ class MainActivity : AppCompatActivity(),
 
     private lateinit var toolbar: Toolbar
     private lateinit var bottomNavigationView: BottomNavigationView
-    private lateinit var periodSelector: PeriodSelectorElement
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val preferences = getSharedPreferences(getString(R.string.shared_preferences_name), Context.MODE_PRIVATE)
@@ -58,7 +55,7 @@ class MainActivity : AppCompatActivity(),
             AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
         else
             AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-        val uiMode = preferences.getInt(getString(R.string.dark_mode_key), defaultUiMode)
+        val uiMode = preferences.getInt(getString(R.string.theme_key), defaultUiMode)
         AppCompatDelegate.setDefaultNightMode(uiMode)
 
         super.onCreate(savedInstanceState)
@@ -68,9 +65,12 @@ class MainActivity : AppCompatActivity(),
         profileName = preferences.getString(getString(R.string.car_profile_name_key), getString(R.string.app_name)) ?: EMPTY_STRING
         checkCarProfile(preferences)
 
-        periodSelector = PeriodSelectorElement(this, findViewById(R.id.main_coordinator_layout))
         initToolbar()
         initBottomNavigationView()
+
+        if (savedInstanceState == null) {
+            startActivity(Intent(applicationContext, LaunchScreenActivity::class.java))
+        }
     }
 
     private fun initToolbar() {
@@ -80,17 +80,17 @@ class MainActivity : AppCompatActivity(),
             var result = false
             when (it.itemId) {
                 R.id.period_select_menu_date -> {
-                    if (!periodSelector.isShown) {
-                        periodSelector.show()
-                    } else {
-                        periodSelector.hide()
-                    }
+                    startActivityForResult(Intent(applicationContext, PeriodSelectorActivity::class.java), PERIOD_DIALOG_RESULT)
                     result = true
                 }
-                R.id.car_profile_menu ->
+                R.id.car_profile_menu -> {
                     startActivityForResult(Intent(applicationContext, CarProfilesActivity::class.java), CAR_PROFILE_SHOW_LIST)
-                R.id.export_to_exel ->
+                    result = true
+                }
+                R.id.export_to_pdf -> {
                     startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), LOG_EXPORT)
+                    result = true
+                }
             }
 
             return@setOnMenuItemClickListener result
@@ -125,7 +125,6 @@ class MainActivity : AppCompatActivity(),
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         var result = false
-        periodSelector.hide()
 
         when (item.itemId) {
             R.id.log_menu_item -> {
@@ -154,7 +153,7 @@ class MainActivity : AppCompatActivity(),
             .commit()
     }
 
-    fun loadFragment() {
+    private fun loadFragment() {
         when (bottomNavigationView.selectedItemId) {
             R.id.log_menu_item -> loadDataFragment()
             R.id.fuel_menu_item -> loadDataFragment()
@@ -167,12 +166,10 @@ class MainActivity : AppCompatActivity(),
 
         if (resultCode == RESULT_OK) {
             when (requestCode) {
-                PERIOD_DIALOG_RESULT -> periodSelector.updateYear(data?.getStringExtra("year"))
+                PERIOD_DIALOG_RESULT -> loadFragment()
                 CAR_PROFILE_SHOW_LIST -> loadFragment()
-                CAR_PROFILE_FIRST_START -> {
-                    loadFragment()
-                }
-                LOG_EXPORT -> exportDataToExcelFile(data?.data ?: Uri.EMPTY)
+                CAR_PROFILE_FIRST_START -> loadFragment()
+                LOG_EXPORT -> exportDataToPdfFile(data?.data ?: Uri.EMPTY)
             }
         } else if (resultCode == RESULT_CANCELED && requestCode == CAR_PROFILE_SHOW_LIST) {
             loadFragment()
@@ -227,7 +224,7 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    private fun exportDataToExcelFile(directoryUri: Uri) {
+    private fun exportDataToPdfFile(directoryUri: Uri) {
         val data = LogRepository(applicationContext).selectAllByProfileId(profileId).sortedBy { it.time }
         val carData = CarProfileRepository(applicationContext).selectById(profileId)
         ExportToPdfAsyncTask(this, directoryUri, data, carData).execute()

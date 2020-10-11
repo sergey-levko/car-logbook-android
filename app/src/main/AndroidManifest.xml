@@ -11,14 +11,11 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppDefault">
-        <activity
-                android:name=".activity.YearSelectorDialogActivity"
+        <activity android:name=".activity.YearSelectorDialogActivity"
                 android:theme="@style/DialogDefault"
                 android:windowSoftInputMode="stateVisible" />
         <activity android:name=".activity.LogDataActivity" />
-        <activity
-                android:name=".activity.FuelDataDialogActivity"
-                android:theme="@style/DialogDefault" />
+        <activity android:name=".activity.FuelDataActivity" />
         <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,6 +25,11 @@
         <activity android:name=".activity.CarDataActivity" />
         <activity android:name=".activity.CarProfilesActivity" />
         <activity android:name=".activity.FirstStartActivity" />
+        <activity android:name=".activity.LaunchScreenActivity"
+                android:theme="@style/LaunchScreen" />
+        <activity
+                android:name=".activity.PeriodSelectorActivity"
+                android:theme="@style/DialogNoTitle" />
     </application>
 
 </manifest>

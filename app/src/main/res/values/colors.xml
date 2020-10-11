@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#725583</color>
-    <color name="primaryDark">#462b56</color>
-    <color name="secondary">#ffa000</color>
-    <color name="secondaryVariant">#c67100</color>
-    <color name="background">#fff</color>
+    <color name="primary">#c62828</color>
+    <color name="primaryDark">#c7c7c7</color>
+    <color name="secondary">#c62828</color>
+    <color name="secondaryVariant">#ab000d</color>
+    <color name="background">#eaeaea</color>
     <color name="surface">#f2f2f2</color>
     <color name="error">#b00020</color>
-    <color name="onPrimary">#fff</color>
-    <color name="onSecondary">#fff</color>
-    <color name="onBackground">#000</color>
-    <color name="onSurface">#000</color>
-    <color name="onError">#fff</color>
+    <color name="onPrimary">#121212</color>
+    <color name="onSecondary">#fafafa</color>
+    <color name="onBackground">#121212</color>
+    <color name="onSurface">#121212</color>
+    <color name="onError">#fafafa</color>
 
-    <color name="toolbarPrimary">#725583</color>
+    <color name="toolbarPrimary">#fafafa</color>
 
-    <color name="datePickerBackground">#fff</color>
+    <color name="datePickerBackground">#fafafa</color>
+
+    <color name="launchScreenBackground">#ab000d</color>
+    <color name="launchScreenAppLogo">#fafafa</color>
+    <color name="launchScreenCompanyLogo">#ff5131</color>
 
     <color name="white">#fff</color>
     <color name="black">#000</color>

@@ -50,4 +50,12 @@
         <item name="android:windowIsFloating">false</item>
     </style>
 
+    <style name="LaunchScreen" parent="AppDefault">
+        <item name="colorPrimaryDark">@color/launchScreenBackground</item>
+    </style>
+
+    <style name="DialogNoTitle" parent="DialogDefault">
+        <item name="windowNoTitle">true</item>
+    </style>
+
 </resources>

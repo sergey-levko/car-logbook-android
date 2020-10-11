@@ -1,16 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:gravity="center" >
+        tools:context=".activity.FuelDataActivity">
+
+    <androidx.appcompat.widget.Toolbar
+            android:id="@+id/fuel_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:elevation="4dp"
+            android:background="@color/toolbarPrimary"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+
+            android:layout_marginBottom="4dp" />
 
     <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp">
 
         <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/fuel_date"
@@ -26,7 +39,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp">
 
         <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/distance"
@@ -42,7 +59,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp">
 
         <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/litres"
@@ -53,29 +74,5 @@
                 android:inputType="numberDecimal"
                 android:drawablePadding="8dp" />
     </com.google.android.material.textfield.TextInputLayout>
-
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:gravity="end|bottom"
-            android:layout_marginTop="8dp">
-
-        <com.google.android.material.button.MaterialButton
-                android:id="@+id/fuel_dialog_negative_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/cancel"
-                android:layout_marginEnd="4dp"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                app:strokeColor="@color/primary"
-                app:strokeWidth="1dp" />
-
-        <com.google.android.material.button.MaterialButton
-                android:id="@+id/fuel_dialog_positive_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-    </LinearLayout>
 
 </LinearLayout>
