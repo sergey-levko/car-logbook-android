@@ -6,12 +6,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
 import android.view.View
-import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
 import android.widget.DatePicker
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import by.liauko.siarhei.cl.R
 import by.liauko.siarhei.cl.util.DateConverter
 import java.util.Calendar
@@ -19,8 +18,7 @@ import java.util.Calendar.DAY_OF_MONTH
 import java.util.Calendar.MONTH
 import java.util.Calendar.YEAR
 
-class FuelDataDialogActivity : AppCompatActivity(),
-    View.OnClickListener,
+class FuelDataActivity : AppCompatActivity(),
     DatePickerDialog.OnDateSetListener {
 
     private val defaultId = -1L
@@ -29,25 +27,64 @@ class FuelDataDialogActivity : AppCompatActivity(),
     private lateinit var distance: EditText
     private lateinit var date: EditText
     private lateinit var calendar: Calendar
+    private lateinit var toolbar: Toolbar
 
     private var id = defaultId
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fuel_data)
-        val parameters = window.attributes
-        parameters.width = WindowManager.LayoutParams.MATCH_PARENT
-        window.attributes = parameters
-
-        setTitle(intent.getIntExtra("title", R.string.data_dialog_title_add))
-        calendar = Calendar.getInstance()
-        initElements()
 
         id = intent.getLongExtra("id", defaultId)
+
+        calendar = Calendar.getInstance()
+        initToolbar()
+        initElements()
         if (id != defaultId) {
             fillData()
         }
         updateDateButtonText()
+    }
+
+    private fun initToolbar() {
+        toolbar = findViewById(R.id.fuel_toolbar)
+        toolbar.setTitle(intent.getIntExtra("title", R.string.data_dialog_title_add))
+        toolbar.setNavigationIcon(R.drawable.arrow_left_white)
+        toolbar.setNavigationOnClickListener {
+            handleBackAction()
+        }
+        toolbar.inflateMenu(R.menu.data_activity_menu)
+        toolbar.setOnMenuItemClickListener {
+            var result = false
+            when (it.itemId) {
+                R.id.data_menu_save -> {
+                    if (validateFields()) {
+                        val intent = Intent()
+                        fillIntent(intent)
+                        setResult(RESULT_OK, intent)
+                        finish()
+                        result = true
+                    }
+                }
+                R.id.data_menu_delete -> {
+                    val intent = Intent()
+                    intent.putExtra("remove", true)
+                    intent.putExtra("id", id)
+                    setResult(RESULT_OK, intent)
+                    finish()
+                    result = true
+                }
+            }
+
+            return@setOnMenuItemClickListener result
+        }
+        if (id == defaultId) {
+            toolbar.menu.findItem(R.id.data_menu_save).isVisible = true
+            toolbar.menu.findItem(R.id.data_menu_delete).isVisible = false
+        } else {
+            toolbar.menu.findItem(R.id.data_menu_save).isVisible = false
+            toolbar.menu.findItem(R.id.data_menu_delete).isVisible = true
+        }
     }
 
     private fun initElements() {
@@ -62,12 +99,6 @@ class FuelDataDialogActivity : AppCompatActivity(),
                 showDatePickerDialog(view)
             }
         }
-
-        val positiveButton = findViewById<Button>(R.id.fuel_dialog_positive_button)
-        positiveButton.setOnClickListener(this)
-        positiveButton.setText(intent.getIntExtra("positive_button", R.string.data_dialog_positive_button_add))
-
-        findViewById<Button>(R.id.fuel_dialog_negative_button).setOnClickListener(this)
     }
 
     private fun showDatePickerDialog(view: View) {
@@ -103,28 +134,6 @@ class FuelDataDialogActivity : AppCompatActivity(),
         return result
     }
 
-    override fun onClick(v: View?) {
-        if (v != null) {
-            when (v.id) {
-                R.id.fuel_dialog_positive_button -> {
-                    if (validateFields()) {
-                        val intent = Intent()
-                        intent.putExtra("id", id)
-                        intent.putExtra("litres", litres.text.toString())
-                        intent.putExtra("distance", distance.text.toString())
-                        intent.putExtra("time", calendar.timeInMillis)
-                        setResult(RESULT_OK, intent)
-                        finish()
-                    }
-                }
-                R.id.fuel_dialog_negative_button -> {
-                    setResult(RESULT_CANCELED)
-                    finish()
-                }
-            }
-        }
-    }
-
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
         calendar.set(YEAR, year)
         calendar.set(MONTH, month)
@@ -132,8 +141,33 @@ class FuelDataDialogActivity : AppCompatActivity(),
         updateDateButtonText()
     }
 
+    override fun onBackPressed() {
+        handleBackAction()
+    }
+
     private fun updateDateButtonText() {
         date.text.clear()
         date.text.append(DateConverter.convert(calendar))
+    }
+
+    private fun handleBackAction() {
+        if (id != defaultId) {
+            if (validateFields()) {
+                val intent = Intent()
+                intent.putExtra("id", id)
+                fillIntent(intent)
+                setResult(RESULT_OK, intent)
+                finish()
+            }
+        } else {
+            setResult(RESULT_CANCELED)
+            finish()
+        }
+    }
+
+    private fun fillIntent(intent: Intent) {
+        intent.putExtra("litres", litres.text.toString())
+        intent.putExtra("distance", distance.text.toString())
+        intent.putExtra("time", calendar.timeInMillis)
     }
 }

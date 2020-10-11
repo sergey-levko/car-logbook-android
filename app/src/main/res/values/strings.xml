@@ -1,8 +1,9 @@
 <resources>
     <string name="app_name">Car logbook</string>
 
-    <string name="activity_main_navigation_view_open">Open</string>
-    <string name="activity_main_navigation_view_close">Close</string>
+    <string name="launch_screen_app_logo_content" translatable="false">app_logo</string>
+    <string name="launch_screen_company_logo_content" translatable="false">company_logo</string>
+
     <string name="activity_main_navigation_menu_log_item">Log</string>
     <string name="activity_main_navigation_menu_fuel_item">Fuel</string>
     <string name="activity_main_navigation_menu_settings_item">Settings</string>
@@ -20,8 +21,6 @@
     <string name="data_dialog_volume_parameter_hint">Volume (L)</string>
     <string name="data_dialog_distance_parameter_hint">Distance (km)</string>
     <string name="data_dialog_date_hint">Date</string>
-    <string name="data_dialog_positive_button_add">Add</string>
-    <string name="data_dialog_positive_button_edit">Save</string>
     <string name="data_dialog_volume_parameter_error">Volume value is required and can not be 0</string>
     <string name="data_dialog_distance_parameter_error">Distance value is required and can not be 0</string>
 
@@ -51,7 +50,7 @@
     <string name="settings_feedback_email_device">Device:</string>
     <string name="settings_preference_terms_title">Terms &amp; Conditions</string>
     <string name="settings_preference_terms_url" translatable="false">https://www.gnu.org/licenses/gpl-3.0.en.html</string>
-    <string name="settings_preference_dark_mode_title">Dark mode</string>
+    <string name="settings_preference_theme_title">Theme</string>
     <string name="settings_preference_period_title">Period</string>
     <string name="settings_preference_backup_item_title">Backup &amp; reset</string>
     <string name="settings_preference_backup_item_summary">Backup and reset options</string>
@@ -132,8 +131,6 @@
     <string name="activity_car_body_hint">Body type</string>
     <string name="activity_car_fuel_hint">Fuel type</string>
     <string name="activity_car_engine_hint">Engine volume (L)</string>
-    <string name="activity_car_save_button">Save</string>
-    <string name="activity_car_delete_button">Delete</string>
     <string name="activity_car_name_error">Profile name field is required</string>
     <string name="activity_car_engine_error">Engine volume value is required and can not be 0</string>
 
@@ -163,7 +160,7 @@
 
     <string name="shared_preferences_name" translatable="false">app_preferences</string>
     <string name="main_screen_key" translatable="false">main_screen</string>
-    <string name="dark_mode_key" translatable="false">dark_mode</string>
+    <string name="theme_key" translatable="false">theme</string>
     <string name="period_key" translatable="false">period</string>
     <string name="backup_switcher_key" translatable="false">backup_switcher</string>
     <string name="backup_frequency_key" translatable="false">backup_frequency</string>

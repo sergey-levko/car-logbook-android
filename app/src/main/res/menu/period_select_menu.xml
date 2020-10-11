@@ -3,7 +3,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-            android:id="@+id/export_to_exel"
+            android:id="@+id/export_to_pdf"
             android:title="@string/activity_main_pdf_export_menu"
             android:icon="@drawable/export_variant"
             app:showAsAction="ifRoom"/>

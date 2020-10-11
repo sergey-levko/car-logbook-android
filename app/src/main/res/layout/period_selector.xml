@@ -1,178 +1,163 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_height="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/period_selector"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
-    <View
-            android:id="@+id/period_selector_cover_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="@color/dialog_out_background"
-            android:visibility="visible" />
+        android:layout_height="wrap_content">
 
-    <LinearLayout
-            android:id="@+id/period_selector"
-            android:orientation="vertical"
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="4dp">
+
+        <ImageButton
+                android:id="@+id/previous_year_button"
+                android:layout_alignParentStart="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/period_dialog_previous_year_button_content_description"
+                android:background="@drawable/chevron_left_selector"
+                android:padding="16dp" />
+
+        <TextView
+                android:id="@+id/year_text_view"
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="24sp"
+                android:textColor="@color/onBackground" />
+
+        <ImageButton
+                android:id="@+id/next_year_button"
+                android:layout_alignParentEnd="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/period_dialog_next_year_button_content_description"
+                android:background="@drawable/chevron_right_selector"
+                android:padding="16dp" />
+
+    </RelativeLayout>
+
+    <GridLayout
+            android:id="@+id/months_grid_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="?attr/actionBarSize"
-            android:gravity="center_horizontal"
-            android:layout_alignParentEnd="true"
-            android:paddingTop="8dp"
-            android:background="@drawable/period_selector_background">
+            android:layout_gravity="center">
+        <Button
+                android:id="@+id/jan"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:textColor="@color/onBackground"
+                android:text="@string/period_dialog_jan"
+                android:layout_column="0"
+                android:layout_row="0" />
+        <Button
+                android:id="@+id/feb"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:textColor="@color/onBackground"
+                android:text="@string/period_dialog_feb"
+                android:layout_column="1"
+                android:layout_row="0" />
+        <Button
+                android:id="@+id/mar"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:textColor="@color/onBackground"
+                android:text="@string/period_dialog_mar"
+                android:layout_column="2"
+                android:layout_row="0" />
+        <Button
+                android:id="@+id/apr"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:textColor="@color/onBackground"
+                android:text="@string/period_dialog_apr"
+                android:layout_column="0"
+                android:layout_row="1" />
+        <Button
+                android:id="@+id/may"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:textColor="@color/onBackground"
+                android:text="@string/period_dialog_may"
+                android:layout_column="1"
+                android:layout_row="1" />
+        <Button
+                android:id="@+id/jun"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:textColor="@color/onBackground"
+                android:text="@string/period_dialog_jun"
+                android:layout_column="2"
+                android:layout_row="1" />
+        <Button
+                android:id="@+id/jul"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:textColor="@color/onBackground"
+                android:text="@string/period_dialog_jul"
+                android:layout_column="0"
+                android:layout_row="2" />
+        <Button
+                android:id="@+id/aug"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:textColor="@color/onBackground"
+                android:text="@string/period_dialog_aug"
+                android:layout_column="1"
+                android:layout_row="2" />
+        <Button
+                android:id="@+id/sep"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:textColor="@color/onBackground"
+                android:text="@string/period_dialog_sep"
+                android:layout_column="2"
+                android:layout_row="2" />
+        <Button
+                android:id="@+id/oct"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:textColor="@color/onBackground"
+                android:text="@string/period_dialog_oct"
+                android:layout_column="0"
+                android:layout_row="3" />
+        <Button
+                android:id="@+id/nov"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:textColor="@color/onBackground"
+                android:text="@string/period_dialog_nov"
+                android:layout_column="1"
+                android:layout_row="3" />
+        <Button
+                android:id="@+id/dec"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:textColor="@color/onBackground"
+                android:text="@string/period_dialog_dec"
+                android:layout_column="2"
+                android:layout_row="3" />
 
-        <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp">
+    </GridLayout>
 
-            <ImageButton
-                    android:id="@+id/previous_year_button"
-                    android:layout_alignParentStart="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@string/period_dialog_previous_year_button_content_description"
-                    android:background="@drawable/chevron_left_selector"
-                    android:padding="16dp" />
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="end|bottom"
+            android:paddingTop="4dp"
+            android:paddingHorizontal="4dp">
 
-            <TextView
-                    android:id="@+id/year_text_view"
-                    android:layout_centerInParent="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="24sp"
-                    android:textColor="@color/onBackground" />
-
-            <ImageButton
-                    android:id="@+id/next_year_button"
-                    android:layout_alignParentEnd="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@string/period_dialog_next_year_button_content_description"
-                    android:background="@drawable/chevron_right_selector"
-                    android:padding="16dp" />
-
-        </RelativeLayout>
-
-        <GridLayout
-                android:id="@+id/months_grid_layout"
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/period_dialog_negative_button"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-            <Button
-                    android:id="@+id/jan"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:textColor="@color/onBackground"
-                    android:text="@string/period_dialog_jan"
-                    android:layout_column="0"
-                    android:layout_row="0" />
-            <Button
-                    android:id="@+id/feb"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:textColor="@color/onBackground"
-                    android:text="@string/period_dialog_feb"
-                    android:layout_column="1"
-                    android:layout_row="0" />
-            <Button
-                    android:id="@+id/mar"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:textColor="@color/onBackground"
-                    android:text="@string/period_dialog_mar"
-                    android:layout_column="2"
-                    android:layout_row="0" />
-            <Button
-                    android:id="@+id/apr"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:textColor="@color/onBackground"
-                    android:text="@string/period_dialog_apr"
-                    android:layout_column="3"
-                    android:layout_row="0" />
-            <Button
-                    android:id="@+id/may"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:textColor="@color/onBackground"
-                    android:text="@string/period_dialog_may"
-                    android:layout_column="0"
-                    android:layout_row="1" />
-            <Button
-                    android:id="@+id/jun"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:textColor="@color/onBackground"
-                    android:text="@string/period_dialog_jun"
-                    android:layout_column="1"
-                    android:layout_row="1" />
-            <Button
-                    android:id="@+id/jul"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:textColor="@color/onBackground"
-                    android:text="@string/period_dialog_jul"
-                    android:layout_column="2"
-                    android:layout_row="1" />
-            <Button
-                    android:id="@+id/aug"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:textColor="@color/onBackground"
-                    android:text="@string/period_dialog_aug"
-                    android:layout_column="3"
-                    android:layout_row="1" />
-            <Button
-                    android:id="@+id/sep"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:textColor="@color/onBackground"
-                    android:text="@string/period_dialog_sep"
-                    android:layout_column="0"
-                    android:layout_row="2" />
-            <Button
-                    android:id="@+id/oct"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:textColor="@color/onBackground"
-                    android:text="@string/period_dialog_oct"
-                    android:layout_column="1"
-                    android:layout_row="2" />
-            <Button
-                    android:id="@+id/nov"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:textColor="@color/onBackground"
-                    android:text="@string/period_dialog_nov"
-                    android:layout_column="2"
-                    android:layout_row="2" />
-            <Button
-                    android:id="@+id/dec"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:textColor="@color/onBackground"
-                    android:text="@string/period_dialog_dec"
-                    android:layout_column="3"
-                    android:layout_row="2" />
+                android:layout_height="wrap_content"
+                android:text="@string/cancel"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                app:strokeColor="@color/primary"
+                app:strokeWidth="1dp"
+                android:layout_marginEnd="4dp" />
 
-        </GridLayout>
-
-        <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:gravity="end|bottom">
-
-            <com.google.android.material.button.MaterialButton
-                    android:id="@+id/period_dialog_negative_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/cancel"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    app:strokeColor="@color/primary"
-                    app:strokeWidth="1dp"
-                    android:layout_marginEnd="4dp" />
-
-            <com.google.android.material.button.MaterialButton
-                    android:id="@+id/period_dialog_positive_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="6dp" />
-
-        </LinearLayout>
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/period_dialog_positive_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="6dp" />
 
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>
