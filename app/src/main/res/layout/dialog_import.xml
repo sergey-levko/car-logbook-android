@@ -30,9 +30,7 @@
 
     <com.google.android.material.button.MaterialButton
             android:id="@+id/dialog_import_negative_button"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            app:strokeColor="@color/primary"
-            app:strokeWidth="1dp"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"

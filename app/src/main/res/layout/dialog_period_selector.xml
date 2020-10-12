@@ -3,6 +3,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/period_selector"
         android:orientation="vertical"
+        android:padding="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -139,24 +140,21 @@
             android:layout_height="match_parent"
             android:orientation="horizontal"
             android:gravity="end|bottom"
-            android:paddingTop="4dp"
-            android:paddingHorizontal="4dp">
+            android:paddingTop="4dp">
 
         <com.google.android.material.button.MaterialButton
                 android:id="@+id/period_dialog_negative_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/cancel"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                app:strokeColor="@color/primary"
-                app:strokeWidth="1dp"
+                style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
                 android:layout_marginEnd="4dp" />
 
         <com.google.android.material.button.MaterialButton
                 android:id="@+id/period_dialog_positive_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="6dp" />
+                style="@style/Widget.MaterialComponents.Button.TextButton.Dialog" />
 
     </LinearLayout>
 
