@@ -18,7 +18,8 @@
             android:layout_height="match_parent"
             android:layout_marginTop="?attr/actionBarSize"
             android:layout_marginBottom="?attr/actionBarSize"
-            android:padding="4dp" />
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="4dp" />
 
     <TextView
             android:id="@+id/no_files_for_import"
@@ -26,6 +27,7 @@
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="16sp"
             android:layout_marginTop="?attr/actionBarSize" />
 
     <com.google.android.material.button.MaterialButton

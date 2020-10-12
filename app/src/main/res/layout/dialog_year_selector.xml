@@ -11,6 +11,7 @@
             android:id="@+id/year_selector_input_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingHorizontal="16dp"
             android:inputType="number"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
@@ -35,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/cancel"
-                android:layout_marginEnd="4dp"
+                android:layout_marginEnd="8dp"
                 style="@style/Widget.MaterialComponents.Button.TextButton.Dialog" />
 
         <com.google.android.material.button.MaterialButton

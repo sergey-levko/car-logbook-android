@@ -10,10 +10,10 @@
     <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="4dp">
+            android:layout_marginBottom="8dp">
 
         <ImageButton
                 android:id="@+id/previous_year_button"
@@ -53,6 +53,7 @@
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:textColor="@color/onBackground"
                 android:text="@string/period_dialog_jan"
+                android:textSize="16sp"
                 android:layout_column="0"
                 android:layout_row="0" />
         <Button
@@ -60,6 +61,7 @@
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:textColor="@color/onBackground"
                 android:text="@string/period_dialog_feb"
+                android:textSize="16sp"
                 android:layout_column="1"
                 android:layout_row="0" />
         <Button
@@ -67,6 +69,7 @@
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:textColor="@color/onBackground"
                 android:text="@string/period_dialog_mar"
+                android:textSize="16sp"
                 android:layout_column="2"
                 android:layout_row="0" />
         <Button
@@ -74,6 +77,7 @@
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:textColor="@color/onBackground"
                 android:text="@string/period_dialog_apr"
+                android:textSize="16sp"
                 android:layout_column="0"
                 android:layout_row="1" />
         <Button
@@ -81,6 +85,7 @@
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:textColor="@color/onBackground"
                 android:text="@string/period_dialog_may"
+                android:textSize="16sp"
                 android:layout_column="1"
                 android:layout_row="1" />
         <Button
@@ -88,6 +93,7 @@
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:textColor="@color/onBackground"
                 android:text="@string/period_dialog_jun"
+                android:textSize="16sp"
                 android:layout_column="2"
                 android:layout_row="1" />
         <Button
@@ -95,6 +101,7 @@
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:textColor="@color/onBackground"
                 android:text="@string/period_dialog_jul"
+                android:textSize="16sp"
                 android:layout_column="0"
                 android:layout_row="2" />
         <Button
@@ -102,6 +109,7 @@
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:textColor="@color/onBackground"
                 android:text="@string/period_dialog_aug"
+                android:textSize="16sp"
                 android:layout_column="1"
                 android:layout_row="2" />
         <Button
@@ -109,6 +117,7 @@
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:textColor="@color/onBackground"
                 android:text="@string/period_dialog_sep"
+                android:textSize="16sp"
                 android:layout_column="2"
                 android:layout_row="2" />
         <Button
@@ -116,6 +125,7 @@
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:textColor="@color/onBackground"
                 android:text="@string/period_dialog_oct"
+                android:textSize="16sp"
                 android:layout_column="0"
                 android:layout_row="3" />
         <Button
@@ -123,6 +133,7 @@
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:textColor="@color/onBackground"
                 android:text="@string/period_dialog_nov"
+                android:textSize="16sp"
                 android:layout_column="1"
                 android:layout_row="3" />
         <Button
@@ -130,6 +141,7 @@
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:textColor="@color/onBackground"
                 android:text="@string/period_dialog_dec"
+                android:textSize="16sp"
                 android:layout_column="2"
                 android:layout_row="3" />
 
@@ -140,7 +152,7 @@
             android:layout_height="match_parent"
             android:orientation="horizontal"
             android:gravity="end|bottom"
-            android:paddingTop="4dp">
+            android:paddingTop="8dp">
 
         <com.google.android.material.button.MaterialButton
                 android:id="@+id/period_dialog_negative_button"
@@ -148,7 +160,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/cancel"
                 style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
-                android:layout_marginEnd="4dp" />
+                android:layout_marginEnd="8dp" />
 
         <com.google.android.material.button.MaterialButton
                 android:id="@+id/period_dialog_positive_button"
