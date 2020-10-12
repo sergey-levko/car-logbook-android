@@ -10,7 +10,8 @@
             android:label="@string/app_name"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
-            android:theme="@style/AppDefault">
+            android:theme="@style/AppDefault"
+            android:fullBackupContent="@xml/backup_descriptor">
         <activity android:name=".activity.YearSelectorDialogActivity"
                 android:theme="@style/DialogDefault"
                 android:windowSoftInputMode="stateVisible" />
@@ -27,8 +28,7 @@
         <activity android:name=".activity.FirstStartActivity" />
         <activity android:name=".activity.LaunchScreenActivity"
                 android:theme="@style/LaunchScreen" />
-        <activity
-                android:name=".activity.PeriodSelectorActivity"
+        <activity android:name=".activity.PeriodSelectorActivity"
                 android:theme="@style/DialogNoTitle" />
     </application>
 
