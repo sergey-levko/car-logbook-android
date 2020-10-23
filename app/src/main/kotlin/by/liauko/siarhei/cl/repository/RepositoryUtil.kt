@@ -76,6 +76,12 @@ class SelectByProfileIdAndDateAsyncTask(private val dataType: DataType, private 
         }
 }
 
+class SelectLastMileage(private val db: CarLogbookDatabase) : AsyncTask<Unit, Unit, Int>() {
+
+    override fun doInBackground(vararg params: Unit?) =
+        db.fuelConsumptionDao().findLastMileage()
+}
+
 class InsertAsyncTask(private val dataType: DataType, private val db: CarLogbookDatabase) : AsyncTask<AppEntity, Unit, Long>() {
 
     override fun doInBackground(vararg params: AppEntity?) =

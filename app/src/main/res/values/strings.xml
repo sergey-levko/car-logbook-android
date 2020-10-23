@@ -16,19 +16,21 @@
     <string name="data_fragment_snackbar_undo">UNDO</string>
     <string name="data_fragment_no_records">No records here</string>
 
-    <string name="data_dialog_title_add">New fuel consumption record</string>
-    <string name="data_dialog_title_edit">Edit fuel consumption record</string>
-    <string name="data_dialog_volume_parameter_hint">Volume (L)</string>
-    <string name="data_dialog_distance_parameter_hint">Distance (km)</string>
-    <string name="data_dialog_date_hint">Date</string>
-    <string name="data_dialog_volume_parameter_error">Volume value is required and can not be 0</string>
-    <string name="data_dialog_distance_parameter_error">Distance value is required and can not be 0</string>
+    <string name="activity_data_date_hint">Date</string>
+    <string name="activity_data_mileage_parameter_hint">Mileage (km)</string>
+
+    <string name="activity_fuel_title_add">New fuel consumption record</string>
+    <string name="activity_fuel_title_edit">Edit fuel consumption record</string>
+    <string name="activity_fuel_volume_parameter_hint">Volume (L)</string>
+    <string name="activity_fuel_distance_parameter_hint">Distance (km)</string>
+    <string name="activity_fuel_volume_parameter_error">Volume value is required and can not be 0</string>
+    <string name="activity_fuel_distance_parameter_error">Distance value is required and can not be 0</string>
+    <string name="activity_fuel_mileage_error">Mileage value is required</string>
 
     <string name="activity_log_title_add">Add log record</string>
     <string name="activity_log_title_edit">Edit log record</string>
     <string name="activity_log_title_hint">Title</string>
     <string name="activity_log_text_hint">Text</string>
-    <string name="activity_log_mileage_hint">Mileage (km)</string>
     <string name="activity_log_save_button">Save</string>
     <string name="activity_log_delete_button">Delete</string>
     <string name="activity_log_title_error">Title field is required</string>

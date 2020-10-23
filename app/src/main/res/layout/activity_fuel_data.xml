@@ -29,31 +29,61 @@
                 android:id="@+id/fuel_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/data_dialog_date_hint"
+                android:hint="@string/activity_data_date_hint"
                 android:drawableStart="@drawable/calendar_accent"
                 android:drawablePadding="8dp"
                 android:cursorVisible="false" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
+    <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="number"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp">
+            android:orientation="horizontal"
+            android:baselineAligned="false">
 
-        <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/distance"
+        <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/data_dialog_distance_parameter_hint"
-                android:drawableStart="@drawable/gauge_accent"
-                android:inputType="numberDecimal"
-                android:drawablePadding="8dp" />
-    </com.google.android.material.textfield.TextInputLayout>
+                android:inputType="number"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1">
+
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fuel_mileage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/activity_data_mileage_parameter_hint"
+                    android:drawableStart="@drawable/gauge_accent"
+                    android:inputType="number"
+                    android:drawablePadding="8dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1">
+
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/distance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/activity_fuel_distance_parameter_hint"
+                    android:drawableStart="@drawable/distance_accent"
+                    android:inputType="numberDecimal"
+                    android:drawablePadding="8dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
 
     <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -69,7 +99,7 @@
                 android:id="@+id/litres"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/data_dialog_volume_parameter_hint"
+                android:hint="@string/activity_fuel_volume_parameter_hint"
                 android:drawableStart="@drawable/gas_station_accent"
                 android:inputType="numberDecimal"
                 android:drawablePadding="8dp" />
