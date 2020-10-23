@@ -10,14 +10,17 @@ import by.liauko.siarhei.cl.database.entity.FuelConsumptionEntity
 @Dao
 interface FuelConsumptionDao {
 
-    @Query("SELECT id, fuel_consumption, litres, distance, time, profile_id FROM fuel_consumption")
+    @Query("SELECT id, fuel_consumption, litres, distance, mileage, time, profile_id FROM fuel_consumption")
     fun findAll(): List<FuelConsumptionEntity>
 
-    @Query("SELECT id, fuel_consumption, litres, distance, time, profile_id FROM fuel_consumption WHERE profile_id = :profileId")
+    @Query("SELECT id, fuel_consumption, litres, distance, mileage, time, profile_id FROM fuel_consumption WHERE profile_id = :profileId")
     fun findAllByProfileId(profileId: Long): List<FuelConsumptionEntity>
 
-    @Query("SELECT id, fuel_consumption, litres, distance, time, profile_id FROM fuel_consumption WHERE profile_id = :profileId AND time BETWEEN :startTime AND :endTime")
+    @Query("SELECT id, fuel_consumption, litres, distance, mileage, time, profile_id FROM fuel_consumption WHERE profile_id = :profileId AND time BETWEEN :startTime AND :endTime")
     fun findAllByProfileIdAndDate(profileId: Long, startTime: Long, endTime: Long): List<FuelConsumptionEntity>
+
+    @Query("SELECT mileage FROM fuel_consumption ORDER BY time DESC LIMIT 1")
+    fun findLastMileage(): Int
 
     @Insert
     fun insert(item: FuelConsumptionEntity): Long

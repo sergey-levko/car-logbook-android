@@ -43,11 +43,15 @@ class FuelConsumptionRepository(context: Context) : DataRepository {
         DeleteAllByProfileId(type, database).execute(profileId)
     }
 
+    fun selectLastMileage(): Int =
+        SelectLastMileage(database).execute().get()
+
     private fun convertToEntity(data: FuelConsumptionData) =
         FuelConsumptionEntity(
             data.id,
             data.fuelConsumption,
             data.litres,
+            data.mileage,
             data.distance,
             data.time,
             data.profileId
@@ -59,6 +63,7 @@ class FuelConsumptionRepository(context: Context) : DataRepository {
             entity.time,
             entity.fuelConsumption,
             entity.litres,
+            entity.mileage,
             entity.distance,
             entity.profileId
         )
