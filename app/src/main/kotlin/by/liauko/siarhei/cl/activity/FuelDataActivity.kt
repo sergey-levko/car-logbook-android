@@ -12,6 +12,7 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import by.liauko.siarhei.cl.R
+import by.liauko.siarhei.cl.repository.FuelConsumptionRepository
 import by.liauko.siarhei.cl.util.DateConverter
 import java.util.Calendar
 import java.util.Calendar.DAY_OF_MONTH
@@ -24,6 +25,7 @@ class FuelDataActivity : AppCompatActivity(),
     private val defaultId = -1L
 
     private lateinit var litres: EditText
+    private lateinit var mileage: EditText
     private lateinit var distance: EditText
     private lateinit var date: EditText
     private lateinit var calendar: Calendar
@@ -48,7 +50,7 @@ class FuelDataActivity : AppCompatActivity(),
 
     private fun initToolbar() {
         toolbar = findViewById(R.id.fuel_toolbar)
-        toolbar.setTitle(intent.getIntExtra("title", R.string.data_dialog_title_add))
+        toolbar.setTitle(intent.getIntExtra("title", R.string.activity_fuel_title_add))
         toolbar.setNavigationIcon(R.drawable.arrow_left_white)
         toolbar.setNavigationOnClickListener {
             handleBackAction()
@@ -88,8 +90,21 @@ class FuelDataActivity : AppCompatActivity(),
     }
 
     private fun initElements() {
+        val lastMileage = FuelConsumptionRepository(applicationContext).selectLastMileage()
         litres = findViewById(R.id.litres)
+        mileage = findViewById(R.id.fuel_mileage)
         distance = findViewById(R.id.distance)
+        mileage.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus && mileage.text.toString().isNotBlank() && distance.text.toString().isBlank()) {
+                distance.text.append((mileage.text.toString().toInt() - lastMileage).toString())
+            }
+        }
+        distance.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus && distance.text.toString().isNotBlank() && mileage.text.toString().isBlank()) {
+                mileage.text.append((distance.text.toString().toDouble().toInt() + lastMileage).toString())
+            }
+        }
+
         date = findViewById(R.id.fuel_date)
         date.inputType = InputType.TYPE_NULL
         date.setOnClickListener { showDatePickerDialog(it) }
@@ -114,6 +129,7 @@ class FuelDataActivity : AppCompatActivity(),
 
     private fun fillData() {
         litres.text.append(intent.getDoubleExtra("litres", 0.0).toString())
+        mileage.text.append(intent.getIntExtra("mileage", 0).toString())
         distance.text.append(intent.getDoubleExtra("distance", 0.0).toString())
         calendar.timeInMillis = intent.getLongExtra("time", calendar.timeInMillis)
     }
@@ -122,12 +138,17 @@ class FuelDataActivity : AppCompatActivity(),
         var result = true
 
         if (litres.text.isNullOrEmpty() || litres.text.toString().toDouble() == 0.0) {
-            litres.error = getString(R.string.data_dialog_volume_parameter_error)
+            litres.error = getString(R.string.activity_fuel_volume_parameter_error)
             result = false
         }
 
         if (distance.text.isNullOrEmpty() || distance.text.toString().toDouble() == 0.0) {
-            distance.error = getString(R.string.data_dialog_distance_parameter_error)
+            distance.error = getString(R.string.activity_fuel_distance_parameter_error)
+            result = false
+        }
+
+        if (mileage.text.isNullOrEmpty()) {
+            mileage.error = getString(R.string.activity_fuel_mileage_error)
             result = false
         }
 
@@ -167,6 +188,7 @@ class FuelDataActivity : AppCompatActivity(),
 
     private fun fillIntent(intent: Intent) {
         intent.putExtra("litres", litres.text.toString())
+        intent.putExtra("mileage", mileage.text.toString())
         intent.putExtra("distance", distance.text.toString())
         intent.putExtra("time", calendar.timeInMillis)
     }

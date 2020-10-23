@@ -65,7 +65,7 @@
                             android:id="@+id/log_mileage"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="@string/activity_log_mileage_hint"
+                            android:hint="@string/activity_data_mileage_parameter_hint"
                             android:drawableStart="@drawable/gauge_accent"
                             android:inputType="number"
                             android:drawablePadding="8dp" />
@@ -85,7 +85,7 @@
                             android:id="@+id/log_date"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="@string/data_dialog_date_hint"
+                            android:hint="@string/activity_data_date_hint"
                             android:drawableStart="@drawable/calendar_accent"
                             android:drawablePadding="8dp"
                             android:cursorVisible="false" />
