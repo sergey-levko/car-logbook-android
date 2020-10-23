@@ -14,7 +14,7 @@ class LaunchScreenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_launch_screen)
 
-        object : CountDownTimer(2500, 1000) {
+        object : CountDownTimer(1000, 1000) {
             override fun onTick(millisUntilFinished: Long) {}
             override fun onFinish() {
                 findViewById<CoordinatorLayout>(R.id.launch_screen).animate().alpha(0.0f).setListener(object : AnimatorListenerAdapter() {
