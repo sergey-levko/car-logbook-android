@@ -52,7 +52,7 @@ object CarLogbookMigration {
                 FROM fuel_consumption_tmp
             """.trimIndent())
             database.execSQL("DROP TABLE fuel_consumption_tmp")
-            database.execSQL("ALTER TABLE fuel_consumption ADD COLUMN mileage INTEGER NOT NULL DEFAULT -1")
+            database.execSQL("ALTER TABLE fuel_consumption ADD COLUMN mileage INTEGER NOT NULL DEFAULT 0")
             database.execSQL("CREATE INDEX fuel_consumption_profile_id_idx ON fuel_consumption(profile_id)")
 
             database.execSQL("ALTER TABLE log RENAME TO log_tmp")
