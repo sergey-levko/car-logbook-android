@@ -121,13 +121,14 @@ class DataFragment : Fragment() {
             when (requestCode) {
                 FUEL_CONSUMPTION_ADD -> {
                     val litres = data.getStringExtra("litres")?.toDouble() ?: Double.MIN_VALUE
+                    val mileage = data.getStringExtra("mileage")?.toInt() ?: Int.MIN_VALUE
                     val distance = data.getStringExtra("distance")?.toDouble() ?: Double.MIN_VALUE
                     val fuelConsumption = litres * 100 / distance
                     val id = repositoryCollection.getRepository(type).insert(
-                        FuelConsumptionEntity(null, fuelConsumption, litres, distance, time, profileId)
+                        FuelConsumptionEntity(null, fuelConsumption, litres, mileage, distance, time, profileId)
                     )
                     if (id != -1L) {
-                        items.add(FuelConsumptionData(id, time, fuelConsumption, litres, distance, profileId))
+                        items.add(FuelConsumptionData(id, time, fuelConsumption, litres, mileage, distance, profileId))
                         rvAdapter.refreshRecyclerView()
                     }
                 }
@@ -141,9 +142,11 @@ class DataFragment : Fragment() {
                         showRemoveItemSnackbar(item, position)
                     } else {
                         val litres = data.getStringExtra("litres")?.toDouble() ?: Double.MIN_VALUE
+                        val mileage = data.getStringExtra("mileage")?.toInt() ?: Int.MIN_VALUE
                         val distance = data.getStringExtra("distance")?.toDouble() ?: Double.MIN_VALUE
                         val fuelConsumption = litres * 100 / distance
                         item.litres = litres
+                        item.mileage = mileage
                         item.distance = distance
                         item.fuelConsumption = fuelConsumption
                         item.time = time
@@ -200,10 +203,11 @@ class DataFragment : Fragment() {
 
     private fun callFuelConsumptionEditActivityForResult(activityClass: Class<*>, item: FuelConsumptionData) {
         val intent = Intent(requireContext(), activityClass)
-        intent.putExtra("title", R.string.data_dialog_title_edit)
+        intent.putExtra("title", R.string.activity_fuel_title_edit)
         intent.putExtra("id", item.id)
         intent.putExtra("time", item.time)
         intent.putExtra("litres", item.litres)
+        intent.putExtra("mileage", item.mileage)
         intent.putExtra("distance", item.distance)
         startActivityForResult(intent, FUEL_CONSUMPTION_EDIT)
     }

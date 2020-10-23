@@ -5,6 +5,7 @@ class FuelConsumptionData(
     time: Long,
     var fuelConsumption: Double,
     var litres: Double,
+    var mileage: Int = 0,
     var distance: Double,
-    var profileId: Long?
+    var profileId: Long
 ) : AppData(id, time)

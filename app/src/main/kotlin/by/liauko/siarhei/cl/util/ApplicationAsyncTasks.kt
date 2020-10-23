@@ -129,7 +129,7 @@ class ExportToPdfAsyncTask(
         // Print log data
         var previousPosition = 450f
         for (entity in data) {
-            val text = entity.title + if (entity.text.isNotBlank()) "\n" + entity.text else EMPTY_STRING
+            val text = entity.title + if (entity.text?.isNotBlank() != false) "\n" + entity.text else EMPTY_STRING
             val staticLayout = createStaticLayout(text, longTextPaint)
             var yValue = previousPosition + 50
             previousPosition += staticLayout.height + 50
