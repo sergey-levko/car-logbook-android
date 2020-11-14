@@ -20,4 +20,6 @@
     <color name="launchScreenBackground">#202020</color>
     <color name="launchScreenAppLogo">#ab000d</color>
     <color name="launchScreenCompanyLogo">#555</color>
+
+    <color name="carProfileCardBackground">@color/cardview_dark_background</color>
 </resources>

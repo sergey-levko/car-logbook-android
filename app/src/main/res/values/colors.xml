@@ -21,6 +21,8 @@
     <color name="launchScreenAppLogo">#fafafa</color>
     <color name="launchScreenCompanyLogo">#ff5131</color>
 
+    <color name="carProfileCardBackground">@color/cardview_light_background</color>
+
     <color name="white">#fff</color>
     <color name="black">#000</color>
     <color name="dialog_out_background">#6000</color>

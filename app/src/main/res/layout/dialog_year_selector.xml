@@ -4,13 +4,14 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
+        android:padding="8dp"
         android:gravity="center_horizontal">
 
     <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/year_selector_input_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingHorizontal="16dp"
             android:inputType="number"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
@@ -35,15 +36,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/cancel"
-                android:layout_marginEnd="4dp"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                app:strokeColor="@color/primary"
-                app:strokeWidth="1dp" />
+                android:layout_marginEnd="8dp"
+                style="@style/Widget.MaterialComponents.Button.TextButton.Dialog" />
 
         <com.google.android.material.button.MaterialButton
                 android:id="@+id/year_dialog_positive_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
                 android:text="@string/year_selector_dialog_positive_button" />
 
     </LinearLayout>

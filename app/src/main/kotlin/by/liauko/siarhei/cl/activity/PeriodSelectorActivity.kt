@@ -36,7 +36,7 @@ class PeriodSelectorActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.period_selector)
+        setContentView(R.layout.dialog_period_selector)
 
         val parameters = window.attributes
         parameters.width = WindowManager.LayoutParams.MATCH_PARENT
