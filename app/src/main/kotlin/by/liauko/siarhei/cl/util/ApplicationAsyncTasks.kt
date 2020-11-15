@@ -8,8 +8,6 @@ import android.graphics.Typeface
 import android.graphics.pdf.PdfDocument
 import android.net.Uri
 import android.os.AsyncTask
-import android.os.Build
-import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
 import androidx.documentfile.provider.DocumentFile
@@ -173,24 +171,10 @@ class ExportToPdfAsyncTask(
         canvas.drawLine(640f, top + 10, 640f, bottom - 10, tableHeaderPaint)
     }
 
-    @Suppress("deprecation")
     private fun createStaticLayout(text: String, textPaint: TextPaint) =
-        // StaticLayout.Builder class was added in API level 23
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            StaticLayout.Builder.obtain(text, 0, text.length, textPaint, a4Width - 720)
-                .setIncludePad(false)
-                .build()
-        } else {
-            StaticLayout(
-                text,
-                textPaint,
-                a4Width - 720,
-                Layout.Alignment.ALIGN_NORMAL,
-                1f,
-                0f,
-                false
-            )
-        }
+        StaticLayout.Builder.obtain(text, 0, text.length, textPaint, a4Width - 720)
+            .setIncludePad(false)
+            .build()
 
     private fun createPaint(textSize: Float, textAlign: Paint.Align): Paint {
         val textPaint = Paint()
