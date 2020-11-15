@@ -1,9 +1,9 @@
 # Car logbook
 Android application for storing data about car maintenance and fuel consumption in convenient way.
 ### Last release
-[Release notes](https://github.com/Okvel/android-car-logbook/releases/tag/v4.1)
+[Release notes](https://github.com/Okvel/android-car-logbook/releases/tag/v4.2)
 
-[car-logbook-4.1.apk](https://github.com/Okvel/android-car-logbook/releases/download/v4.1/car-logbook-4.1.apk)
+[car-logbook-4.2.apk](https://github.com/Okvel/android-car-logbook/releases/download/v4.1/car-logbook-4.2.apk)
 ## About
 The application allow user store data about their cars meintanance and fuel consumption. User can create separate profile for each of their cars.
 
