@@ -20,7 +20,7 @@ android {
     compileSdkVersion 29
     defaultConfig {
         applicationId "by.liauko.siarhei.cl"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 29
         versionCode 12
         versionName "4.2-SNAPSHOT"
