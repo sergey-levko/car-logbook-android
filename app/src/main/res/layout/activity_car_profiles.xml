@@ -11,8 +11,7 @@
             android:layout_height="?attr/actionBarSize"
             android:elevation="4dp"
             android:background="@color/toolbarPrimary"
-            android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.MaterialComponents" />
+            android:theme="@style/ThemeOverlay.MaterialComponents.ActionBar" />
 
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/car_profile_recycler_view"

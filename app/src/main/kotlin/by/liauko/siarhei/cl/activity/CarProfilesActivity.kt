@@ -106,7 +106,7 @@ class CarProfilesActivity : AppCompatActivity() {
                     val id = carProfileRepository.insert(carProfile)
                     if (id != -1L) {
                         items.add(CarProfileData(id, name, CarBodyType.valueOf(body), CarFuelType.valueOf(fuel), volume))
-                        rvAdapter.notifyDataSetChanged()
+                        rvAdapter.refreshRecyclerView()
                     }
                 }
                 CAR_PROFILE_EDIT -> {
@@ -136,9 +136,10 @@ class CarProfilesActivity : AppCompatActivity() {
                         item.fuelType = CarFuelType.valueOf(fuel)
                         item.engineVolume = volume
                         carProfileRepository.update(item)
-                        rvAdapter.notifyDataSetChanged()
-                        profileId = id
-                        profileName = name
+                        rvAdapter.refreshRecyclerView()
+                        if (profileId == id) {
+                            profileName = name
+                        }
                     }
                     saveProfileInfo()
                 }

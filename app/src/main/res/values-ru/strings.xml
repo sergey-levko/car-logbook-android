@@ -1,8 +1,6 @@
 <resources>
     <string name="app_name">Бортжурнал</string>
 
-    <string name="activity_main_navigation_view_open">Открыть</string>
-    <string name="activity_main_navigation_view_close">Закрыть</string>
     <string name="activity_main_navigation_menu_log_item">Журнал</string>
     <string name="activity_main_navigation_menu_fuel_item">Топливо</string>
     <string name="activity_main_navigation_menu_settings_item">Настройки</string>
@@ -15,21 +13,21 @@
     <string name="data_fragment_snackbar_undo">ОТМЕНА</string>
     <string name="data_fragment_no_records">Здесь пока нет записей</string>
 
-    <string name="data_dialog_title_add">Новая запись о расходе топлива</string>
-    <string name="data_dialog_title_edit">Изменить запись о расходе топлива</string>
-    <string name="data_dialog_volume_parameter_hint">Объём (л)</string>
-    <string name="data_dialog_distance_parameter_hint">Расстояние (км)</string>
-    <string name="data_dialog_date_hint">Дата</string>
-    <string name="data_dialog_positive_button_add">Добавить</string>
-    <string name="data_dialog_positive_button_edit">Сохранить</string>
-    <string name="data_dialog_volume_parameter_error">Объём - обязательное значение и не может быть 0</string>
-    <string name="data_dialog_distance_parameter_error">Расстояние - обязательное значение и не может быть 0</string>
+    <string name="activity_data_date_hint">Дата</string>
+    <string name="activity_data_mileage_parameter_hint">Пробег (км)</string>
+
+    <string name="activity_fuel_title_add">Новая запись о расходе топлива</string>
+    <string name="activity_fuel_title_edit">Изменить запись о расходе топлива</string>
+    <string name="activity_fuel_volume_parameter_hint">Объём (л)</string>
+    <string name="activity_fuel_distance_parameter_hint">Расстояние (км)</string>
+    <string name="activity_fuel_volume_parameter_error">Объём - обязательное значение и не может быть 0</string>
+    <string name="activity_fuel_distance_parameter_error">Расстояние - обязательное значение и не может быть 0</string>
+    <string name="activity_fuel_mileage_error">Пробег - обязательное значение</string>
 
     <string name="activity_log_title_add">Добавить запись журнала</string>
     <string name="activity_log_title_edit">Редактировать запись журнала</string>
     <string name="activity_log_title_hint">Заголовок</string>
     <string name="activity_log_text_hint">Текст</string>
-    <string name="activity_log_mileage_hint">Пробег (км)</string>
     <string name="activity_log_save_button">Сохранить</string>
     <string name="activity_log_delete_button">Удалить</string>
     <string name="activity_log_title_error">Поле заголовка обязательное</string>
@@ -50,7 +48,7 @@
     <string name="settings_feedback_email_app_version">Версия приложения:</string>
     <string name="settings_feedback_email_device">Устройство:</string>
     <string name="settings_preference_terms_title">Условия использования</string>
-    <string name="settings_preference_dark_mode_title">Тёмный режим</string>
+    <string name="settings_preference_theme_title">Тема</string>
     <string name="settings_preference_period_title">Период</string>
     <string name="settings_preference_backup_item_title">Резервное копирование &amp; сброс</string>
     <string name="settings_preference_backup_item_summary">Варианты резервного копирования и сброса</string>
@@ -134,8 +132,6 @@
     <string name="activity_car_body_hint">Тип кузова</string>
     <string name="activity_car_fuel_hint">Тип топлива</string>
     <string name="activity_car_engine_hint">Объём двигателя (л)</string>
-    <string name="activity_car_save_button">Сохранить</string>
-    <string name="activity_car_delete_button">Удалить</string>
     <string name="activity_car_name_error">Поле имя профиля обязательное</string>
     <string name="activity_car_engine_error">Значение поля объём двигателя обязательное и не может быть 0</string>
 

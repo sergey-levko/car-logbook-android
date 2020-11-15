@@ -1,22 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp">
+        android:paddingVertical="8dp">
 
     <TextView
             android:id="@+id/file_name_text_view"
+            android:layout_width="0dp"
+            android:textSize="16sp"
+            android:layout_height="wrap_content"
+            android:layout_weight="100" />
+
+    <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp" />
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical|end">
+        <ImageButton
+                android:id="@+id/remove_file_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/close_red"
+                android:contentDescription="@string/dialog_drive_import_recycler_view_item_remove_button_content_description"/>
+    </RelativeLayout>
 
-    <ImageButton
-            android:id="@+id/remove_file_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/close_red"
-            android:layout_alignParentEnd="true"
-            android:contentDescription="@string/dialog_drive_import_recycler_view_item_remove_button_content_description"/>
-
-</RelativeLayout>
+</LinearLayout>

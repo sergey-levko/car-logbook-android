@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#b39ddb</color>
-    <color name="primaryDark">#121212</color>
-    <color name="secondary">#ffad42</color>
-    <color name="secondaryVariant">#f57c00</color>
-    <color name="background">#121212</color>
+    <color name="primary">#ab000d</color>
+    <color name="primaryDark">#202020</color>
+    <color name="secondary">#ab000d</color>
+    <color name="secondaryVariant">#e53935</color>
+    <color name="background">#202020</color>
     <color name="surface">#1f1f1f</color>
-    <color name="error">#cf6679</color>
-    <color name="onPrimary">#fff</color>
-    <color name="onSecondary">#000</color>
-    <color name="onBackground">#fff</color>
-    <color name="onSurface">#fff</color>
-    <color name="onError">#000</color>
+    <color name="error">#ff6f60</color>
+    <color name="onPrimary">#fafafa</color>
+    <color name="onSecondary">#121212</color>
+    <color name="onBackground">#fafafa</color>
+    <color name="onSurface">#fafafa</color>
+    <color name="onError">#121212</color>
 
     <color name="toolbarPrimary">#272727</color>
 
     <color name="datePickerBackground">#272727</color>
+
+    <color name="launchScreenBackground">#202020</color>
+    <color name="launchScreenAppLogo">#ab000d</color>
+    <color name="launchScreenCompanyLogo">#555</color>
+
+    <color name="carProfileCardBackground">@color/cardview_dark_background</color>
 </resources>

@@ -13,10 +13,10 @@ import androidx.appcompat.widget.Toolbar
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.SwitchPreference
 import by.liauko.siarhei.cl.R
 import by.liauko.siarhei.cl.util.ApplicationUtil.dataPeriod
 import by.liauko.siarhei.cl.util.DataPeriod
+import by.liauko.siarhei.cl.util.ThemeMode
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
@@ -25,7 +25,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private lateinit var appVersion: String
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var mainScreenKey: String
-    private lateinit var darkModeKey: String
+    private lateinit var themeKey: String
     private lateinit var periodKey: String
 
     override fun onCreateView(
@@ -45,11 +45,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
         sharedPreferences = appContext.getSharedPreferences(getString(R.string.shared_preferences_name), Context.MODE_PRIVATE)
 
         mainScreenKey = getString(R.string.main_screen_key)
-        darkModeKey = getString(R.string.dark_mode_key)
+        themeKey = getString(R.string.theme_key)
         periodKey = getString(R.string.period_key)
 
         findPreference<ListPreference>(mainScreenKey)!!.onPreferenceChangeListener = preferenceChangeListener
-        findPreference<SwitchPreference>(darkModeKey)!!.onPreferenceChangeListener = preferenceChangeListener
+        findPreference<ListPreference>(themeKey)!!.onPreferenceChangeListener = preferenceChangeListener
         findPreference<ListPreference>(periodKey)!!.onPreferenceChangeListener = preferenceChangeListener
         findPreference<Preference>("version")!!.summary = appVersion
         findPreference<Preference>("feedback")!!.setOnPreferenceClickListener {
@@ -65,7 +65,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         toolbar.title = getString(R.string.settings_fragment_title)
         toolbar.menu.findItem(R.id.period_select_menu_date).isVisible = false
         toolbar.menu.findItem(R.id.car_profile_menu).isVisible = false
-        toolbar.menu.findItem(R.id.export_to_exel).isVisible = false
+        toolbar.menu.findItem(R.id.export_to_pdf).isVisible = false
     }
 
     private val preferenceChangeListener = Preference.OnPreferenceChangeListener { preference, newValue ->
@@ -74,15 +74,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 .putString(mainScreenKey, newValue.toString())
                 .apply()
 
-            darkModeKey -> {
-                newValue as Boolean
-                val mode = when {
-                    newValue -> AppCompatDelegate.MODE_NIGHT_YES
-                    Build.VERSION.SDK_INT <= Build.VERSION_CODES.P -> AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
-                    else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+            themeKey -> {
+                val mode = when (ThemeMode.valueOf(newValue.toString())) {
+                    ThemeMode.SYSTEM -> if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
+                        else AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                    ThemeMode.LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
+                    ThemeMode.DARK -> AppCompatDelegate.MODE_NIGHT_YES
                 }
                 sharedPreferences.edit()
-                    .putInt(darkModeKey, mode)
+                    .putInt(themeKey, mode)
                     .apply()
 
                 AppCompatDelegate.setDefaultNightMode(mode)
