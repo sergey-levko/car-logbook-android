@@ -32,10 +32,8 @@ import by.liauko.siarhei.cl.util.ApplicationUtil.profileName
 import by.liauko.siarhei.cl.util.ApplicationUtil.type
 import by.liauko.siarhei.cl.util.DataPeriod
 import by.liauko.siarhei.cl.util.DataType
-import by.liauko.siarhei.cl.viewmodel.AppDataViewModel
 import by.liauko.siarhei.cl.viewmodel.MainScreenViewModel
 import by.liauko.siarhei.cl.viewmodel.factory.MainScreenViewModelFactory
-import by.liauko.siarhei.cl.viewmodel.factory.ViewModelFactory
 import com.google.android.material.navigation.NavigationBarView
 import java.util.Calendar
 

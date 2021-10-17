@@ -1,7 +1,7 @@
 package by.liauko.siarhei.cl.entity
 
 class FuelConsumptionData(
-    id: Long,
+    id: Long?,
     time: Long,
     var fuelConsumption: Double,
     var litres: Double,

@@ -34,7 +34,7 @@ import by.liauko.siarhei.cl.util.ApplicationUtil.type
 import by.liauko.siarhei.cl.util.DataPeriod
 import by.liauko.siarhei.cl.util.DataType
 import by.liauko.siarhei.cl.viewmodel.AppDataViewModel
-import by.liauko.siarhei.cl.viewmodel.factory.ViewModelFactory
+import by.liauko.siarhei.cl.viewmodel.factory.AppDataViewModelFactory
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import java.util.Calendar
@@ -56,7 +56,7 @@ class DataFragment : Fragment() {
     ): View {
         fragmentView = inflater.inflate(R.layout.fragment_data, container, false)
 
-        val modelFactory = ViewModelFactory(repositoryCollection.getRepository(DataType.LOG))
+        val modelFactory = AppDataViewModelFactory(repositoryCollection.getRepository(DataType.LOG))
         model = ViewModelProvider(this, modelFactory).get(AppDataViewModel::class.java)
         model.items.observe(viewLifecycleOwner) {
             val result = DiffUtil.calculateDiff(object: DiffUtil.Callback() {
@@ -163,7 +163,7 @@ class DataFragment : Fragment() {
                     val distance = data.getStringExtra("distance")?.toDouble() ?: Double.MIN_VALUE
                     val fuelConsumption = litres * 100 / distance
                     model.add(
-                        FuelConsumptionData(-1L, time, fuelConsumption, litres, mileage, distance, profileId)
+                        FuelConsumptionData(null, time, fuelConsumption, litres, mileage, distance, profileId)
                     )
                 }
                 FUEL_CONSUMPTION_EDIT -> {
@@ -172,7 +172,7 @@ class DataFragment : Fragment() {
 
                     if (data.getBooleanExtra("remove", false)) {
                         val index = model.indexOf(item)
-                        model.deleteItem(index)
+                        model.delete(index)
                         showRemoveItemSnackbar(item, index)
                     } else {
                         val litres = data.getStringExtra("litres")?.toDouble() ?: Double.MIN_VALUE
@@ -184,14 +184,14 @@ class DataFragment : Fragment() {
                         item.distance = distance
                         item.fuelConsumption = fuelConsumption
                         item.time = time
-                        model.updateItem(item)
+                        model.update(item)
                     }
                 }
                 LOG_ADD -> {
                     val title = data.getStringExtra("title")?.trim() ?: EMPTY_STRING
                     val text = data.getStringExtra("text")?.trim() ?: EMPTY_STRING
                     val mileage = data.getStringExtra("mileage")?.toLong() ?: Long.MIN_VALUE
-                    model.add(LogData(-1L, time, title, text, mileage, profileId))
+                    model.add(LogData(null, time, title, text, mileage, profileId))
                 }
                 LOG_EDIT -> {
                     val id = data.getLongExtra("id", -1L)
@@ -199,7 +199,7 @@ class DataFragment : Fragment() {
 
                     if (data.getBooleanExtra("remove", false)) {
                         val index = model.indexOf(item)
-                        model.deleteItem(index)
+                        model.delete(index)
                         showRemoveItemSnackbar(item, index)
                     } else {
                         val title = data.getStringExtra("title") ?: EMPTY_STRING
@@ -209,7 +209,7 @@ class DataFragment : Fragment() {
                         item.text = text
                         item.mileage = mileage
                         item.time = time
-                        model.updateItem(item)
+                        model.update(item)
                     }
                 }
             }

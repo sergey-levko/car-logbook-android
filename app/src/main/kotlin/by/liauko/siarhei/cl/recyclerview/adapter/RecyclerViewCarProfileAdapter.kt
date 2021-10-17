@@ -12,27 +12,24 @@ import by.liauko.siarhei.cl.util.ApplicationUtil.profileId
 
 class RecyclerViewCarProfileAdapter(
     val resources: Resources,
-    private val dataSet: ArrayList<CarProfileData>,
+    var items: List<CarProfileData>,
     private val listener: RecyclerViewOnItemClickListener
 ) : RecyclerView.Adapter<RecyclerViewCarProfileViewHolder>() {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): RecyclerViewCarProfileViewHolder {
-        dataSet.sortBy { it.name }
-
-        return RecyclerViewCarProfileViewHolder(
+    ): RecyclerViewCarProfileViewHolder =
+        RecyclerViewCarProfileViewHolder(
             LayoutInflater.from(parent.context).inflate(
                 R.layout.recycler_view_item_car_profile,
                 parent,
                 false
             )
         )
-    }
 
     override fun onBindViewHolder(holder: RecyclerViewCarProfileViewHolder, position: Int) {
-        val profileData = dataSet[position]
+        val profileData = items[position]
         val bodyType = resources.getStringArray(R.array.body_types)[profileData.bodyType.ordinal]
         val fuelType = resources.getStringArray(R.array.fuel_type)[profileData.fuelType.ordinal]
 
@@ -52,19 +49,7 @@ class RecyclerViewCarProfileAdapter(
         holder.bind(profileData, listener)
     }
 
-    override fun getItemCount() = dataSet.size
-
-    fun refreshRecyclerView() {
-        dataSet.sortBy { it.name }
-        notifyDataSetChanged()
-    }
-
-    fun removeItem(position: Int) {
-        dataSet.removeAt(position)
-        notifyItemRemoved(position)
-        notifyItemRangeChanged(position, dataSet.size)
-        notifyDataSetChanged()
-    }
+    override fun getItemCount() = items.size
 
     interface RecyclerViewOnItemClickListener {
         fun onItemClick(item: CarProfileData, isSelect: Boolean)

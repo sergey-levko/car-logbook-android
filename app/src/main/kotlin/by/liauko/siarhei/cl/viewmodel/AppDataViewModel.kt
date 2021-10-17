@@ -37,7 +37,7 @@ class AppDataViewModel(private val repository: DataRepository) : ViewModel() {
     }
 
     fun add(data: AppData) {
-        oldItems = items.value?.toList() ?: emptyList()
+        oldItems = items.value ?: emptyList()
         viewModelScope.launch {
             val id = repository.insert(data)
             if (id != -1L) {
@@ -49,12 +49,12 @@ class AppDataViewModel(private val repository: DataRepository) : ViewModel() {
     }
 
     fun restore(index: Int, data: AppData) {
-        oldItems = items.value?.toList() ?: emptyList()
+        oldItems = items.value ?: emptyList()
         (items.value as ArrayList).add(index, data)
         items.postValue(items.value)
     }
 
-    fun get(id: Long): AppData? =
+    fun get(id: Long) =
         items.value?.find { it.id == id }
 
     fun get(index: Int) =
@@ -63,16 +63,16 @@ class AppDataViewModel(private val repository: DataRepository) : ViewModel() {
     fun indexOf(item: AppData) =
         items.value!!.indexOf(item)
 
-    fun updateItem(item: AppData) {
-        oldItems = items.value?.toList() ?: emptyList()
+    fun update(item: AppData) {
+        oldItems = items.value ?: emptyList()
         viewModelScope.launch {
             repository.update(item)
             items.postValue(items.value)
         }
     }
 
-    fun deleteItem(index: Int) {
-        oldItems = items.value?.toList() ?: emptyList()
+    fun delete(index: Int) {
+        oldItems = items.value ?: emptyList()
         (items.value as ArrayList).removeAt(index)
         items.postValue(items.value)
     }
