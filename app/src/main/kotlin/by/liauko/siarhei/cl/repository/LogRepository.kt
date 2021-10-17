@@ -2,46 +2,61 @@ package by.liauko.siarhei.cl.repository
 
 import android.content.Context
 import by.liauko.siarhei.cl.database.CarLogbookDatabase
-import by.liauko.siarhei.cl.database.entity.AppEntity
 import by.liauko.siarhei.cl.database.entity.LogEntity
 import by.liauko.siarhei.cl.entity.AppData
 import by.liauko.siarhei.cl.entity.LogData
 import by.liauko.siarhei.cl.util.ApplicationUtil.periodCalendar
-import by.liauko.siarhei.cl.util.DataType
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.withContext
 
-class LogRepository(context: Context) : DataRepository {
+class LogRepository(context: Context) :
+    DataRepository,
+    CoroutineScope by MainScope() {
 
-    private val database = CarLogbookDatabase(context)
-    private val type = DataType.LOG
+    private val dao = CarLogbookDatabase(context).logDao()
 
-    override fun selectAll() =
-        SelectAsyncTask(type, database).execute().get().map { convertToData(it as LogEntity) }
+    override suspend fun selectAll() =
+        withContext(Dispatchers.Default) {
+            dao.findAll().map { convertToData(it) }
+        }
 
-    override fun selectAllByProfileId(profileId: Long) =
-        SelectByProfileIdAsyncTask(type, database).execute(profileId).get().map { convertToData(it as LogEntity) }
+    override suspend fun selectAllByProfileId(profileId: Long) =
+        withContext(Dispatchers.Default) {
+            dao.findAllByProfileId(profileId).map { convertToData(it) }
+        }
 
-    override fun selectAllByProfileIdAndPeriod(profileId: Long): List<LogData> {
+    override suspend fun selectAllByProfileIdAndPeriod(profileId: Long): List<LogData> {
         val timeBounds = prepareDateRange(periodCalendar)
-        return SelectByProfileIdAndDateAsyncTask(type, database)
-            .execute(profileId, timeBounds.first, timeBounds.second)
-            .get()
-            .map { convertToData(it as LogEntity) }
+        return withContext(Dispatchers.Default) {
+            dao.findAllByProfileIdAndDate(
+                profileId,
+                timeBounds.first,
+                timeBounds.second
+            ).map { convertToData(it) }
+        }
     }
 
-    override fun insert(entity: AppEntity): Long =
-        InsertAsyncTask(type, database).execute(entity as LogEntity).get()
+    override suspend fun insert(data: AppData) =
+        withContext(Dispatchers.Default) {
+            dao.insert(convertToEntity(data as LogData))
+        }
 
-    override fun update(data: AppData) {
-        UpdateAsyncTask(type, database).execute(convertToEntity(data as LogData))
-    }
+    override suspend fun update(data: AppData) =
+        withContext(Dispatchers.Default) {
+            dao.update(convertToEntity(data as LogData))
+        }
 
-    override fun delete(data: AppData) {
-        DeleteAsyncTask(type, database).execute(convertToEntity(data as LogData))
-    }
+    override suspend fun delete(data: AppData) =
+        withContext(Dispatchers.Default) {
+            dao.delete(convertToEntity(data as LogData))
+        }
 
-    override fun deleteAllByProfileId(profileId: Long) {
-        DeleteAllByProfileId(type, database).execute(profileId)
-    }
+    override suspend fun deleteAllByProfileId(profileId: Long) =
+        withContext(Dispatchers.Default) {
+            dao.deleteAllByProfileId(profileId)
+        }
 
     private fun convertToEntity(data: LogData) =
         LogEntity(
