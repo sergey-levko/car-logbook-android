@@ -79,3 +79,4 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 signin-config.gradle
+.idea/misc.xml

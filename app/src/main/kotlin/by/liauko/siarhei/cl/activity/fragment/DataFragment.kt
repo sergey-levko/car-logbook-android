@@ -48,7 +48,6 @@ class DataFragment : Fragment() {
     private lateinit var noDataTextView: TextView
 
     private lateinit var model: AppDataViewModel
-    private lateinit var modelFactory: ViewModelFactory
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,7 +56,7 @@ class DataFragment : Fragment() {
     ): View {
         fragmentView = inflater.inflate(R.layout.fragment_data, container, false)
 
-        modelFactory = ViewModelFactory(repositoryCollection.getRepository(DataType.LOG))
+        val modelFactory = ViewModelFactory(repositoryCollection.getRepository(DataType.LOG))
         model = ViewModelProvider(this, modelFactory).get(AppDataViewModel::class.java)
         model.items.observe(viewLifecycleOwner) {
             val result = DiffUtil.calculateDiff(object: DiffUtil.Callback() {

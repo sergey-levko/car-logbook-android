@@ -2,7 +2,6 @@ package by.liauko.siarhei.cl.activity
 
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -12,6 +11,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProvider
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import by.liauko.siarhei.cl.R
@@ -20,13 +20,11 @@ import by.liauko.siarhei.cl.activity.fragment.SettingsFragment
 import by.liauko.siarhei.cl.database.CarLogbookDatabase
 import by.liauko.siarhei.cl.repository.CarProfileRepository
 import by.liauko.siarhei.cl.repository.LogRepository
-import by.liauko.siarhei.cl.repository.SelectAllCarProfileAsyncTask
 import by.liauko.siarhei.cl.util.AppResultCodes.CAR_PROFILE_FIRST_START
 import by.liauko.siarhei.cl.util.AppResultCodes.CAR_PROFILE_SHOW_LIST
 import by.liauko.siarhei.cl.util.AppResultCodes.LOG_EXPORT
 import by.liauko.siarhei.cl.util.AppResultCodes.PERIOD_DIALOG_RESULT
 import by.liauko.siarhei.cl.util.ApplicationUtil.EMPTY_STRING
-import by.liauko.siarhei.cl.util.ApplicationUtil.createAlertDialog
 import by.liauko.siarhei.cl.util.ApplicationUtil.dataPeriod
 import by.liauko.siarhei.cl.util.ApplicationUtil.periodCalendar
 import by.liauko.siarhei.cl.util.ApplicationUtil.profileId
@@ -34,18 +32,24 @@ import by.liauko.siarhei.cl.util.ApplicationUtil.profileName
 import by.liauko.siarhei.cl.util.ApplicationUtil.type
 import by.liauko.siarhei.cl.util.DataPeriod
 import by.liauko.siarhei.cl.util.DataType
-import by.liauko.siarhei.cl.util.ExportToPdfAsyncTask
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import by.liauko.siarhei.cl.viewmodel.AppDataViewModel
+import by.liauko.siarhei.cl.viewmodel.MainScreenViewModel
+import by.liauko.siarhei.cl.viewmodel.factory.MainScreenViewModelFactory
+import by.liauko.siarhei.cl.viewmodel.factory.ViewModelFactory
+import com.google.android.material.navigation.NavigationBarView
 import java.util.Calendar
 
 class MainActivity : AppCompatActivity(),
-    BottomNavigationView.OnNavigationItemSelectedListener,
+    NavigationBarView.OnItemSelectedListener,
     PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 
     private val defaultCarProfileName = "Default Car Profile"
 
+    private lateinit var carProfileRepository: CarProfileRepository
+    private lateinit var model: MainScreenViewModel
+
     private lateinit var toolbar: Toolbar
-    private lateinit var bottomNavigationView: BottomNavigationView
+    private lateinit var bottomNavigationView: NavigationBarView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val preferences = getSharedPreferences(getString(R.string.shared_preferences_name), Context.MODE_PRIVATE)
@@ -61,9 +65,13 @@ class MainActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val modelFactory = MainScreenViewModelFactory(LogRepository(applicationContext), CarProfileRepository(applicationContext))
+        model = ViewModelProvider(this, modelFactory).get(MainScreenViewModel::class.java)
+
         profileId = preferences.getLong(getString(R.string.car_profile_id_key), -1L)
         profileName = preferences.getString(getString(R.string.car_profile_name_key), getString(R.string.app_name)) ?: EMPTY_STRING
-        checkCarProfile(preferences)
+        carProfileRepository = CarProfileRepository(applicationContext)
+//        checkCarProfile(preferences)
 
         initToolbar()
         initBottomNavigationView()
@@ -99,7 +107,7 @@ class MainActivity : AppCompatActivity(),
 
     private fun initBottomNavigationView() {
         bottomNavigationView = findViewById(R.id.bottom_navigation_view)
-        bottomNavigationView.setOnNavigationItemSelectedListener(this)
+        bottomNavigationView.setOnItemSelectedListener(this)
         bottomNavigationView.selectedItemId = when (type) {
             DataType.LOG -> R.id.log_menu_item
             DataType.FUEL -> R.id.fuel_menu_item
@@ -111,11 +119,9 @@ class MainActivity : AppCompatActivity(),
         outState.putInt("item_id", bottomNavigationView.selectedItemId)
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
-        if (savedInstanceState != null) {
-            super.onRestoreInstanceState(savedInstanceState)
-        }
-        bottomNavigationView.selectedItemId = savedInstanceState?.getInt("item_id") ?: R.id.log_menu_item
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        bottomNavigationView.selectedItemId = savedInstanceState.getInt("item_id")
     }
 
     override fun onDestroy() {
@@ -169,7 +175,7 @@ class MainActivity : AppCompatActivity(),
                 PERIOD_DIALOG_RESULT -> loadFragment()
                 CAR_PROFILE_SHOW_LIST -> loadFragment()
                 CAR_PROFILE_FIRST_START -> loadFragment()
-                LOG_EXPORT -> exportDataToPdfFile(data?.data ?: Uri.EMPTY)
+                LOG_EXPORT -> model.exportDataToPdfFile(data?.data ?: Uri.EMPTY)
             }
         } else if (resultCode == RESULT_CANCELED && requestCode == CAR_PROFILE_SHOW_LIST) {
             loadFragment()
@@ -191,30 +197,31 @@ class MainActivity : AppCompatActivity(),
         return true
     }
 
-    private fun checkCarProfile(preferences: SharedPreferences) {
-        val dialogShown = preferences.getBoolean(getString(R.string.default_car_profile_dialog_key), false)
-        if (profileId == -1L) {
-            val entities = SelectAllCarProfileAsyncTask(CarLogbookDatabase.invoke(applicationContext)).execute().get()
-            if (entities.isNotEmpty()) {
-                profileId = entities[0].id!!
-                profileName = entities[0].name
-                preferences.edit()
-                    .putLong(getString(R.string.car_profile_id_key), profileId)
-                    .putString(getString(R.string.car_profile_name_key), profileName)
-                    .apply()
-                if (defaultCarProfileName == profileName && !dialogShown) {
-                    createAlertDialog(
-                        this,
-                        R.string.default_car_profile_dialog_title,
-                        R.string.default_car_profile_dialog_message
-                    ).show()
-                    preferences.edit()
-                        .putBoolean(getString(R.string.default_car_profile_dialog_key), true)
-                        .apply()
-                }
-            }
-        }
-    }
+//    private fun checkCarProfile(preferences: SharedPreferences) {
+//        val dialogShown = preferences.getBoolean(getString(R.string.default_car_profile_dialog_key), false)
+//        if (profileId == -1L) {
+//            val carProfileViewModel: CarProfileViewModel by viewModels()
+//            val entities = carProfileViewModel.profiles.value
+//            if (entities != null && entities.isNotEmpty()) {
+//                profileId = entities[0].id
+//                profileName = entities[0].name
+//                preferences.edit()
+//                    .putLong(getString(R.string.car_profile_id_key), profileId)
+//                    .putString(getString(R.string.car_profile_name_key), profileName)
+//                    .apply()
+//                if (defaultCarProfileName == profileName && !dialogShown) {
+//                    createAlertDialog(
+//                        this,
+//                        R.string.default_car_profile_dialog_title,
+//                        R.string.default_car_profile_dialog_message
+//                    ).show()
+//                    preferences.edit()
+//                        .putBoolean(getString(R.string.default_car_profile_dialog_key), true)
+//                        .apply()
+//                }
+//            }
+//        }
+//    }
 
     private fun loadDataFragment() {
         if (profileId != -1L) {
@@ -224,9 +231,9 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    private fun exportDataToPdfFile(directoryUri: Uri) {
-        val data = LogRepository(applicationContext).selectAllByProfileId(profileId).sortedBy { it.time }
-        val carData = CarProfileRepository(applicationContext).selectById(profileId)
-        ExportToPdfAsyncTask(this, directoryUri, data, carData).execute()
-    }
+//    private fun exportDataToPdfFile(directoryUri: Uri) {
+//        val data = model.findLogDataByProfileId(profileId).sortedBy { it.time }
+//        val carData = CarProfileRepository(applicationContext).selectById(profileId)
+//        ExportToPdfAsyncTask(this, directoryUri, data, carData).execute()
+//    }
 }
