@@ -38,6 +38,7 @@ class CarProfilesActivity : AppCompatActivity() {
         setContentView(R.layout.activity_car_profiles)
 
         val modelFactory = CarProfileViewModelFactory(
+            application,
             CarProfileRepository(applicationContext),
             LogRepository(applicationContext),
             FuelConsumptionRepository(applicationContext)

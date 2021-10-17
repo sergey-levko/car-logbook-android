@@ -60,9 +60,9 @@ class FuelConsumptionRepository(context: Context) :
             dao.deleteAllByProfileId(profileId)
         }
 
-    suspend fun selectLastMileage() =
+    suspend fun selectLastMileage(profileId: Long) =
         withContext(Dispatchers.Default) {
-            dao.findLastMileage()
+            dao.findLastMileage(profileId)
         }
 
     private fun convertToEntity(data: FuelConsumptionData) =

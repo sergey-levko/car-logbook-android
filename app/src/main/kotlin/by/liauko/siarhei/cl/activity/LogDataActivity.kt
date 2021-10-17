@@ -106,7 +106,7 @@ class LogDataActivity : AppCompatActivity(),
     private fun showDatePickerDialog(view: View) {
         DatePickerDialog(
             view.context,
-            R.style.DatePickerDialog,
+            R.style.Theme_App_DatePicker,
             this,
             calendar.get(YEAR),
             calendar.get(MONTH),

@@ -14,6 +14,8 @@ import androidx.appcompat.widget.Toolbar
 import by.liauko.siarhei.cl.R
 import by.liauko.siarhei.cl.repository.FuelConsumptionRepository
 import by.liauko.siarhei.cl.util.DateConverter
+import by.liauko.siarhei.cl.viewmodel.LastMileageViewModel
+import by.liauko.siarhei.cl.viewmodel.factory.LastMileageViewModelFactory
 import java.util.Calendar
 import java.util.Calendar.DAY_OF_MONTH
 import java.util.Calendar.MONTH
@@ -23,6 +25,8 @@ class FuelDataActivity : AppCompatActivity(),
     DatePickerDialog.OnDateSetListener {
 
     private val defaultId = -1L
+
+    private lateinit var model: LastMileageViewModel
 
     private lateinit var litres: EditText
     private lateinit var mileage: EditText
@@ -36,6 +40,9 @@ class FuelDataActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fuel_data)
+
+        val modelFactory = LastMileageViewModelFactory(FuelConsumptionRepository(applicationContext))
+        model = modelFactory.create(LastMileageViewModel::class.java)
 
         id = intent.getLongExtra("id", defaultId)
 
@@ -90,7 +97,7 @@ class FuelDataActivity : AppCompatActivity(),
     }
 
     private fun initElements() {
-        val lastMileage = FuelConsumptionRepository(applicationContext).selectLastMileage()
+        val lastMileage = model.findLastMileage()
         litres = findViewById(R.id.litres)
         mileage = findViewById(R.id.fuel_mileage)
         distance = findViewById(R.id.distance)
@@ -119,7 +126,7 @@ class FuelDataActivity : AppCompatActivity(),
     private fun showDatePickerDialog(view: View) {
         DatePickerDialog(
             view.context,
-            R.style.DatePickerDialog,
+            R.style.Theme_App_DatePicker,
             this,
             calendar.get(YEAR),
             calendar.get(MONTH),
