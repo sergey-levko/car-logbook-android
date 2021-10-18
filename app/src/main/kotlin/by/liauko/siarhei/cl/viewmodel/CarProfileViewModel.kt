@@ -62,8 +62,8 @@ class CarProfileViewModel(
                 ApplicationUtil.profileName =
                     getApplication<Application>().applicationContext.getString(R.string.app_name)
             } else if (ApplicationUtil.profileId == profile.id!!) {
-                ApplicationUtil.profileId = profiles.value!!.first().id!!
-                ApplicationUtil.profileName = profiles.value!!.first().name
+                ApplicationUtil.profileId = profiles.value!!.minByOrNull { it.name }!!.id!!
+                ApplicationUtil.profileName = profiles.value!!.minByOrNull { it.name }!!.name
             }
             profiles.postValue(profiles.value)
         }

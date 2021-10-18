@@ -4,7 +4,17 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-kapt'
 
+apply from: 'signin-config.gradle'
+
 android {
+    signingConfigs {
+        release {
+            storeFile file(storeFilePath)
+            storePassword userStorePassword
+            keyAlias = userKeyAlias
+            keyPassword userKeyPassword
+        }
+    }
     compileSdkVersion 31
     defaultConfig {
         applicationId "by.liauko.siarhei.cl"
@@ -13,6 +23,7 @@ android {
         versionCode 14
         versionName "4.3-SNAPSHOT"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.release
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments += [
@@ -37,6 +48,10 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        debug {
+            signingConfig signingConfigs.release
         }
     }
     sourceSets {
@@ -65,7 +80,7 @@ dependencies {
     def gson_version = "1.34.1"
     def api_service_drive_version = "v3-rev99-1.23.0"
     def commons_io_version = "2.6"
-    def work_version = "2.6.0"
+    def work_version = "2.7.0"
     def documentfile_version = "1.0.1"
     def coroutines_version = "1.5.2"
     def splashscreen_version = "1.0.0-alpha02"
