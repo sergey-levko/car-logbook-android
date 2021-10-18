@@ -8,7 +8,7 @@ class AppRepositoryCollection(context: Context) {
     private val logRepository = LogRepository(context)
     private val fuelConsumptionRepository = FuelConsumptionRepository(context)
 
-    fun getRepository(type: DataType): DataRepository {
+    fun getRepository(type: DataType): DataRepository<*> {
         return when (type) {
             DataType.LOG -> logRepository
             DataType.FUEL -> fuelConsumptionRepository

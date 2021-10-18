@@ -49,7 +49,7 @@ class CarProfileRepository(context: Context) :
         }
     }
 
-    suspend fun deleteAll() =
+    override suspend fun deleteAll() =
         withContext(Dispatchers.Default) {
             dao.deleteAll()
         }

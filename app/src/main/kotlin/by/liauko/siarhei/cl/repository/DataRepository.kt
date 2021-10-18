@@ -2,8 +2,8 @@ package by.liauko.siarhei.cl.repository
 
 import by.liauko.siarhei.cl.entity.AppData
 
-interface DataRepository : Repository<AppData> {
-    suspend fun selectAllByProfileId(profileId: Long): List<AppData>
-    suspend fun selectAllByProfileIdAndPeriod(profileId: Long): List<AppData>
+interface DataRepository<T : AppData> : Repository<T> {
+    suspend fun selectAllByProfileId(profileId: Long): List<T>
+    suspend fun selectAllByProfileIdAndPeriod(profileId: Long): List<T>
     suspend fun deleteAllByProfileId(profileId: Long)
 }

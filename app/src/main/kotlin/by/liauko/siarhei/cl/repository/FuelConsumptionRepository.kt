@@ -3,7 +3,6 @@ package by.liauko.siarhei.cl.repository
 import android.content.Context
 import by.liauko.siarhei.cl.database.CarLogbookDatabase
 import by.liauko.siarhei.cl.database.entity.FuelConsumptionEntity
-import by.liauko.siarhei.cl.entity.AppData
 import by.liauko.siarhei.cl.entity.FuelConsumptionData
 import by.liauko.siarhei.cl.repository.converter.FuelConsumptionConverter
 import by.liauko.siarhei.cl.util.ApplicationUtil
@@ -13,7 +12,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.withContext
 
 class FuelConsumptionRepository(context: Context) :
-    DataRepository,
+    DataRepository<FuelConsumptionData>,
     CoroutineScope by MainScope() {
 
     private val dao = CarLogbookDatabase(context).fuelConsumptionDao()
@@ -39,9 +38,9 @@ class FuelConsumptionRepository(context: Context) :
         }
     }
 
-    override suspend fun insert(data: AppData) =
+    override suspend fun insert(data: FuelConsumptionData) =
         withContext(Dispatchers.Default) {
-            dao.insert(FuelConsumptionConverter.convertToEntity(data as FuelConsumptionData))
+            dao.insert(FuelConsumptionConverter.convertToEntity(data))
         }
 
     suspend fun insertAll(data: List<FuelConsumptionEntity>) =
@@ -49,17 +48,17 @@ class FuelConsumptionRepository(context: Context) :
             dao.insertAll(data)
         }
 
-    override suspend fun update(data: AppData) =
+    override suspend fun update(data: FuelConsumptionData) =
         withContext(Dispatchers.Default) {
-            dao.update(FuelConsumptionConverter.convertToEntity(data as FuelConsumptionData))
+            dao.update(FuelConsumptionConverter.convertToEntity(data))
         }
 
-    override suspend fun delete(data: AppData) =
+    override suspend fun delete(data: FuelConsumptionData) =
         withContext(Dispatchers.Default) {
-            dao.delete(FuelConsumptionConverter.convertToEntity(data as FuelConsumptionData))
+            dao.delete(FuelConsumptionConverter.convertToEntity(data))
         }
 
-    suspend fun deleteAll() =
+    override suspend fun deleteAll() =
         withContext(Dispatchers.Default) {
             dao.deleteAll()
         }

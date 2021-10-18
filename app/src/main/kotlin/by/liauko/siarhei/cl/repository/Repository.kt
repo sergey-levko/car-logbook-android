@@ -5,4 +5,5 @@ interface Repository<Data> {
     suspend fun insert(data: Data): Long
     suspend fun update(data: Data)
     suspend fun delete(data: Data)
+    suspend fun deleteAll()
 }

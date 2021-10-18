@@ -18,7 +18,7 @@ object FuelConsumptionConverter {
 
     fun convertToData(entity: FuelConsumptionEntity) =
         FuelConsumptionData(
-            entity.id!!,
+            entity.id,
             entity.time,
             entity.fuelConsumption,
             entity.litres,

@@ -18,7 +18,7 @@ object CarProfileConverter {
 
     fun convertToData(entity: CarProfileEntity) =
         CarProfileData(
-            entity.id!!,
+            entity.id,
             entity.name,
             CarBodyType.valueOf(entity.bodyType),
             CarFuelType.valueOf(entity.fuelType),

@@ -14,15 +14,15 @@ import androidx.work.WorkManager
 import by.liauko.siarhei.cl.R
 import by.liauko.siarhei.cl.activity.dialog.DriveImportDialog
 import by.liauko.siarhei.cl.backup.adapter.BackupAdapter
-import by.liauko.siarhei.cl.repository.converter.CarProfileConverter
-import by.liauko.siarhei.cl.repository.converter.FuelConsumptionConverter
-import by.liauko.siarhei.cl.repository.converter.LogDataConverter
 import by.liauko.siarhei.cl.drive.DRIVE_ROOT_FOLDER_ID
 import by.liauko.siarhei.cl.drive.DriveServiceHelper
 import by.liauko.siarhei.cl.job.ExportToFileAsyncJob
 import by.liauko.siarhei.cl.repository.CarProfileRepository
 import by.liauko.siarhei.cl.repository.FuelConsumptionRepository
 import by.liauko.siarhei.cl.repository.LogRepository
+import by.liauko.siarhei.cl.repository.converter.CarProfileConverter
+import by.liauko.siarhei.cl.repository.converter.FuelConsumptionConverter
+import by.liauko.siarhei.cl.repository.converter.LogDataConverter
 import by.liauko.siarhei.cl.util.AppResultCodes.BACKUP_OPEN_DOCUMENT
 import by.liauko.siarhei.cl.util.AppResultCodes.GOOGLE_SIGN_IN
 import by.liauko.siarhei.cl.util.ApplicationUtil
@@ -346,7 +346,7 @@ object BackupService {
         carProfileRepository.deleteAll()
         carProfileRepository.insertAll(backupData.carProfileEntities)
         profileId = backupData.carProfileEntities.minByOrNull { it.name }!!.id!!
-        profileName = backupData.carProfileEntities.minByOrNull{ it.name }!!.name
+        profileName = backupData.carProfileEntities.minByOrNull { it.name }!!.name
 
         logRepository.deleteAll()
         logRepository.insertAll(backupData.logEntities)

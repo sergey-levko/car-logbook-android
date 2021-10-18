@@ -3,7 +3,6 @@ package by.liauko.siarhei.cl.repository
 import android.content.Context
 import by.liauko.siarhei.cl.database.CarLogbookDatabase
 import by.liauko.siarhei.cl.database.entity.LogEntity
-import by.liauko.siarhei.cl.entity.AppData
 import by.liauko.siarhei.cl.entity.LogData
 import by.liauko.siarhei.cl.repository.converter.LogDataConverter
 import by.liauko.siarhei.cl.util.ApplicationUtil
@@ -13,7 +12,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.withContext
 
 class LogRepository(context: Context) :
-    DataRepository,
+    DataRepository<LogData>,
     CoroutineScope by MainScope() {
 
     private val dao = CarLogbookDatabase(context).logDao()
@@ -39,9 +38,9 @@ class LogRepository(context: Context) :
         }
     }
 
-    override suspend fun insert(data: AppData) =
+    override suspend fun insert(data: LogData) =
         withContext(Dispatchers.Default) {
-            dao.insert(LogDataConverter.convertToEntity(data as LogData))
+            dao.insert(LogDataConverter.convertToEntity(data))
         }
 
     suspend fun insertAll(data: List<LogEntity>) =
@@ -49,17 +48,17 @@ class LogRepository(context: Context) :
             dao.insertAll(data)
         }
 
-    override suspend fun update(data: AppData) =
+    override suspend fun update(data: LogData) =
         withContext(Dispatchers.Default) {
-            dao.update(LogDataConverter.convertToEntity(data as LogData))
+            dao.update(LogDataConverter.convertToEntity(data))
         }
 
-    override suspend fun delete(data: AppData) =
+    override suspend fun delete(data: LogData) =
         withContext(Dispatchers.Default) {
-            dao.delete(LogDataConverter.convertToEntity(data as LogData))
+            dao.delete(LogDataConverter.convertToEntity(data))
         }
 
-    suspend fun deleteAll() =
+    override suspend fun deleteAll() =
         withContext(Dispatchers.Default) {
             dao.deleteAll()
         }

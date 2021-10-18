@@ -17,7 +17,7 @@ object LogDataConverter {
 
     fun convertToData(entity: LogEntity) =
         LogData(
-            entity.id!!,
+            entity.id,
             entity.time,
             entity.title,
             entity.text,

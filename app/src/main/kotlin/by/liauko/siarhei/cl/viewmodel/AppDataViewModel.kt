@@ -9,7 +9,7 @@ import by.liauko.siarhei.cl.util.ApplicationUtil
 import by.liauko.siarhei.cl.util.DataPeriod
 import kotlinx.coroutines.launch
 
-class AppDataViewModel(private val repository: DataRepository) : ViewModel() {
+class AppDataViewModel(private val repository: DataRepository<AppData>) : ViewModel() {
 
     val items: MutableLiveData<ArrayList<AppData>> by lazy {
         MutableLiveData<ArrayList<AppData>>().also {
