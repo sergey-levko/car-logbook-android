@@ -44,6 +44,7 @@ class CarProfilesActivity : AppCompatActivity() {
             FuelConsumptionRepository(applicationContext)
         )
         model = ViewModelProvider(this, modelFactory).get(CarProfileViewModel::class.java)
+        model.loadCarProfiles()
         model.profiles.observe(this) {
             val result = DiffUtil.calculateDiff(object: DiffUtil.Callback() {
                 override fun getOldListSize() =
@@ -129,24 +130,25 @@ class CarProfilesActivity : AppCompatActivity() {
                 }
                 CAR_PROFILE_EDIT -> {
                     val id = data.getLongExtra("id", -1L)
-                    val item = model.get(id)
 
-                    if (item != null) {
-                        if (data.getBooleanExtra("remove", false)) {
-                            model.delete(item)
-                        } else {
-                            val name = data.getStringExtra("car_name") ?: EMPTY_STRING
-                            val body = data.getStringExtra("body_type") ?: "SEDAN"
-                            val fuel = data.getStringExtra("fuel_type") ?: "GASOLINE"
-                            val volume = data.getStringExtra("engine_volume")?.toDouble()
-                            item.name = name
-                            item.bodyType = CarBodyType.valueOf(body)
-                            item.fuelType = CarFuelType.valueOf(fuel)
-                            item.engineVolume = volume
-                            model.update(item)
-                        }
-                        saveProfileInfo()
+                    if (data.getBooleanExtra("remove", false)) {
+                        model.delete(id)
+                    } else {
+                        val name = data.getStringExtra("car_name") ?: EMPTY_STRING
+                        val body = data.getStringExtra("body_type") ?: "SEDAN"
+                        val fuel = data.getStringExtra("fuel_type") ?: "GASOLINE"
+                        val volume = data.getStringExtra("engine_volume")?.toDouble()
+                        model.update(
+                            CarProfileData(
+                                id,
+                                name,
+                                CarBodyType.valueOf(body),
+                                CarFuelType.valueOf(fuel),
+                                volume
+                            )
+                        )
                     }
+                    saveProfileInfo()
                 }
             }
         }

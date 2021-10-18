@@ -56,8 +56,10 @@ class DataFragment : Fragment() {
     ): View {
         fragmentView = inflater.inflate(R.layout.fragment_data, container, false)
 
-        val modelFactory = AppDataViewModelFactory(repositoryCollection.getRepository(DataType.LOG))
+        repositoryCollection = AppRepositoryCollection(requireContext())
+        val modelFactory = AppDataViewModelFactory(repositoryCollection.getRepository(type))
         model = ViewModelProvider(this, modelFactory).get(AppDataViewModel::class.java)
+        model.loadItems()
         model.items.observe(viewLifecycleOwner) {
             val result = DiffUtil.calculateDiff(object: DiffUtil.Callback() {
                 override fun getOldListSize() =
@@ -75,10 +77,6 @@ class DataFragment : Fragment() {
             rvAdapter.items = it
             result.dispatchUpdatesTo(rvAdapter)
             rvAdapter.refreshNoDataTextVisibility()
-        }
-        when (dataPeriod) {
-            DataPeriod.ALL -> model.findAllByProfileId(profileId)
-            else -> model.findAllByProfileIdAndPeriod(profileId)
         }
 
         initToolbar(container!!, type)
@@ -116,7 +114,6 @@ class DataFragment : Fragment() {
     }
 
     private fun initRecyclerView() {
-        repositoryCollection = AppRepositoryCollection(requireContext())
         noDataTextView = fragmentView.findViewById(R.id.no_data_text)
 
         rvAdapter =
@@ -179,12 +176,17 @@ class DataFragment : Fragment() {
                         val mileage = data.getStringExtra("mileage")?.toInt() ?: Int.MIN_VALUE
                         val distance = data.getStringExtra("distance")?.toDouble() ?: Double.MIN_VALUE
                         val fuelConsumption = litres * 100 / distance
-                        item.litres = litres
-                        item.mileage = mileage
-                        item.distance = distance
-                        item.fuelConsumption = fuelConsumption
-                        item.time = time
-                        model.update(item)
+                        model.update(
+                            FuelConsumptionData(
+                                id,
+                                time,
+                                fuelConsumption,
+                                litres,
+                                mileage,
+                                distance,
+                                item.profileId
+                            )
+                        )
                     }
                 }
                 LOG_ADD -> {
@@ -205,11 +207,16 @@ class DataFragment : Fragment() {
                         val title = data.getStringExtra("title") ?: EMPTY_STRING
                         val text = data.getStringExtra("text") ?: EMPTY_STRING
                         val mileage = data.getStringExtra("mileage")?.toLong() ?: Long.MIN_VALUE
-                        item.title = title
-                        item.text = text
-                        item.mileage = mileage
-                        item.time = time
-                        model.update(item)
+                        model.update(
+                            LogData(
+                                id,
+                                time,
+                                title,
+                                text,
+                                mileage,
+                                item.profileId
+                            )
+                        )
                     }
                 }
             }

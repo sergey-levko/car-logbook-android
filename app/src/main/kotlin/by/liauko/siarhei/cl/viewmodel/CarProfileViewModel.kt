@@ -19,28 +19,28 @@ class CarProfileViewModel(
     private val fuelConsumptionRepository: FuelConsumptionRepository
 ) : AndroidViewModel(application) {
 
-    val profiles: MutableLiveData<List<CarProfileData>> by lazy {
-        MutableLiveData<List<CarProfileData>>().also {
-            loadCarProfiles()
+    val profiles: MutableLiveData<ArrayList<CarProfileData>> by lazy {
+        MutableLiveData<ArrayList<CarProfileData>>().also {
+            mutableListOf<CarProfileData>()
         }
     }
 
     var oldItems: List<CarProfileData> = emptyList()
 
-    private fun loadCarProfiles() {
+    fun loadCarProfiles() {
         viewModelScope.launch {
-            repository.selectAll().sortedBy { it.name }
+            profiles.postValue(ArrayList(repository.selectAll().sortedBy { it.name }))
         }
     }
 
     fun add(data: CarProfileData) {
-        oldItems = profiles.value ?: emptyList()
+        oldItems = profiles.value?.toList() ?: emptyList()
         viewModelScope.launch {
             val id = repository.insert(data)
             if (id != -1L) {
                 data.id = id
-                (profiles.value as ArrayList).add(data)
-                profiles.postValue(profiles.value!!.sortedBy { it.name })
+                profiles.value?.add(data)
+                profiles.postValue(ArrayList(profiles.value!!.sortedBy { it.name }))
             }
         }
     }
@@ -48,14 +48,15 @@ class CarProfileViewModel(
     fun get(id: Long) =
         profiles.value?.find { it.id == id }
 
-    fun delete(profile: CarProfileData) {
-        oldItems = profiles.value ?: emptyList()
+    fun delete(id: Long) {
+        oldItems = profiles.value?.toList() ?: emptyList()
         viewModelScope.launch {
+            val profile = profiles.value?.find { it.id == id }!!
             repository.delete(profile)
             logRepository.deleteAllByProfileId(profile.id!!)
             fuelConsumptionRepository.deleteAllByProfileId(profile.id!!)
 
-            (profiles.value as ArrayList).remove(profile)
+            profiles.value?.remove(profile)
             if (profiles.value?.isEmpty() != false) {
                 ApplicationUtil.profileId = -1L
                 ApplicationUtil.profileName =
@@ -64,16 +65,22 @@ class CarProfileViewModel(
                 ApplicationUtil.profileId = profiles.value!!.first().id!!
                 ApplicationUtil.profileName = profiles.value!!.first().name
             }
+            profiles.postValue(profiles.value)
         }
     }
 
     fun update(profile: CarProfileData) {
-        oldItems = profiles.value ?: emptyList()
+        oldItems = profiles.value?.toList() ?: emptyList()
         viewModelScope.launch {
             repository.update(profile)
+            val index = profiles.value?.indexOfFirst { it.id == profile.id }!!
+            profiles.value?.removeAt(index)
+            profiles.value?.add(profile)
             if (ApplicationUtil.profileId == profile.id!!) {
                 ApplicationUtil.profileName = profile.name
             }
+
+            profiles.postValue(ArrayList(profiles.value!!.sortedBy { it.name }))
         }
     }
 }

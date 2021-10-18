@@ -5,52 +5,60 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import by.liauko.siarhei.cl.entity.AppData
 import by.liauko.siarhei.cl.repository.DataRepository
+import by.liauko.siarhei.cl.util.ApplicationUtil
+import by.liauko.siarhei.cl.util.DataPeriod
 import kotlinx.coroutines.launch
 
 class AppDataViewModel(private val repository: DataRepository) : ViewModel() {
 
-    val items: MutableLiveData<List<AppData>> by lazy {
-        MutableLiveData<List<AppData>>().also {
+    val items: MutableLiveData<ArrayList<AppData>> by lazy {
+        MutableLiveData<ArrayList<AppData>>().also {
             mutableListOf<AppData>()
         }
     }
 
     var oldItems: List<AppData> = emptyList()
 
-    fun findAllByProfileId(profileId: Long) {
+    fun loadItems() {
         viewModelScope.launch {
-            items.postValue(
-                ArrayList(
-                    repository.selectAllByProfileId(profileId).sortedByDescending { it.time })
-            )
+            when (ApplicationUtil.dataPeriod) {
+                DataPeriod.ALL -> findAllByProfileId()
+                else -> findAllByProfileIdAndPeriod()
+            }
         }
     }
 
-    fun findAllByProfileIdAndPeriod(profileId: Long) {
-        viewModelScope.launch {
-            items.postValue(
-                ArrayList(
-                    repository.selectAllByProfileIdAndPeriod(profileId)
-                        .sortedByDescending { it.time })
-            )
-        }
+    private suspend fun findAllByProfileId() {
+        items.postValue(
+            ArrayList(
+                repository.selectAllByProfileId(ApplicationUtil.profileId)
+                    .sortedByDescending { it.time })
+        )
+    }
+
+    private suspend fun findAllByProfileIdAndPeriod() {
+        items.postValue(
+            ArrayList(
+                repository.selectAllByProfileIdAndPeriod(ApplicationUtil.profileId)
+                    .sortedByDescending { it.time })
+        )
     }
 
     fun add(data: AppData) {
-        oldItems = items.value ?: emptyList()
+        oldItems = items.value?.toList() ?: emptyList()
         viewModelScope.launch {
             val id = repository.insert(data)
             if (id != -1L) {
                 data.id = id
-                (items.value as ArrayList).add(data)
-                items.postValue(items.value!!.sortedByDescending { it.time })
+                items.value?.add(data)
+                items.postValue(ArrayList(items.value!!.sortedByDescending { it.time }))
             }
         }
     }
 
     fun restore(index: Int, data: AppData) {
-        oldItems = items.value ?: emptyList()
-        (items.value as ArrayList).add(index, data)
+        oldItems = items.value?.toList() ?: emptyList()
+        items.value?.add(index, data)
         items.postValue(items.value)
     }
 
@@ -64,15 +72,24 @@ class AppDataViewModel(private val repository: DataRepository) : ViewModel() {
         items.value!!.indexOf(item)
 
     fun update(item: AppData) {
-        oldItems = items.value ?: emptyList()
+        oldItems = items.value?.toList() ?: emptyList()
         viewModelScope.launch {
             repository.update(item)
-            items.postValue(items.value)
+            val index = items.value!!.indexOfFirst { it.id == item.id }
+            items.value?.removeAt(index)
+            val timeBounds = ApplicationUtil.prepareDateRange()
+            if (ApplicationUtil.dataPeriod != DataPeriod.ALL
+                && item.time >= timeBounds.first
+                && item.time <= timeBounds.second
+            ) {
+                items.value?.add(item)
+            }
+            items.postValue(ArrayList(items.value!!.sortedByDescending { it.time }))
         }
     }
 
     fun delete(index: Int) {
-        oldItems = items.value ?: emptyList()
+        oldItems = items.value?.toList() ?: emptyList()
         (items.value as ArrayList).removeAt(index)
         items.postValue(items.value)
     }
