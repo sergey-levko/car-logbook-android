@@ -87,6 +87,8 @@ class WelcomeActivity : AppCompatActivity(), View.OnClickListener {
                             )
 
                             if (id != -1L) {
+                                profileId = id
+                                profileName = name
                                 getSharedPreferences(getString(R.string.shared_preferences_name), Context.MODE_PRIVATE)
                                     .edit()
                                     .putLong(getString(R.string.car_profile_id_key), profileId)

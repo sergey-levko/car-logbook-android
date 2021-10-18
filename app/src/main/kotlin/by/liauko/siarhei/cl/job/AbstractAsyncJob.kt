@@ -19,11 +19,7 @@ abstract class AbstractAsyncJob : CoroutineScope {
         onPostExecute()
     }
 
-    fun cancel() {
-        job.cancel()
-    }
-
     protected open fun onPreExecute() {}
-    protected abstract fun doInBackground()
+    protected abstract suspend fun doInBackground()
     protected open fun onPostExecute() {}
 }

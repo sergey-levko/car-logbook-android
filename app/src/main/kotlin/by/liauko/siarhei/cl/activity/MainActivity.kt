@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.lifecycleScope
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import by.liauko.siarhei.cl.R
@@ -19,8 +18,6 @@ import by.liauko.siarhei.cl.activity.fragment.DataFragment
 import by.liauko.siarhei.cl.activity.fragment.SettingsFragment
 import by.liauko.siarhei.cl.database.CarLogbookDatabase
 import by.liauko.siarhei.cl.job.ExportToPdfAsyncJob
-import by.liauko.siarhei.cl.repository.CarProfileRepository
-import by.liauko.siarhei.cl.repository.LogRepository
 import by.liauko.siarhei.cl.util.AppResultCodes.CAR_PROFILE_SHOW_LIST
 import by.liauko.siarhei.cl.util.AppResultCodes.CAR_PROFILE_WELCOME
 import by.liauko.siarhei.cl.util.AppResultCodes.LOG_EXPORT
@@ -34,7 +31,6 @@ import by.liauko.siarhei.cl.util.ApplicationUtil.type
 import by.liauko.siarhei.cl.util.DataPeriod
 import by.liauko.siarhei.cl.util.DataType
 import com.google.android.material.navigation.NavigationBarView
-import kotlinx.coroutines.launch
 import java.util.Calendar
 
 class MainActivity : AppCompatActivity(),
@@ -163,16 +159,10 @@ class MainActivity : AppCompatActivity(),
                 PERIOD_DIALOG_RESULT -> loadFragment()
                 CAR_PROFILE_SHOW_LIST -> loadFragment()
                 CAR_PROFILE_WELCOME -> loadFragment()
-                LOG_EXPORT -> lifecycleScope.launch {
-                    val logData = LogRepository(applicationContext).selectAllByProfileId(profileId).sortedBy { it.time }
-                    val carData = CarProfileRepository(applicationContext).selectById(profileId)
-                    ExportToPdfAsyncJob(
-                        applicationContext,
-                        data?.data ?: Uri.EMPTY,
-                        logData,
-                        carData
-                    ).execute()
-                }
+                LOG_EXPORT -> ExportToPdfAsyncJob(
+                    this,
+                    data?.data ?: Uri.EMPTY
+                ).execute()
             }
         } else if (resultCode == RESULT_CANCELED && requestCode == CAR_PROFILE_SHOW_LIST) {
             loadFragment()

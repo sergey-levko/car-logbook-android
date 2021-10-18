@@ -11,19 +11,25 @@ import android.text.TextPaint
 import androidx.documentfile.provider.DocumentFile
 import by.liauko.siarhei.cl.R
 import by.liauko.siarhei.cl.activity.dialog.ProgressDialog
-import by.liauko.siarhei.cl.entity.CarProfileData
 import by.liauko.siarhei.cl.entity.LogData
+import by.liauko.siarhei.cl.repository.CarProfileRepository
+import by.liauko.siarhei.cl.repository.LogRepository
 import by.liauko.siarhei.cl.util.ApplicationUtil
 import by.liauko.siarhei.cl.util.MimeTypes
+import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+/**
+ * Perform writing and saving log data to PDF file asynchronously
+ *
+ * @author Siarhei Liauko
+ * @since 4.3
+ */
 class ExportToPdfAsyncJob(
     private val context: Context,
-    private val directoryUri: Uri,
-    private val data: List<LogData>,
-    private val carData: CarProfileData
+    private val directoryUri: Uri
 ) : AbstractAsyncJob() {
 
     private val a4Width = 2480
@@ -40,7 +46,10 @@ class ExportToPdfAsyncJob(
         progressDialog.show()
     }
 
-    override fun doInBackground() {
+    override suspend fun doInBackground() {
+        val logData = LogRepository(context).selectAllByProfileId(ApplicationUtil.profileId).sortedBy { it.time }
+        val carData = CarProfileRepository(context).selectById(ApplicationUtil.profileId)
+
         val bodyTypes = context.resources.getStringArray(R.array.body_types)
         val fuelTypes = context.resources.getStringArray(R.array.fuel_type)
 
@@ -64,8 +73,8 @@ class ExportToPdfAsyncJob(
 
         // Print table header or notification that nothing to show
         val finalPage: PdfDocument.Page
-        if (data.isNotEmpty()) {
-            finalPage = printLogData(document, page)
+        if (logData.isNotEmpty()) {
+            finalPage = printLogData(logData, document, page)
         } else {
             finalPage = page
             canvas.drawText(context.getString(R.string.log_export_no_entries), a4Width / 2f, 370f, createPaint(50f, Paint.Align.CENTER))
@@ -82,9 +91,7 @@ class ExportToPdfAsyncJob(
             ).format(Date())}"
         )
         if (file?.uri != null) {
-            context.contentResolver.openOutputStream(file.uri)?.use {
-                document.writeTo(it)
-            }
+            writeToFile(file.uri, document)
         }
     }
 
@@ -97,7 +104,7 @@ class ExportToPdfAsyncJob(
         ).show()
     }
 
-    private fun printLogData(document: PdfDocument, page: PdfDocument.Page): PdfDocument.Page {
+    private fun printLogData(data: List<LogData>, document: PdfDocument, page: PdfDocument.Page): PdfDocument.Page {
         var resultPage = page
         var canvas = page.canvas
         var pageNumber = 1
@@ -169,5 +176,11 @@ class ExportToPdfAsyncJob(
         textPaint.textAlign = textAlign
 
         return textPaint
+    }
+
+    private fun writeToFile(uri: Uri, document: PdfDocument) = runBlocking {
+        context.contentResolver.openOutputStream(uri)?.use {
+            document.writeTo(it)
+        }
     }
 }
