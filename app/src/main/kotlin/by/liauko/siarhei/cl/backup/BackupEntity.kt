@@ -7,5 +7,5 @@ import by.liauko.siarhei.cl.database.entity.LogEntity
 data class BackupEntity(
     val logEntities: List<LogEntity>,
     val fuelConsumptionEntities: List<FuelConsumptionEntity>,
-    val carProfileEntities: List<CarProfileEntity>?
+    val carProfileEntities: List<CarProfileEntity>
 )
