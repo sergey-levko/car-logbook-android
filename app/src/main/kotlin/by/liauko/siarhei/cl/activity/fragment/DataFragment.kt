@@ -45,6 +45,7 @@ class DataFragment : Fragment() {
     private lateinit var rvAdapter: RecyclerViewDataAdapter
     private lateinit var repositoryCollection: AppRepositoryCollection
     private lateinit var fab: FloatingActionButton
+    private lateinit var recyclerView: RecyclerView
     private lateinit var noDataTextView: TextView
 
     private lateinit var model: AppDataViewModel
@@ -69,7 +70,7 @@ class DataFragment : Fragment() {
                     it.size
 
                 override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
-                    model.oldItems[oldItemPosition] == it[newItemPosition]
+                    model.oldItems[oldItemPosition].id == it[newItemPosition].id
 
                 override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
                     model.oldItems[oldItemPosition] == it[newItemPosition]
@@ -77,6 +78,7 @@ class DataFragment : Fragment() {
             rvAdapter.items = it
             result.dispatchUpdatesTo(rvAdapter)
             rvAdapter.refreshNoDataTextVisibility()
+            recyclerView.scrollToPosition(0)
         }
 
         initToolbar(container!!, type)
@@ -131,7 +133,7 @@ class DataFragment : Fragment() {
                     }
                 })
 
-        val recyclerView = fragmentView.findViewById<RecyclerView>(R.id.recycler_view).apply {
+        recyclerView = fragmentView.findViewById<RecyclerView>(R.id.recycler_view).apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
             adapter = rvAdapter

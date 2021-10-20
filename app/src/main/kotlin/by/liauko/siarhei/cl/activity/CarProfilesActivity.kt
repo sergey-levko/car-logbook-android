@@ -54,7 +54,7 @@ class CarProfilesActivity : AppCompatActivity() {
                     it.size
 
                 override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
-                    model.oldItems[oldItemPosition] == it[newItemPosition]
+                    model.oldItems[oldItemPosition].id == it[newItemPosition].id
 
                 override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
                     model.oldItems[oldItemPosition] == it[newItemPosition]
