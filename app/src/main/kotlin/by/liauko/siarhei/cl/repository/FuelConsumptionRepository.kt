@@ -2,69 +2,74 @@ package by.liauko.siarhei.cl.repository
 
 import android.content.Context
 import by.liauko.siarhei.cl.database.CarLogbookDatabase
-import by.liauko.siarhei.cl.database.entity.AppEntity
 import by.liauko.siarhei.cl.database.entity.FuelConsumptionEntity
-import by.liauko.siarhei.cl.entity.AppData
 import by.liauko.siarhei.cl.entity.FuelConsumptionData
-import by.liauko.siarhei.cl.util.ApplicationUtil.periodCalendar
-import by.liauko.siarhei.cl.util.DataType
+import by.liauko.siarhei.cl.repository.converter.FuelConsumptionConverter
+import by.liauko.siarhei.cl.util.ApplicationUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.withContext
 
-class FuelConsumptionRepository(context: Context) : DataRepository {
+class FuelConsumptionRepository(context: Context) :
+    DataRepository<FuelConsumptionData>,
+    CoroutineScope by MainScope() {
 
-    private val database = CarLogbookDatabase(context)
-    private val type = DataType.FUEL
+    private val dao = CarLogbookDatabase(context).fuelConsumptionDao()
 
-    override fun selectAll() =
-        SelectAsyncTask(type, database).execute().get().map { convertToData(it as FuelConsumptionEntity) }
+    override suspend fun selectAll() =
+        withContext(Dispatchers.Default) {
+            dao.findAll().map { FuelConsumptionConverter.convertToData(it) }
+        }
 
-    override fun selectAllByProfileId(profileId: Long) =
-        SelectByProfileIdAsyncTask(type, database).execute(profileId).get().map { convertToData(it as FuelConsumptionEntity) }
+    override suspend fun selectAllByProfileId(profileId: Long) =
+        withContext(Dispatchers.Default) {
+            dao.findAllByProfileId(profileId).map { FuelConsumptionConverter.convertToData(it) }
+        }
 
-    override fun selectAllByProfileIdAndPeriod(profileId: Long): List<FuelConsumptionData> {
-        val timeBounds = prepareDateRange(periodCalendar)
-        return SelectByProfileIdAndDateAsyncTask(type, database)
-            .execute(profileId, timeBounds.first, timeBounds.second)
-            .get()
-            .map { convertToData(it as FuelConsumptionEntity) }
+    override suspend fun selectAllByProfileIdAndPeriod(profileId: Long): List<FuelConsumptionData> {
+        val timeBounds = ApplicationUtil.prepareDateRange()
+        return withContext(Dispatchers.Default) {
+            dao.findAllByProfileIdAndDate(
+                profileId,
+                timeBounds.first,
+                timeBounds.second
+            ).map { FuelConsumptionConverter.convertToData(it) }
+        }
     }
 
-    override fun insert(entity: AppEntity): Long =
-        InsertAsyncTask(type, database).execute(entity as FuelConsumptionEntity).get()
+    override suspend fun insert(data: FuelConsumptionData) =
+        withContext(Dispatchers.Default) {
+            dao.insert(FuelConsumptionConverter.convertToEntity(data))
+        }
 
-    override fun update(data: AppData) {
-        UpdateAsyncTask(type, database).execute(convertToEntity(data as FuelConsumptionData))
-    }
+    suspend fun insertAll(data: List<FuelConsumptionEntity>) =
+        withContext(Dispatchers.Default) {
+            dao.insertAll(data)
+        }
 
-    override fun delete(data: AppData) {
-        DeleteAsyncTask(type, database).execute(convertToEntity(data as FuelConsumptionData))
-    }
+    override suspend fun update(data: FuelConsumptionData) =
+        withContext(Dispatchers.Default) {
+            dao.update(FuelConsumptionConverter.convertToEntity(data))
+        }
 
-    override fun deleteAllByProfileId(profileId: Long) {
-        DeleteAllByProfileId(type, database).execute(profileId)
-    }
+    override suspend fun delete(data: FuelConsumptionData) =
+        withContext(Dispatchers.Default) {
+            dao.delete(FuelConsumptionConverter.convertToEntity(data))
+        }
 
-    fun selectLastMileage(): Int =
-        SelectLastMileage(database).execute().get()
+    override suspend fun deleteAll() =
+        withContext(Dispatchers.Default) {
+            dao.deleteAll()
+        }
 
-    private fun convertToEntity(data: FuelConsumptionData) =
-        FuelConsumptionEntity(
-            data.id,
-            data.fuelConsumption,
-            data.litres,
-            data.mileage,
-            data.distance,
-            data.time,
-            data.profileId
-        )
+    override suspend fun deleteAllByProfileId(profileId: Long) =
+        withContext(Dispatchers.Default) {
+            dao.deleteAllByProfileId(profileId)
+        }
 
-    private fun convertToData(entity: FuelConsumptionEntity) =
-        FuelConsumptionData(
-            entity.id!!,
-            entity.time,
-            entity.fuelConsumption,
-            entity.litres,
-            entity.mileage,
-            entity.distance,
-            entity.profileId
-        )
+    suspend fun selectLastMileage(profileId: Long) =
+        withContext(Dispatchers.Default) {
+            dao.findLastMileage(profileId)
+        }
 }

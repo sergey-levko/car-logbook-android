@@ -28,6 +28,31 @@ object ApplicationUtil {
             context.getString(R.string.dialog_backup_alert_ok_button)
         ) { dialog, _ -> dialog.dismiss() }
         .create()
+
+    fun prepareDateRange(): Pair<Long, Long> {
+        periodCalendar.set(Calendar.HOUR_OF_DAY, 0)
+        periodCalendar.clear(Calendar.MINUTE)
+        periodCalendar.clear(Calendar.SECOND)
+        periodCalendar.clear(Calendar.MILLISECOND)
+
+        val dayType = when (dataPeriod) {
+            DataPeriod.MONTH -> Calendar.DAY_OF_MONTH
+            DataPeriod.YEAR -> Calendar.DAY_OF_YEAR
+            DataPeriod.ALL -> 0
+        }
+
+        periodCalendar.set(dayType, 1)
+        val startTime = periodCalendar.timeInMillis
+
+        periodCalendar.set(Calendar.HOUR_OF_DAY, periodCalendar.getActualMaximum(Calendar.HOUR_OF_DAY))
+        periodCalendar.set(Calendar.MINUTE, periodCalendar.getActualMaximum(Calendar.MINUTE))
+        periodCalendar.set(Calendar.SECOND, periodCalendar.getActualMaximum(Calendar.SECOND))
+        periodCalendar.set(Calendar.MILLISECOND, periodCalendar.getActualMaximum(Calendar.MILLISECOND))
+        periodCalendar.set(dayType, periodCalendar.getActualMaximum(dayType))
+        val endTime = periodCalendar.timeInMillis
+
+        return Pair(startTime, endTime)
+    }
 }
 
 enum class DataType {

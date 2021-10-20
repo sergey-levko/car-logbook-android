@@ -8,12 +8,14 @@ import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import by.liauko.siarhei.cl.R
 import by.liauko.siarhei.cl.backup.BackupService
 import by.liauko.siarhei.cl.backup.BackupTask
 import by.liauko.siarhei.cl.backup.PermissionService
 import by.liauko.siarhei.cl.backup.adapter.toBackupAdapter
-import by.liauko.siarhei.cl.database.entity.CarProfileEntity
+import by.liauko.siarhei.cl.entity.CarProfileData
+import by.liauko.siarhei.cl.job.ImportFromFileAsyncJob
 import by.liauko.siarhei.cl.repository.CarProfileRepository
 import by.liauko.siarhei.cl.util.AppResultCodes.BACKUP_OPEN_DOCUMENT
 import by.liauko.siarhei.cl.util.AppResultCodes.CAR_PROFILE_ADD
@@ -22,18 +24,15 @@ import by.liauko.siarhei.cl.util.ApplicationUtil
 import by.liauko.siarhei.cl.util.ApplicationUtil.EMPTY_STRING
 import by.liauko.siarhei.cl.util.ApplicationUtil.profileId
 import by.liauko.siarhei.cl.util.ApplicationUtil.profileName
-import by.liauko.siarhei.cl.util.ImportFromFileAsyncTask
+import by.liauko.siarhei.cl.util.CarBodyType
+import by.liauko.siarhei.cl.util.CarFuelType
+import kotlinx.coroutines.launch
 
-class FirstStartActivity : AppCompatActivity(),
-    View.OnClickListener {
-
-    private lateinit var carProfileRepository: CarProfileRepository
+class WelcomeActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_first_start)
-
-        carProfileRepository = CarProfileRepository(applicationContext)
 
         findViewById<Button>(R.id.activity_first_start_create).setOnClickListener(this)
         findViewById<Button>(R.id.activity_first_start_file_import).setOnClickListener(this)
@@ -76,27 +75,37 @@ class FirstStartActivity : AppCompatActivity(),
                         val body = data.getStringExtra("body_type") ?: "SEDAN"
                         val fuel = data.getStringExtra("fuel_type") ?: "GASOLINE"
                         val volume = data.getStringExtra("engine_volume")?.toDouble()
-                        val carProfile = CarProfileEntity(null, name, body, fuel, volume)
-                        val id = carProfileRepository.insert(carProfile)
-                        if (id != -1L) {
-                            profileId = id
-                            profileName = name
-                            getSharedPreferences(getString(R.string.shared_preferences_name), Context.MODE_PRIVATE)
-                                .edit()
-                                .putLong(getString(R.string.car_profile_id_key), profileId)
-                                .putString(getString(R.string.car_profile_name_key), profileName)
-                                .apply()
-                            setResult(RESULT_OK)
-                            finish()
-                        } else {
-                            showFailDialog()
+                        lifecycleScope.launch {
+                            val id = CarProfileRepository(applicationContext).insert(
+                                CarProfileData(
+                                    null,
+                                    name,
+                                    CarBodyType.valueOf(body),
+                                    CarFuelType.valueOf(fuel),
+                                    volume
+                                )
+                            )
+
+                            if (id != -1L) {
+                                profileId = id
+                                profileName = name
+                                getSharedPreferences(getString(R.string.shared_preferences_name), Context.MODE_PRIVATE)
+                                    .edit()
+                                    .putLong(getString(R.string.car_profile_id_key), profileId)
+                                    .putString(getString(R.string.car_profile_name_key), profileName)
+                                    .apply()
+                                setResult(RESULT_OK)
+                                finish()
+                            } else {
+                                showFailDialog()
+                            }
                         }
                     } else {
                         showFailDialog()
                     }
                 }
                 GOOGLE_SIGN_IN -> BackupService.googleSignInResult(this, data, this)
-                BACKUP_OPEN_DOCUMENT -> ImportFromFileAsyncTask(data?.data ?: Uri.EMPTY, this, this).execute()
+                BACKUP_OPEN_DOCUMENT -> ImportFromFileAsyncJob(data?.data ?: Uri.EMPTY, this, this).execute()
             }
         }
     }

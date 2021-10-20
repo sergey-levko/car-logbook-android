@@ -10,7 +10,7 @@ class ActivityAdapter(private val activity: Activity): BackupAdapter {
 
     override fun getContextForAuth(): Context = activity.applicationContext
 
-    override fun getActivity(): Activity? = activity
+    override fun getActivity(): Activity = activity
 
     override fun getActivityForPermissions(): Activity = activity
 

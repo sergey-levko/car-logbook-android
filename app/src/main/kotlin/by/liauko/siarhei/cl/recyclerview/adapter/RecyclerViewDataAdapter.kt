@@ -13,14 +13,13 @@ import by.liauko.siarhei.cl.entity.LogData
 import by.liauko.siarhei.cl.recyclerview.holder.FuelDataViewHolder
 import by.liauko.siarhei.cl.recyclerview.holder.LogDataViewHolder
 import by.liauko.siarhei.cl.recyclerview.holder.RecyclerViewDataViewHolder
-import by.liauko.siarhei.cl.repository.AppRepositoryCollection
 import by.liauko.siarhei.cl.util.ApplicationUtil.type
 import by.liauko.siarhei.cl.util.DataType
 import by.liauko.siarhei.cl.util.DateConverter
 import java.util.Calendar
 
 class RecyclerViewDataAdapter(
-    private val dataSet: ArrayList<AppData>,
+    var items: List<AppData>,
     private val resources: Resources,
     private val noDataTextView: TextView,
     private val listener: RecyclerViewOnItemClickListener
@@ -50,7 +49,7 @@ class RecyclerViewDataAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerViewDataViewHolder, position: Int) {
-        val item = dataSet[position]
+        val item = items[position]
         if (item is LogData) {
             bindLogItem(item, holder)
         } else if (item is FuelConsumptionData) {
@@ -63,29 +62,14 @@ class RecyclerViewDataAdapter(
         holder.bind(item, listener)
     }
 
-    override fun getItemCount() = dataSet.size
+    override fun getItemCount() = items.size
 
-    fun refreshRecyclerView() {
-        if (dataSet.isEmpty()) {
-            showNoDataText()
+    fun refreshNoDataTextVisibility() {
+        if (items.isEmpty()) {
+            noDataTextView.visibility = View.VISIBLE
         } else {
-            hideNoDataText()
-            dataSet.sortByDescending { it.time }
+            noDataTextView.visibility = View.GONE
         }
-        notifyDataSetChanged()
-    }
-
-    fun removeItem(position: Int) {
-        dataSet.removeAt(position)
-        notifyItemRemoved(position)
-        notifyItemRangeChanged(position, dataSet.size)
-        if (dataSet.isEmpty()) showNoDataText()
-    }
-
-    fun restoreItem(data: AppData, position: Int) {
-        dataSet.add(position, data)
-        notifyItemInserted(position)
-        hideNoDataText()
     }
 
     private fun bindFuelItem(item: FuelConsumptionData, holder: RecyclerViewDataViewHolder) {
@@ -99,14 +83,6 @@ class RecyclerViewDataAdapter(
         holder.title.text = item.title
         holder.details.text = item.text
         holder.mileage.text = String.format("%d %s", item.mileage, resources.getString(R.string.km))
-    }
-
-    private fun showNoDataText() {
-        noDataTextView.visibility = View.VISIBLE
-    }
-
-    private fun hideNoDataText() {
-        noDataTextView.visibility = View.GONE
     }
 
     interface RecyclerViewOnItemClickListener {

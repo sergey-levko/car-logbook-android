@@ -14,6 +14,8 @@ import androidx.appcompat.widget.Toolbar
 import by.liauko.siarhei.cl.R
 import by.liauko.siarhei.cl.repository.FuelConsumptionRepository
 import by.liauko.siarhei.cl.util.DateConverter
+import by.liauko.siarhei.cl.viewmodel.FuelDataViewModel
+import by.liauko.siarhei.cl.viewmodel.factory.LastMileageViewModelFactory
 import java.util.Calendar
 import java.util.Calendar.DAY_OF_MONTH
 import java.util.Calendar.MONTH
@@ -24,18 +26,29 @@ class FuelDataActivity : AppCompatActivity(),
 
     private val defaultId = -1L
 
+    private lateinit var model: FuelDataViewModel
+
     private lateinit var litres: EditText
     private lateinit var mileage: EditText
     private lateinit var distance: EditText
     private lateinit var date: EditText
     private lateinit var calendar: Calendar
-    private lateinit var toolbar: Toolbar
 
     private var id = defaultId
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fuel_data)
+
+        val modelFactory = LastMileageViewModelFactory(FuelConsumptionRepository(applicationContext))
+        model = modelFactory.create(FuelDataViewModel::class.java)
+        model.loadLastMileage()
+        model.mileage.observe(this) {
+            mileage.setText(if (it != 0) it.toString() else "")
+        }
+        model.distance.observe(this) {
+            distance.setText(if (it != 0.0) it.toString() else "")
+        }
 
         id = intent.getLongExtra("id", defaultId)
 
@@ -49,7 +62,7 @@ class FuelDataActivity : AppCompatActivity(),
     }
 
     private fun initToolbar() {
-        toolbar = findViewById(R.id.fuel_toolbar)
+        val toolbar = findViewById<Toolbar>(R.id.fuel_toolbar)
         toolbar.setTitle(intent.getIntExtra("title", R.string.activity_fuel_title_add))
         toolbar.setNavigationIcon(R.drawable.arrow_left_white)
         toolbar.setNavigationOnClickListener {
@@ -90,18 +103,17 @@ class FuelDataActivity : AppCompatActivity(),
     }
 
     private fun initElements() {
-        val lastMileage = FuelConsumptionRepository(applicationContext).selectLastMileage()
         litres = findViewById(R.id.litres)
         mileage = findViewById(R.id.fuel_mileage)
         distance = findViewById(R.id.distance)
         mileage.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus && mileage.text.toString().isNotBlank() && distance.text.toString().isBlank()) {
-                distance.text.append((mileage.text.toString().toInt() - lastMileage).toString())
+            if (!hasFocus && distance.text.toString().isBlank()) {
+                model.handleMileageChange(mileage.text.toString())
             }
         }
         distance.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus && distance.text.toString().isNotBlank() && mileage.text.toString().isBlank()) {
-                mileage.text.append((distance.text.toString().toDouble().toInt() + lastMileage).toString())
+            if (!hasFocus && mileage.text.toString().isBlank()) {
+                model.handleDistanceChange(distance.text.toString())
             }
         }
 
@@ -119,7 +131,7 @@ class FuelDataActivity : AppCompatActivity(),
     private fun showDatePickerDialog(view: View) {
         DatePickerDialog(
             view.context,
-            R.style.DatePickerDialog,
+            R.style.Theme_App_DatePicker,
             this,
             calendar.get(YEAR),
             calendar.get(MONTH),
@@ -128,9 +140,10 @@ class FuelDataActivity : AppCompatActivity(),
     }
 
     private fun fillData() {
+        model.mileage.postValue(intent.getIntExtra("mileage", 0))
+        model.distance.postValue(intent.getDoubleExtra("distance", 0.0))
+
         litres.text.append(intent.getDoubleExtra("litres", 0.0).toString())
-        mileage.text.append(intent.getIntExtra("mileage", 0).toString())
-        distance.text.append(intent.getDoubleExtra("distance", 0.0).toString())
         calendar.timeInMillis = intent.getLongExtra("time", calendar.timeInMillis)
     }
 
