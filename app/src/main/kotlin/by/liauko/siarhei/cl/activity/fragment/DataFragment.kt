@@ -21,10 +21,10 @@ import by.liauko.siarhei.cl.entity.AppData
 import by.liauko.siarhei.cl.entity.FuelConsumptionData
 import by.liauko.siarhei.cl.entity.LogData
 import by.liauko.siarhei.cl.recyclerview.adapter.RecyclerViewDataAdapter
-import by.liauko.siarhei.cl.repository.AppRepositoryCollection
+import by.liauko.siarhei.cl.repository.AppDataRepositoryFactory
 import by.liauko.siarhei.cl.util.AppResultCodes.FUEL_CONSUMPTION_ADD
-import by.liauko.siarhei.cl.util.AppResultCodes.LOG_ADD
 import by.liauko.siarhei.cl.util.AppResultCodes.FUEL_CONSUMPTION_EDIT
+import by.liauko.siarhei.cl.util.AppResultCodes.LOG_ADD
 import by.liauko.siarhei.cl.util.AppResultCodes.LOG_EDIT
 import by.liauko.siarhei.cl.util.ApplicationUtil.EMPTY_STRING
 import by.liauko.siarhei.cl.util.ApplicationUtil.dataPeriod
@@ -43,7 +43,6 @@ class DataFragment : Fragment() {
 
     private lateinit var fragmentView: View
     private lateinit var rvAdapter: RecyclerViewDataAdapter
-    private lateinit var repositoryCollection: AppRepositoryCollection
     private lateinit var fab: FloatingActionButton
     private lateinit var recyclerView: RecyclerView
     private lateinit var noDataTextView: TextView
@@ -57,8 +56,7 @@ class DataFragment : Fragment() {
     ): View {
         fragmentView = inflater.inflate(R.layout.fragment_data, container, false)
 
-        repositoryCollection = AppRepositoryCollection(requireContext())
-        val modelFactory = AppDataViewModelFactory(repositoryCollection.getRepository(type))
+        val modelFactory = AppDataViewModelFactory(AppDataRepositoryFactory.getRepository(requireContext(), type))
         model = ViewModelProvider(this, modelFactory).get(AppDataViewModel::class.java)
         model.loadItems()
         model.items.observe(viewLifecycleOwner) {
