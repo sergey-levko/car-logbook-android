@@ -1,7 +1,7 @@
 package by.liauko.siarhei.cl.repository.converter
 
 import by.liauko.siarhei.cl.database.entity.CarProfileEntity
-import by.liauko.siarhei.cl.entity.CarProfileData
+import by.liauko.siarhei.cl.model.CarProfileModel
 import by.liauko.siarhei.cl.util.CarBodyType
 import by.liauko.siarhei.cl.util.CarFuelType
 
@@ -16,19 +16,19 @@ object CarProfileConverter {
     /**
      * Converts model to entity
      *
-     * @param data model containing information about car profile
+     * @param model model containing information about car profile
      *
      * @return database entity containing information about car profile
      *
      * @since 4.3
      */
-    fun convertToEntity(data: CarProfileData) =
+    fun convertToEntity(model: CarProfileModel) =
         CarProfileEntity(
-            data.id,
-            data.name,
-            data.bodyType.name,
-            data.fuelType.name,
-            data.engineVolume
+            model.id,
+            model.name,
+            model.bodyType.name,
+            model.fuelType.name,
+            model.engineVolume
         )
 
     /**
@@ -41,7 +41,7 @@ object CarProfileConverter {
      * @since 4.3
      */
     fun convertToData(entity: CarProfileEntity) =
-        CarProfileData(
+        CarProfileModel(
             entity.id,
             entity.name,
             CarBodyType.valueOf(entity.bodyType),

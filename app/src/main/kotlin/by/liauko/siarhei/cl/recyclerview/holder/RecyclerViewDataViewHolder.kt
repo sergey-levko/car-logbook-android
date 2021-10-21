@@ -4,14 +4,14 @@ import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import by.liauko.siarhei.cl.R
-import by.liauko.siarhei.cl.entity.AppData
+import by.liauko.siarhei.cl.model.DataModel
 import by.liauko.siarhei.cl.recyclerview.adapter.RecyclerViewDataAdapter
 
 abstract class RecyclerViewDataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     abstract val date: TextView
 
-    fun bind(item: AppData, listener: RecyclerViewDataAdapter.RecyclerViewOnItemClickListener) {
+    fun bind(item: DataModel, listener: RecyclerViewDataAdapter.RecyclerViewOnItemClickListener) {
         itemView.setOnClickListener { listener.onItemClick(item) }
     }
 }

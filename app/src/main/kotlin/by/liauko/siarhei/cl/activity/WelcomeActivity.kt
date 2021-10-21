@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -14,7 +13,8 @@ import by.liauko.siarhei.cl.backup.BackupService
 import by.liauko.siarhei.cl.backup.BackupTask
 import by.liauko.siarhei.cl.backup.PermissionService
 import by.liauko.siarhei.cl.backup.adapter.toBackupAdapter
-import by.liauko.siarhei.cl.entity.CarProfileData
+import by.liauko.siarhei.cl.databinding.ActivityFirstStartBinding
+import by.liauko.siarhei.cl.model.CarProfileModel
 import by.liauko.siarhei.cl.job.ImportFromFileAsyncJob
 import by.liauko.siarhei.cl.repository.CarProfileRepository
 import by.liauko.siarhei.cl.util.AppResultCodes.BACKUP_OPEN_DOCUMENT
@@ -32,11 +32,12 @@ class WelcomeActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_first_start)
+        val viewBinding = ActivityFirstStartBinding.inflate(layoutInflater)
+        setContentView(viewBinding.root)
 
-        findViewById<Button>(R.id.activity_first_start_create).setOnClickListener(this)
-        findViewById<Button>(R.id.activity_first_start_file_import).setOnClickListener(this)
-        findViewById<Button>(R.id.activity_first_start_drive_import).setOnClickListener(this)
+        viewBinding.activityFirstStartCreate.setOnClickListener(this)
+        viewBinding.activityFirstStartFileImport.setOnClickListener(this)
+        viewBinding.activityFirstStartDriveImport.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
@@ -77,7 +78,7 @@ class WelcomeActivity : AppCompatActivity(), View.OnClickListener {
                         val volume = data.getStringExtra("engine_volume")?.toDouble()
                         lifecycleScope.launch {
                             val id = CarProfileRepository(applicationContext).insert(
-                                CarProfileData(
+                                CarProfileModel(
                                     null,
                                     name,
                                     CarBodyType.valueOf(body),

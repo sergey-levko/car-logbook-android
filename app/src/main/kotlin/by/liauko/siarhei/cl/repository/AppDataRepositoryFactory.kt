@@ -1,7 +1,7 @@
 package by.liauko.siarhei.cl.repository
 
 import android.content.Context
-import by.liauko.siarhei.cl.entity.AppData
+import by.liauko.siarhei.cl.model.DataModel
 import by.liauko.siarhei.cl.util.DataType
 
 /**
@@ -22,7 +22,7 @@ object AppDataRepositoryFactory {
      *
      * @since 4.3
      */
-    fun getRepository(context: Context, type: DataType): DataRepository<out AppData> {
+    fun getRepository(context: Context, type: DataType): DataRepository<out DataModel> {
         return when (type) {
             DataType.LOG -> LogRepository(context)
             DataType.FUEL -> FuelConsumptionRepository(context)

@@ -4,11 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
-import android.widget.Button
-import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import by.liauko.siarhei.cl.R
-import com.google.android.material.textfield.TextInputLayout
+import by.liauko.siarhei.cl.databinding.DialogYearSelectorBinding
 import java.util.Calendar
 
 class YearSelectorDialogActivity : AppCompatActivity(), View.OnClickListener {
@@ -16,35 +14,33 @@ class YearSelectorDialogActivity : AppCompatActivity(), View.OnClickListener {
     private val currentYear = Calendar.getInstance()[Calendar.YEAR]
     private val minYear = 1970
 
-    private lateinit var yearInputLayout: TextInputLayout
-    private lateinit var yearEditText: EditText
+    private lateinit var viewBinding: DialogYearSelectorBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.dialog_year_selector)
+        viewBinding = DialogYearSelectorBinding.inflate(layoutInflater)
+        setContentView(viewBinding.root)
         val parameters = window.attributes
         parameters.width = WindowManager.LayoutParams.MATCH_PARENT
         window.attributes = parameters
 
         setTitle(R.string.year_selector_dialog_title)
 
-        yearInputLayout = findViewById(R.id.year_selector_input_layout)
-        yearInputLayout.isErrorEnabled = true
-        yearEditText = findViewById(R.id.year_selector_value)
-        yearEditText.append(intent.getIntExtra("year", currentYear).toString())
-        yearEditText.requestFocus()
-        findViewById<Button>(R.id.year_dialog_positive_button).setOnClickListener(this)
-        findViewById<Button>(R.id.year_dialog_negative_button).setOnClickListener(this)
+        viewBinding.yearSelectorInputLayout.isErrorEnabled = true
+        viewBinding.yearSelectorValue.append(intent.getIntExtra("year", currentYear).toString())
+        viewBinding.yearSelectorValue.requestFocus()
+        viewBinding.yearDialogPositiveButton.setOnClickListener(this)
+        viewBinding.yearDialogNegativeButton.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
         if (v != null) {
             when (v.id) {
                 R.id.year_dialog_positive_button -> {
-                    val value = yearEditText.text.toString()
+                    val value = viewBinding.yearSelectorValue.text.toString()
                     if (value.isEmpty()
                         || (value.toInt() < minYear || value.toInt() > currentYear)) {
-                        yearInputLayout.error = "${getString(R.string.year_selector_dialog_error_text)} $currentYear"
+                        viewBinding.yearSelectorInputLayout.error = "${getString(R.string.year_selector_dialog_error_text)} $currentYear"
                     } else {
                         val intent = Intent()
                         intent.putExtra("year", value)

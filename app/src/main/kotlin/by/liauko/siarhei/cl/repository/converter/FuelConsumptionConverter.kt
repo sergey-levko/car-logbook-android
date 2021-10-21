@@ -1,7 +1,7 @@
 package by.liauko.siarhei.cl.repository.converter
 
 import by.liauko.siarhei.cl.database.entity.FuelConsumptionEntity
-import by.liauko.siarhei.cl.entity.FuelConsumptionData
+import by.liauko.siarhei.cl.model.FuelDataModel
 
 /**
  * Utility class for converting entity to model and reverse containing data about fuel consumption
@@ -14,21 +14,21 @@ object FuelConsumptionConverter {
     /**
      * Converts model to entity
      *
-     * @param data model containing information about fuel consumption
+     * @param model model containing information about fuel consumption
      *
      * @return database entity containing information about fuel consumption
      *
      * @since 4.3
      */
-    fun convertToEntity(data: FuelConsumptionData) =
+    fun convertToEntity(model: FuelDataModel) =
         FuelConsumptionEntity(
-            data.id,
-            data.fuelConsumption,
-            data.litres,
-            data.mileage,
-            data.distance,
-            data.time,
-            data.profileId
+            model.id,
+            model.fuelConsumption,
+            model.litres,
+            model.mileage,
+            model.distance,
+            model.time,
+            model.profileId
         )
 
     /**
@@ -41,7 +41,7 @@ object FuelConsumptionConverter {
      * @since 4.3
      */
     fun convertToData(entity: FuelConsumptionEntity) =
-        FuelConsumptionData(
+        FuelDataModel(
             entity.id,
             entity.time,
             entity.fuelConsumption,

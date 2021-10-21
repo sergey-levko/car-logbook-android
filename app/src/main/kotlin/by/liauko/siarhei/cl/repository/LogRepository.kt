@@ -3,7 +3,7 @@ package by.liauko.siarhei.cl.repository
 import android.content.Context
 import by.liauko.siarhei.cl.database.CarLogbookDatabase
 import by.liauko.siarhei.cl.database.entity.LogEntity
-import by.liauko.siarhei.cl.entity.LogData
+import by.liauko.siarhei.cl.model.LogDataModel
 import by.liauko.siarhei.cl.repository.converter.LogDataConverter
 import by.liauko.siarhei.cl.util.ApplicationUtil
 import kotlinx.coroutines.CoroutineScope
@@ -12,7 +12,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.withContext
 
 class LogRepository(context: Context) :
-    DataRepository<LogData>,
+    DataRepository<LogDataModel>,
     CoroutineScope by MainScope() {
 
     private val dao = CarLogbookDatabase(context).logDao()
@@ -27,7 +27,7 @@ class LogRepository(context: Context) :
             dao.findAllByProfileId(profileId).map { LogDataConverter.convertToData(it) }
         }
 
-    override suspend fun selectAllByProfileIdAndPeriod(profileId: Long): List<LogData> {
+    override suspend fun selectAllByProfileIdAndPeriod(profileId: Long): List<LogDataModel> {
         val timeBounds = ApplicationUtil.prepareDateRange()
         return withContext(Dispatchers.Default) {
             dao.findAllByProfileIdAndDate(
@@ -38,7 +38,7 @@ class LogRepository(context: Context) :
         }
     }
 
-    override suspend fun insert(data: LogData) =
+    override suspend fun insert(data: LogDataModel) =
         withContext(Dispatchers.Default) {
             dao.insert(LogDataConverter.convertToEntity(data))
         }
@@ -48,12 +48,12 @@ class LogRepository(context: Context) :
             dao.insertAll(data)
         }
 
-    override suspend fun update(data: LogData) =
+    override suspend fun update(data: LogDataModel) =
         withContext(Dispatchers.Default) {
             dao.update(LogDataConverter.convertToEntity(data))
         }
 
-    override suspend fun delete(data: LogData) =
+    override suspend fun delete(data: LogDataModel) =
         withContext(Dispatchers.Default) {
             dao.delete(LogDataConverter.convertToEntity(data))
         }

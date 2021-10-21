@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import by.liauko.siarhei.cl.R
 import by.liauko.siarhei.cl.backup.BackupService
+import by.liauko.siarhei.cl.databinding.DialogImportBinding
 import by.liauko.siarhei.cl.drive.DriveFileInfoList
 import by.liauko.siarhei.cl.drive.DriveServiceHelper
 import by.liauko.siarhei.cl.recyclerview.adapter.RecyclerViewImportFileAdapter
@@ -19,26 +20,25 @@ class DriveImportDialog(
     private val driveServiceHelper: DriveServiceHelper,
     private val files: DriveFileInfoList,
     private val activity: Activity?
-) : AlertDialog(appContext, R.style.FullScreenDialogDefault) {
+) : AlertDialog(appContext, R.style.Theme_App_FullScreenDialog) {
 
+    private lateinit var viewBinding: DialogImportBinding
     private lateinit var rvAdapter: RecyclerViewImportFileAdapter
-    private lateinit var noFileTextView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.dialog_import)
+        viewBinding = DialogImportBinding.inflate(layoutInflater)
+        setContentView(viewBinding.root)
         initRecyclerView()
-        findViewById<Button>(R.id.dialog_import_negative_button)!!.setOnClickListener { dismiss() }
+        viewBinding.dialogImportNegativeButton.setOnClickListener { dismiss() }
     }
 
     private fun initRecyclerView() {
-        noFileTextView = findViewById(R.id.no_files_for_import)!!
-
         rvAdapter =
             RecyclerViewImportFileAdapter(
                 appContext,
                 files,
-                noFileTextView,
+                viewBinding.noFilesForImport,
                 driveServiceHelper,
                 object : RecyclerViewImportFileAdapter.RecyclerViewOnItemClickListener {
                     override fun onItemClick(item: Pair<String, String>) {
@@ -53,7 +53,7 @@ class DriveImportDialog(
                 }
             )
 
-        findViewById<RecyclerView>(R.id.import_data_recycler_view)!!.apply {
+        viewBinding.importDataRecyclerView.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
             adapter = rvAdapter

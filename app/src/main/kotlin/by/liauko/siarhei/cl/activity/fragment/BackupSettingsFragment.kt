@@ -51,6 +51,7 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
         val toolbar = (container!!.parent as ViewGroup).getChildAt(0) as Toolbar
         toolbar.title = getString(R.string.settings_preference_backup_title)
         toolbar.setNavigationIcon(R.drawable.arrow_left_white)
+        toolbar.setNavigationContentDescription(R.string.back_button_content_descriptor)
         toolbar.setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
         }

@@ -8,10 +8,9 @@ import android.text.InputType
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.DatePicker
-import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import by.liauko.siarhei.cl.R
+import by.liauko.siarhei.cl.databinding.ActivityFuelDataBinding
 import by.liauko.siarhei.cl.repository.FuelConsumptionRepository
 import by.liauko.siarhei.cl.util.DateConverter
 import by.liauko.siarhei.cl.viewmodel.FuelDataViewModel
@@ -26,28 +25,25 @@ class FuelDataActivity : AppCompatActivity(),
 
     private val defaultId = -1L
 
-    private lateinit var model: FuelDataViewModel
-
-    private lateinit var litres: EditText
-    private lateinit var mileage: EditText
-    private lateinit var distance: EditText
-    private lateinit var date: EditText
+    private lateinit var viewModel: FuelDataViewModel
+    private lateinit var viewBinding: ActivityFuelDataBinding
     private lateinit var calendar: Calendar
 
     private var id = defaultId
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_fuel_data)
+        viewBinding = ActivityFuelDataBinding.inflate(layoutInflater)
+        setContentView(viewBinding.root)
 
         val modelFactory = LastMileageViewModelFactory(FuelConsumptionRepository(applicationContext))
-        model = modelFactory.create(FuelDataViewModel::class.java)
-        model.loadLastMileage()
-        model.mileage.observe(this) {
-            mileage.setText(if (it != 0) it.toString() else "")
+        viewModel = modelFactory.create(FuelDataViewModel::class.java)
+        viewModel.loadLastMileage()
+        viewModel.mileage.observe(this) {
+            viewBinding.fuelMileage.setText(if (it != 0) it.toString() else "")
         }
-        model.distance.observe(this) {
-            distance.setText(if (it != 0.0) it.toString() else "")
+        viewModel.distance.observe(this) {
+            viewBinding.distance.setText(if (it != 0.0) it.toString() else "")
         }
 
         id = intent.getLongExtra("id", defaultId)
@@ -58,18 +54,18 @@ class FuelDataActivity : AppCompatActivity(),
         if (id != defaultId) {
             fillData()
         }
-        updateDateButtonText()
+        updateDateText()
     }
 
     private fun initToolbar() {
-        val toolbar = findViewById<Toolbar>(R.id.fuel_toolbar)
-        toolbar.setTitle(intent.getIntExtra("title", R.string.activity_fuel_title_add))
-        toolbar.setNavigationIcon(R.drawable.arrow_left_white)
-        toolbar.setNavigationOnClickListener {
+        viewBinding.fuelToolbar.setTitle(intent.getIntExtra("title", R.string.activity_fuel_title_add))
+        viewBinding.fuelToolbar.setNavigationIcon(R.drawable.arrow_left_white)
+        viewBinding.fuelToolbar.setNavigationContentDescription(R.string.back_button_content_descriptor)
+        viewBinding.fuelToolbar.setNavigationOnClickListener {
             handleBackAction()
         }
-        toolbar.inflateMenu(R.menu.data_activity_menu)
-        toolbar.setOnMenuItemClickListener {
+        viewBinding.fuelToolbar.inflateMenu(R.menu.data_activity_menu)
+        viewBinding.fuelToolbar.setOnMenuItemClickListener {
             var result = false
             when (it.itemId) {
                 R.id.data_menu_save -> {
@@ -94,33 +90,29 @@ class FuelDataActivity : AppCompatActivity(),
             return@setOnMenuItemClickListener result
         }
         if (id == defaultId) {
-            toolbar.menu.findItem(R.id.data_menu_save).isVisible = true
-            toolbar.menu.findItem(R.id.data_menu_delete).isVisible = false
+            viewBinding.fuelToolbar.menu.findItem(R.id.data_menu_save).isVisible = true
+            viewBinding.fuelToolbar.menu.findItem(R.id.data_menu_delete).isVisible = false
         } else {
-            toolbar.menu.findItem(R.id.data_menu_save).isVisible = false
-            toolbar.menu.findItem(R.id.data_menu_delete).isVisible = true
+            viewBinding.fuelToolbar.menu.findItem(R.id.data_menu_save).isVisible = false
+            viewBinding.fuelToolbar.menu.findItem(R.id.data_menu_delete).isVisible = true
         }
     }
 
     private fun initElements() {
-        litres = findViewById(R.id.litres)
-        mileage = findViewById(R.id.fuel_mileage)
-        distance = findViewById(R.id.distance)
-        mileage.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus && distance.text.toString().isBlank()) {
-                model.handleMileageChange(mileage.text.toString())
+        viewBinding.fuelMileage.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus && viewBinding.distance.text.toString().isBlank()) {
+                viewModel.handleMileageChange(viewBinding.fuelMileage.text.toString())
             }
         }
-        distance.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus && mileage.text.toString().isBlank()) {
-                model.handleDistanceChange(distance.text.toString())
+        viewBinding.distance.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus && viewBinding.fuelMileage.text.toString().isBlank()) {
+                viewModel.handleDistanceChange(viewBinding.distance.text.toString())
             }
         }
 
-        date = findViewById(R.id.fuel_date)
-        date.inputType = InputType.TYPE_NULL
-        date.setOnClickListener { showDatePickerDialog(it) }
-        date.setOnFocusChangeListener { view, isFocused ->
+        viewBinding.fuelDate.inputType = InputType.TYPE_NULL
+        viewBinding.fuelDate.setOnClickListener { showDatePickerDialog(it) }
+        viewBinding.fuelDate.setOnFocusChangeListener { view, isFocused ->
             if (isFocused) {
                 (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(view.windowToken, 0)
                 showDatePickerDialog(view)
@@ -140,28 +132,28 @@ class FuelDataActivity : AppCompatActivity(),
     }
 
     private fun fillData() {
-        model.mileage.postValue(intent.getIntExtra("mileage", 0))
-        model.distance.postValue(intent.getDoubleExtra("distance", 0.0))
+        viewModel.mileage.postValue(intent.getIntExtra("mileage", 0))
+        viewModel.distance.postValue(intent.getDoubleExtra("distance", 0.0))
 
-        litres.text.append(intent.getDoubleExtra("litres", 0.0).toString())
+        viewBinding.litres.text?.append(intent.getDoubleExtra("litres", 0.0).toString())
         calendar.timeInMillis = intent.getLongExtra("time", calendar.timeInMillis)
     }
 
     private fun validateFields(): Boolean {
         var result = true
 
-        if (litres.text.isNullOrEmpty() || litres.text.toString().toDouble() == 0.0) {
-            litres.error = getString(R.string.activity_fuel_volume_parameter_error)
+        if (viewBinding.litres.text.isNullOrEmpty() || viewBinding.litres.text.toString().toDouble() == 0.0) {
+            viewBinding.litres.error = getString(R.string.activity_fuel_volume_parameter_error)
             result = false
         }
 
-        if (distance.text.isNullOrEmpty() || distance.text.toString().toDouble() == 0.0) {
-            distance.error = getString(R.string.activity_fuel_distance_parameter_error)
+        if (viewBinding.distance.text.isNullOrEmpty() || viewBinding.distance.text.toString().toDouble() == 0.0) {
+            viewBinding.distance.error = getString(R.string.activity_fuel_distance_parameter_error)
             result = false
         }
 
-        if (mileage.text.isNullOrEmpty()) {
-            mileage.error = getString(R.string.activity_fuel_mileage_error)
+        if (viewBinding.fuelMileage.text.isNullOrEmpty()) {
+            viewBinding.fuelMileage.error = getString(R.string.activity_fuel_mileage_error)
             result = false
         }
 
@@ -172,16 +164,16 @@ class FuelDataActivity : AppCompatActivity(),
         calendar.set(YEAR, year)
         calendar.set(MONTH, month)
         calendar.set(DAY_OF_MONTH, dayOfMonth)
-        updateDateButtonText()
+        updateDateText()
     }
 
     override fun onBackPressed() {
         handleBackAction()
     }
 
-    private fun updateDateButtonText() {
-        date.text.clear()
-        date.text.append(DateConverter.convert(calendar))
+    private fun updateDateText() {
+        viewBinding.fuelDate.text?.clear()
+        viewBinding.fuelDate.text?.append(DateConverter.convert(calendar))
     }
 
     private fun handleBackAction() {
@@ -200,9 +192,9 @@ class FuelDataActivity : AppCompatActivity(),
     }
 
     private fun fillIntent(intent: Intent) {
-        intent.putExtra("litres", litres.text.toString())
-        intent.putExtra("mileage", mileage.text.toString())
-        intent.putExtra("distance", distance.text.toString())
+        intent.putExtra("litres", viewBinding.litres.text.toString())
+        intent.putExtra("mileage", viewBinding.fuelMileage.text.toString())
+        intent.putExtra("distance", viewBinding.distance.text.toString())
         intent.putExtra("time", calendar.timeInMillis)
     }
 }

@@ -11,7 +11,7 @@ import android.text.TextPaint
 import androidx.documentfile.provider.DocumentFile
 import by.liauko.siarhei.cl.R
 import by.liauko.siarhei.cl.activity.dialog.ProgressDialog
-import by.liauko.siarhei.cl.entity.LogData
+import by.liauko.siarhei.cl.model.LogDataModel
 import by.liauko.siarhei.cl.repository.CarProfileRepository
 import by.liauko.siarhei.cl.repository.LogRepository
 import by.liauko.siarhei.cl.util.ApplicationUtil
@@ -104,7 +104,7 @@ class ExportToPdfAsyncJob(
         ).show()
     }
 
-    private fun printLogData(data: List<LogData>, document: PdfDocument, page: PdfDocument.Page): PdfDocument.Page {
+    private fun printLogData(data: List<LogDataModel>, document: PdfDocument, page: PdfDocument.Page): PdfDocument.Page {
         var resultPage = page
         var canvas = page.canvas
         var pageNumber = 1

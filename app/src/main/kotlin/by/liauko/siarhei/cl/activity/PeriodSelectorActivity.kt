@@ -6,11 +6,9 @@ import android.util.TypedValue
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
-import android.widget.GridLayout
-import android.widget.ImageButton
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import by.liauko.siarhei.cl.R
+import by.liauko.siarhei.cl.databinding.DialogPeriodSelectorBinding
 import by.liauko.siarhei.cl.util.AppResultCodes
 import by.liauko.siarhei.cl.util.ApplicationUtil
 import by.liauko.siarhei.cl.util.DataPeriod
@@ -23,9 +21,7 @@ class PeriodSelectorActivity : AppCompatActivity(),
     private val currentYear = Calendar.getInstance()[Calendar.YEAR]
     private val currentMonth = Calendar.getInstance()[Calendar.MONTH]
 
-    private lateinit var yearTextView: TextView
-    private lateinit var previousYearButton: ImageButton
-    private lateinit var nextYearButton: ImageButton
+    private lateinit var viewBinding: DialogPeriodSelectorBinding
     private lateinit var months: ArrayList<Button>
 
     private var previousYear = currentYear
@@ -36,7 +32,8 @@ class PeriodSelectorActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.dialog_period_selector)
+        viewBinding = DialogPeriodSelectorBinding.inflate(layoutInflater)
+        setContentView(viewBinding.root)
 
         val parameters = window.attributes
         parameters.width = WindowManager.LayoutParams.MATCH_PARENT
@@ -54,68 +51,64 @@ class PeriodSelectorActivity : AppCompatActivity(),
         selectedYear = ApplicationUtil.periodCalendar[Calendar.YEAR]
         previousYear = selectedYear
 
-        val positiveButton = findViewById<Button>(R.id.period_dialog_positive_button)
-        positiveButton.setOnClickListener(this)
+        viewBinding.periodDialogPositiveButton.setOnClickListener(this)
         when (ApplicationUtil.dataPeriod) {
             DataPeriod.MONTH -> {
                 initMonthButtons()
-                positiveButton.setText(R.string.period_dialog_positive_button_month)
+                viewBinding.periodDialogPositiveButton.setText(R.string.period_dialog_positive_button_month)
             }
             DataPeriod.YEAR -> {
-                findViewById<GridLayout>(R.id.months_grid_layout).visibility = View.GONE
-                positiveButton.setText(R.string.period_dialog_positive_button_year)
+                viewBinding.monthsGridLayout.visibility = View.GONE
+                viewBinding.periodDialogPositiveButton.setText(R.string.period_dialog_positive_button_year)
             }
             DataPeriod.ALL -> return
         }
 
-        findViewById<Button>(R.id.period_dialog_negative_button).setOnClickListener(this)
+        viewBinding.periodDialogNegativeButton.setOnClickListener(this)
 
-        previousYearButton = findViewById(R.id.previous_year_button)
-        previousYearButton.setOnClickListener(this)
-        nextYearButton = findViewById(R.id.next_year_button)
-        nextYearButton.setOnClickListener(this)
+        viewBinding.previousYearButton.setOnClickListener(this)
+        viewBinding.nextYearButton.setOnClickListener(this)
         updateYearButtonsState()
 
-        yearTextView = findViewById(R.id.year_text_view)
-        yearTextView.setOnClickListener {
+        viewBinding.yearTextView.setOnClickListener {
             val intent = Intent(applicationContext, YearSelectorDialogActivity::class.java)
             intent.putExtra("year", selectedYear)
             startActivityForResult(intent, AppResultCodes.YEAR_DIALOG_RESULT)
         }
-        yearTextView.text = selectedYear.toString()
+        viewBinding.yearTextView.text = selectedYear.toString()
     }
 
     private fun updateYearButtonsState() {
         when (selectedYear) {
             currentYear -> {
-                nextYearButton.isEnabled = false
-                previousYearButton.isEnabled = true
+                viewBinding.nextYearButton.isEnabled = false
+                viewBinding.previousYearButton.isEnabled = true
             }
             minYear -> {
-                nextYearButton.isEnabled = true
-                previousYearButton.isEnabled = false
+                viewBinding.nextYearButton.isEnabled = true
+                viewBinding.previousYearButton.isEnabled = false
             }
             else -> {
-                nextYearButton.isEnabled = true
-                nextYearButton.isEnabled = true
+                viewBinding.nextYearButton.isEnabled = true
+                viewBinding.nextYearButton.isEnabled = true
             }
         }
     }
 
     private fun initMonthButtons() {
         months = mutableListOf<Button>() as ArrayList<Button>
-        months.add(findViewById(R.id.jan))
-        months.add(findViewById(R.id.feb))
-        months.add(findViewById(R.id.mar))
-        months.add(findViewById(R.id.apr))
-        months.add(findViewById(R.id.may))
-        months.add(findViewById(R.id.jun))
-        months.add(findViewById(R.id.jul))
-        months.add(findViewById(R.id.aug))
-        months.add(findViewById(R.id.sep))
-        months.add(findViewById(R.id.oct))
-        months.add(findViewById(R.id.nov))
-        months.add(findViewById(R.id.dec))
+        months.add(viewBinding.jan)
+        months.add(viewBinding.feb)
+        months.add(viewBinding.mar)
+        months.add(viewBinding.apr)
+        months.add(viewBinding.may)
+        months.add(viewBinding.jun)
+        months.add(viewBinding.jul)
+        months.add(viewBinding.aug)
+        months.add(viewBinding.sep)
+        months.add(viewBinding.oct)
+        months.add(viewBinding.nov)
+        months.add(viewBinding.dec)
         for (button in months) {
             button.setOnClickListener(this)
         }
@@ -169,9 +162,9 @@ class PeriodSelectorActivity : AppCompatActivity(),
 
     private fun handlePreviousYearButtonClick() {
         selectedYear--
-        yearTextView.text = selectedYear.toString()
+        viewBinding.yearTextView.text = selectedYear.toString()
         if (selectedYear == minYear) {
-            previousYearButton.isEnabled = false
+            viewBinding.previousYearButton.isEnabled = false
         }
         if (DataPeriod.MONTH == ApplicationUtil.dataPeriod && selectedYear == previousYear - 1) {
             months[selectedMonth].setTextColor(textColorId)
@@ -179,16 +172,16 @@ class PeriodSelectorActivity : AppCompatActivity(),
         if (DataPeriod.MONTH == ApplicationUtil.dataPeriod && selectedYear == previousYear) {
             months[selectedMonth].setTextColor(accentColorId)
         }
-        if (!nextYearButton.isEnabled) {
-            nextYearButton.isEnabled = true
+        if (!viewBinding.nextYearButton.isEnabled) {
+            viewBinding.nextYearButton.isEnabled = true
         }
     }
 
     private fun handleNextYearButtonClick() {
         selectedYear++
-        yearTextView.text = selectedYear.toString()
+        viewBinding.yearTextView.text = selectedYear.toString()
         if (selectedYear == currentYear) {
-            nextYearButton.isEnabled = false
+            viewBinding.nextYearButton.isEnabled = false
         }
         if (DataPeriod.MONTH == ApplicationUtil.dataPeriod && selectedYear == previousYear + 1) {
             months[selectedMonth].setTextColor(textColorId)
@@ -196,14 +189,14 @@ class PeriodSelectorActivity : AppCompatActivity(),
         if (DataPeriod.MONTH == ApplicationUtil.dataPeriod && selectedYear == previousYear) {
             months[selectedMonth].setTextColor(accentColorId)
         }
-        if (!previousYearButton.isEnabled) {
-            previousYearButton.isEnabled = true
+        if (!viewBinding.previousYearButton.isEnabled) {
+            viewBinding.previousYearButton.isEnabled = true
         }
     }
 
     private fun updateYear(value: String?) {
         val newYear = value ?: currentYear.toString()
-        yearTextView.text = newYear
+        viewBinding.yearTextView.text = newYear
         selectedYear = newYear.toInt()
         updateYearButtonsState()
         if (DataPeriod.MONTH == ApplicationUtil.dataPeriod) {

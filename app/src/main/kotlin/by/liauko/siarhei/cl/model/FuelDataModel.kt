@@ -1,6 +1,6 @@
-package by.liauko.siarhei.cl.entity
+package by.liauko.siarhei.cl.model
 
-class FuelConsumptionData(
+class FuelDataModel(
     id: Long?,
     time: Long,
     var fuelConsumption: Double,
@@ -8,12 +8,12 @@ class FuelConsumptionData(
     var mileage: Int = 0,
     var distance: Double,
     var profileId: Long
-) : AppData(id, time) {
+) : DataModel(id, time) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as FuelConsumptionData
+        other as FuelDataModel
 
         if (fuelConsumption != other.fuelConsumption) return false
         if (litres != other.litres) return false
