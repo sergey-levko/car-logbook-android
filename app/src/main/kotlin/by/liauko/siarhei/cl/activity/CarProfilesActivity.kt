@@ -3,18 +3,14 @@ package by.liauko.siarhei.cl.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import by.liauko.siarhei.cl.R
-import by.liauko.siarhei.cl.entity.CarProfileData
+import by.liauko.siarhei.cl.databinding.ActivityCarProfilesBinding
+import by.liauko.siarhei.cl.model.CarProfileModel
 import by.liauko.siarhei.cl.recyclerview.adapter.RecyclerViewCarProfileAdapter
-import by.liauko.siarhei.cl.repository.CarProfileRepository
-import by.liauko.siarhei.cl.repository.FuelConsumptionRepository
-import by.liauko.siarhei.cl.repository.LogRepository
 import by.liauko.siarhei.cl.util.AppResultCodes.CAR_PROFILE_ADD
 import by.liauko.siarhei.cl.util.AppResultCodes.CAR_PROFILE_EDIT
 import by.liauko.siarhei.cl.util.ApplicationUtil.EMPTY_STRING
@@ -23,51 +19,40 @@ import by.liauko.siarhei.cl.util.ApplicationUtil.profileName
 import by.liauko.siarhei.cl.util.CarBodyType
 import by.liauko.siarhei.cl.util.CarFuelType
 import by.liauko.siarhei.cl.viewmodel.CarProfileViewModel
-import by.liauko.siarhei.cl.viewmodel.factory.CarProfileViewModelFactory
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.runBlocking
 
 class CarProfilesActivity : AppCompatActivity() {
 
-    private lateinit var model: CarProfileViewModel
+    private val viewModel: CarProfileViewModel by viewModels()
 
-    private lateinit var fab: FloatingActionButton
     private lateinit var rvAdapter: RecyclerViewCarProfileAdapter
+    private lateinit var viewBinding: ActivityCarProfilesBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_car_profiles)
+        viewBinding = ActivityCarProfilesBinding.inflate(layoutInflater)
+        setContentView(viewBinding.root)
 
-        val modelFactory = CarProfileViewModelFactory(
-            application,
-            CarProfileRepository(applicationContext),
-            LogRepository(applicationContext),
-            FuelConsumptionRepository(applicationContext)
-        )
-        model = ViewModelProvider(this, modelFactory).get(CarProfileViewModel::class.java)
-        model.loadCarProfiles()
-        model.profiles.observe(this) {
+        runBlocking { viewModel.loadCarProfiles() }
+        viewModel.profiles.observe(this) {
             val result = DiffUtil.calculateDiff(object: DiffUtil.Callback() {
-                override fun getOldListSize() =
-                    model.oldItems.size
+                override fun getOldListSize() = viewModel.oldItems.size
 
-                override fun getNewListSize() =
-                    it.size
+                override fun getNewListSize() = it.size
 
                 override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
-                    model.oldItems[oldItemPosition].id == it[newItemPosition].id
+                    viewModel.oldItems[oldItemPosition].id == it[newItemPosition].id
 
                 override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
-                    model.oldItems[oldItemPosition] == it[newItemPosition]
+                    viewModel.oldItems[oldItemPosition] == it[newItemPosition]
             })
-            rvAdapter.items = it
             result.dispatchUpdatesTo(rvAdapter)
         }
 
         initToolbar()
         initRecyclerView()
 
-        fab = findViewById(R.id.add_car_profile_fab)
-        fab.setOnClickListener {
+        viewBinding.addCarProfileFab.setOnClickListener {
             startActivityForResult(
                 Intent(applicationContext, CarDataActivity::class.java),
                 CAR_PROFILE_ADD
@@ -76,9 +61,9 @@ class CarProfilesActivity : AppCompatActivity() {
     }
 
     private fun initToolbar() {
-        val toolbar = findViewById<Toolbar>(R.id.car_profile_toolbar)
-        toolbar.setNavigationIcon(R.drawable.arrow_left_white)
-        toolbar.setNavigationOnClickListener {
+        viewBinding.carProfileToolbar.setNavigationIcon(R.drawable.arrow_left_white)
+        viewBinding.carProfileToolbar.setNavigationContentDescription(R.string.back_button_content_descriptor)
+        viewBinding.carProfileToolbar.setNavigationOnClickListener {
             setResult(RESULT_CANCELED)
             finish()
         }
@@ -87,9 +72,9 @@ class CarProfilesActivity : AppCompatActivity() {
     private fun initRecyclerView() {
         rvAdapter = RecyclerViewCarProfileAdapter(
             resources,
-            model.profiles.value ?: emptyList(),
+            viewModel.profiles.value ?: emptyList(),
             object: RecyclerViewCarProfileAdapter.RecyclerViewOnItemClickListener {
-                override fun onItemClick(item: CarProfileData, isSelect: Boolean) {
+                override fun onItemClick(item: CarProfileModel, isSelect: Boolean) {
                     if (isSelect) {
                         profileId = item.id!!
                         profileName = item.name
@@ -109,7 +94,7 @@ class CarProfilesActivity : AppCompatActivity() {
             }
         )
 
-        findViewById<RecyclerView>(R.id.car_profile_recycler_view).apply {
+        viewBinding.carProfileRecyclerView.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
             adapter = rvAdapter
@@ -126,27 +111,31 @@ class CarProfilesActivity : AppCompatActivity() {
                     val body = data.getStringExtra("body_type") ?: "SEDAN"
                     val fuel = data.getStringExtra("fuel_type") ?: "GASOLINE"
                     val volume = data.getStringExtra("engine_volume")?.toDouble()
-                    model.add(CarProfileData(null, name, CarBodyType.valueOf(body), CarFuelType.valueOf(fuel), volume))
+                    viewModel.add(CarProfileModel(null, name, CarBodyType.valueOf(body), CarFuelType.valueOf(fuel), volume))
                 }
                 CAR_PROFILE_EDIT -> {
                     val id = data.getLongExtra("id", -1L)
 
                     if (data.getBooleanExtra("remove", false)) {
-                        model.delete(id)
+                        viewModel.delete(id)
+                        if (id == profileId) {
+                            profileId = viewModel.get(0).id!!
+                            profileName = viewModel.get(0).name
+                            rvAdapter.notifyItemChanged(0)
+                        }
                     } else {
+                        val item = viewModel.get(id)!!
+                        val index = viewModel.indexOf(item)
                         val name = data.getStringExtra("car_name") ?: EMPTY_STRING
                         val body = data.getStringExtra("body_type") ?: "SEDAN"
                         val fuel = data.getStringExtra("fuel_type") ?: "GASOLINE"
                         val volume = data.getStringExtra("engine_volume")?.toDouble()
-                        model.update(
-                            CarProfileData(
-                                id,
-                                name,
-                                CarBodyType.valueOf(body),
-                                CarFuelType.valueOf(fuel),
-                                volume
-                            )
-                        )
+                        item.name = name
+                        item.bodyType = CarBodyType.valueOf(body)
+                        item.fuelType = CarFuelType.valueOf(fuel)
+                        item.engineVolume = volume
+                        rvAdapter.notifyItemChanged(index, item)
+                        viewModel.update(item)
                     }
                     saveProfileInfo()
                 }

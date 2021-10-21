@@ -3,7 +3,7 @@ package by.liauko.siarhei.cl.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import by.liauko.siarhei.cl.entity.AppData
+import by.liauko.siarhei.cl.model.DataModel
 import by.liauko.siarhei.cl.repository.DataRepository
 import by.liauko.siarhei.cl.util.ApplicationUtil
 import by.liauko.siarhei.cl.util.DataPeriod
@@ -17,17 +17,17 @@ import kotlinx.coroutines.launch
  * @author Siarhei Liauko
  * @since 4.3
  */
-class AppDataViewModel(private val repository: DataRepository<AppData>) : ViewModel() {
+class AppDataViewModel(private val repository: DataRepository<DataModel>) : ViewModel() {
+
+    private val list = arrayListOf<DataModel>()
 
     /**
      * Live data containing list of models with information about log records or fuel consumption
      *
      * @since 4.3
      */
-    val items: MutableLiveData<ArrayList<AppData>> by lazy {
-        MutableLiveData<ArrayList<AppData>>().also {
-            mutableListOf<AppData>()
-        }
+    val items: MutableLiveData<List<DataModel>> by lazy {
+        MutableLiveData<List<DataModel>>(list)
     }
 
     /**
@@ -35,53 +35,45 @@ class AppDataViewModel(private val repository: DataRepository<AppData>) : ViewMo
      *
      * @since 4.3
      */
-    var oldItems: List<AppData> = emptyList()
+    var oldItems = emptyList<DataModel>()
 
     /**
      * Loads data from database according to [ApplicationUtil.dataPeriod] and sorted by item's time in descending order
      *
      * @since 4.3
      */
-    fun loadItems() {
-        viewModelScope.launch {
-            when (ApplicationUtil.dataPeriod) {
-                DataPeriod.ALL -> findAllByProfileId()
-                else -> findAllByProfileIdAndPeriod()
-            }
+    suspend fun loadItems() {
+        list.clear()
+        when (ApplicationUtil.dataPeriod) {
+            DataPeriod.ALL -> findAllByProfileId()
+            else -> findAllByProfileIdAndPeriod()
         }
     }
 
     private suspend fun findAllByProfileId() {
-        items.postValue(
-            ArrayList(
-                repository.selectAllByProfileId(ApplicationUtil.profileId)
-                    .sortedByDescending { it.time })
-        )
+        list.addAll(repository.selectAllByProfileId(ApplicationUtil.profileId).sortedByDescending { it.time })
     }
 
     private suspend fun findAllByProfileIdAndPeriod() {
-        items.postValue(
-            ArrayList(
-                repository.selectAllByProfileIdAndPeriod(ApplicationUtil.profileId)
-                    .sortedByDescending { it.time })
-        )
+        list.addAll(repository.selectAllByProfileIdAndPeriod(ApplicationUtil.profileId).sortedByDescending { it.time })
     }
 
     /**
      * Creates new entity in database, adds it to items list and sorts it by item's time in descending order
      *
-     * @param data model containing data about new entity
+     * @param item model containing data about new entity
      *
      * @since 4.3
      */
-    fun add(data: AppData) {
-        oldItems = items.value?.toList() ?: emptyList()
+    fun add(item: DataModel) {
         viewModelScope.launch {
-            val id = repository.insert(data)
+            val id = repository.insert(item)
             if (id != -1L) {
-                data.id = id
-                items.value?.add(data)
-                items.postValue(ArrayList(items.value!!.sortedByDescending { it.time }))
+                oldItems = list.toList()
+                item.id = id
+                list.add(item)
+                list.sortByDescending { it.time }
+                items.postValue(list)
             }
         }
     }
@@ -90,14 +82,14 @@ class AppDataViewModel(private val repository: DataRepository<AppData>) : ViewMo
      * Adds back previously existed item to item list
      *
      * @param index item index pointing to place where item was in list before
-     * @param data model containing data about item
+     * @param item model containing data about item
      *
      * @since 4.3
      */
-    fun restore(index: Int, data: AppData) {
-        oldItems = items.value?.toList() ?: emptyList()
-        items.value?.add(index, data)
-        items.postValue(items.value)
+    fun restore(index: Int, item: DataModel) {
+        oldItems = list.toList()
+        list.add(index, item)
+        items.postValue(list)
     }
 
     /**
@@ -110,8 +102,7 @@ class AppDataViewModel(private val repository: DataRepository<AppData>) : ViewMo
      *
      * @since 4.3
      */
-    fun get(id: Long) =
-        items.value?.find { it.id == id }
+    fun get(id: Long) = list.find { it.id == id }
 
     /**
      * Returns item from list by index
@@ -119,12 +110,11 @@ class AppDataViewModel(private val repository: DataRepository<AppData>) : ViewMo
      * @param index index of element which should be returned
      *
      * @return model containing information about log record or fuel consumption stored in list
-     * with specified index or null if item with such index has not found in list
+     * with specified index
      *
      * @since 4.3
      */
-    fun get(index: Int) =
-        items.value?.get(index)
+    fun get(index: Int) = list[index]
 
     /**
      * Returns index of particular item
@@ -135,8 +125,7 @@ class AppDataViewModel(private val repository: DataRepository<AppData>) : ViewMo
      *
      * @since 4.3
      */
-    fun indexOf(item: AppData) =
-        items.value!!.indexOf(item)
+    fun indexOf(item: DataModel) = list.indexOf(item)
 
     /**
      * Updates information about particular entity in database and updates or removes item related
@@ -147,20 +136,20 @@ class AppDataViewModel(private val repository: DataRepository<AppData>) : ViewMo
      *
      * @since 4.3
      */
-    fun update(item: AppData) {
-        oldItems = items.value?.toList() ?: emptyList()
+    fun update(item: DataModel) {
+        oldItems = list.toList()
         viewModelScope.launch {
             repository.update(item)
-            val index = items.value!!.indexOfFirst { it.id == item.id }
-            items.value?.removeAt(index)
             val timeBounds = ApplicationUtil.prepareDateRange()
             if (ApplicationUtil.dataPeriod != DataPeriod.ALL
                 && item.time >= timeBounds.first
                 && item.time <= timeBounds.second
             ) {
-                items.value?.add(item)
+                list.sortByDescending { it.time }
+            } else {
+                list.remove(item)
             }
-            items.postValue(ArrayList(items.value!!.sortedByDescending { it.time }))
+            items.postValue(list)
         }
     }
 
@@ -172,9 +161,9 @@ class AppDataViewModel(private val repository: DataRepository<AppData>) : ViewMo
      * @since 4.3
      */
     fun delete(index: Int) {
-        oldItems = items.value?.toList() ?: emptyList()
-        (items.value as ArrayList).removeAt(index)
-        items.postValue(items.value)
+        oldItems = list.toList()
+        list.removeAt(index)
+        items.postValue(list)
     }
 
     /**
@@ -184,7 +173,7 @@ class AppDataViewModel(private val repository: DataRepository<AppData>) : ViewMo
      *
      * @since 4.3
      */
-    fun deleteFromRepo(item: AppData) {
+    fun deleteFromRepo(item: DataModel) {
         viewModelScope.launch {
             repository.delete(item)
         }

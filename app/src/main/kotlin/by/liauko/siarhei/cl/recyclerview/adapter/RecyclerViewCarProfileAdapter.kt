@@ -6,13 +6,13 @@ import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import by.liauko.siarhei.cl.R
-import by.liauko.siarhei.cl.entity.CarProfileData
+import by.liauko.siarhei.cl.model.CarProfileModel
 import by.liauko.siarhei.cl.recyclerview.holder.RecyclerViewCarProfileViewHolder
 import by.liauko.siarhei.cl.util.ApplicationUtil.profileId
 
 class RecyclerViewCarProfileAdapter(
     val resources: Resources,
-    var items: List<CarProfileData>,
+    var items: List<CarProfileModel>,
     private val listener: RecyclerViewOnItemClickListener
 ) : RecyclerView.Adapter<RecyclerViewCarProfileViewHolder>() {
 
@@ -52,6 +52,6 @@ class RecyclerViewCarProfileAdapter(
     override fun getItemCount() = items.size
 
     interface RecyclerViewOnItemClickListener {
-        fun onItemClick(item: CarProfileData, isSelect: Boolean)
+        fun onItemClick(item: CarProfileModel, isSelect: Boolean)
     }
 }

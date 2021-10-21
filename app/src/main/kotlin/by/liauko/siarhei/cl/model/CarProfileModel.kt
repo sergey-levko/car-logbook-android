@@ -1,9 +1,9 @@
-package by.liauko.siarhei.cl.entity
+package by.liauko.siarhei.cl.model
 
 import by.liauko.siarhei.cl.util.CarBodyType
 import by.liauko.siarhei.cl.util.CarFuelType
 
-class CarProfileData (
+class CarProfileModel (
     var id: Long?,
     var name: String,
     var bodyType: CarBodyType,
@@ -14,7 +14,7 @@ class CarProfileData (
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as CarProfileData
+        other as CarProfileModel
 
         if (id != other.id) return false
         if (name != other.name) return false

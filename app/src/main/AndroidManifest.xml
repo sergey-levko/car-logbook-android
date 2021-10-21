@@ -27,9 +27,7 @@
         </activity>
         <activity android:name=".activity.CarDataActivity" />
         <activity android:name=".activity.CarProfilesActivity" />
-        <activity android:name=".activity.FirstStartActivity" />
-        <activity android:name=".activity.LaunchScreenActivity"
-                android:theme="@style/LaunchScreen" />
+        <activity android:name=".activity.WelcomeActivity" />
         <activity android:name=".activity.PeriodSelectorActivity"
                 android:theme="@style/DialogNoTitle" />
     </application>

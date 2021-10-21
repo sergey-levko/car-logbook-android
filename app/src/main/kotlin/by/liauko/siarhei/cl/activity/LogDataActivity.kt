@@ -8,10 +8,9 @@ import android.text.InputType
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.DatePicker
-import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import by.liauko.siarhei.cl.R
+import by.liauko.siarhei.cl.databinding.ActivityLogDataBinding
 import by.liauko.siarhei.cl.util.DateConverter
 import java.util.Calendar
 import java.util.Calendar.DAY_OF_MONTH
@@ -24,17 +23,14 @@ class LogDataActivity : AppCompatActivity(),
     private val defaultId = -1L
 
     private lateinit var calendar: Calendar
-    private lateinit var title: EditText
-    private lateinit var text: EditText
-    private lateinit var mileage: EditText
-    private lateinit var date: EditText
-    private lateinit var toolbar: Toolbar
+    private lateinit var viewBinding: ActivityLogDataBinding
 
     private var id = defaultId
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_log_data)
+        viewBinding = ActivityLogDataBinding.inflate(layoutInflater)
+        setContentView(viewBinding.root)
 
         id = intent.getLongExtra("id", defaultId)
 
@@ -48,14 +44,14 @@ class LogDataActivity : AppCompatActivity(),
     }
 
     private fun initToolbar() {
-        toolbar = findViewById(R.id.log_toolbar)
-        toolbar.setTitle(intent.getIntExtra("title", R.string.activity_log_title_add))
-        toolbar.setNavigationIcon(R.drawable.arrow_left_white)
-        toolbar.setNavigationOnClickListener {
+        viewBinding.logToolbar.setTitle(intent.getIntExtra("title", R.string.activity_log_title_add))
+        viewBinding.logToolbar.setNavigationIcon(R.drawable.arrow_left_white)
+        viewBinding.logToolbar.setNavigationContentDescription(R.string.back_button_content_descriptor)
+        viewBinding.logToolbar.setNavigationOnClickListener {
             handleBackAction()
         }
-        toolbar.inflateMenu(R.menu.data_activity_menu)
-        toolbar.setOnMenuItemClickListener {
+        viewBinding.logToolbar.inflateMenu(R.menu.data_activity_menu)
+        viewBinding.logToolbar.setOnMenuItemClickListener {
             var result = false
             when (it.itemId) {
                 R.id.data_menu_save -> {
@@ -80,22 +76,18 @@ class LogDataActivity : AppCompatActivity(),
             return@setOnMenuItemClickListener result
         }
         if (id == defaultId) {
-            toolbar.menu.findItem(R.id.data_menu_save).isVisible = true
-            toolbar.menu.findItem(R.id.data_menu_delete).isVisible = false
+            viewBinding.logToolbar.menu.findItem(R.id.data_menu_save).isVisible = true
+            viewBinding.logToolbar.menu.findItem(R.id.data_menu_delete).isVisible = false
         } else {
-            toolbar.menu.findItem(R.id.data_menu_save).isVisible = false
-            toolbar.menu.findItem(R.id.data_menu_delete).isVisible = true
+            viewBinding.logToolbar.menu.findItem(R.id.data_menu_save).isVisible = false
+            viewBinding.logToolbar.menu.findItem(R.id.data_menu_delete).isVisible = true
         }
     }
 
     private fun initElements() {
-        title = findViewById(R.id.log_title)
-        text = findViewById(R.id.log_text)
-        mileage = findViewById(R.id.log_mileage)
-        date = findViewById(R.id.log_date)
-        date.inputType = InputType.TYPE_NULL
-        date.setOnClickListener { showDatePickerDialog(it) }
-        date.setOnFocusChangeListener { view, isFocused ->
+        viewBinding.logDate.inputType = InputType.TYPE_NULL
+        viewBinding.logDate.setOnClickListener { showDatePickerDialog(it) }
+        viewBinding.logDate.setOnFocusChangeListener { view, isFocused ->
             if (isFocused) {
                 (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(view.windowToken, 0)
                 showDatePickerDialog(view)
@@ -106,7 +98,7 @@ class LogDataActivity : AppCompatActivity(),
     private fun showDatePickerDialog(view: View) {
         DatePickerDialog(
             view.context,
-            R.style.DatePickerDialog,
+            R.style.Theme_App_DatePicker,
             this,
             calendar.get(YEAR),
             calendar.get(MONTH),
@@ -115,27 +107,27 @@ class LogDataActivity : AppCompatActivity(),
     }
 
     private fun updateDateButtonText() {
-        date.text.clear()
-        date.text.append(DateConverter.convert(calendar))
+        viewBinding.logDate.text?.clear()
+        viewBinding.logDate.text?.append(DateConverter.convert(calendar))
     }
 
     private fun fillData() {
         calendar.timeInMillis = intent.getLongExtra("time", calendar.timeInMillis)
-        title.text.append(intent.getStringExtra("log_title"))
-        mileage.text.append(intent.getLongExtra("mileage", 0L).toString())
-        text.text.append(intent.getStringExtra("text"))
+        viewBinding.logTitle.text?.append(intent.getStringExtra("log_title"))
+        viewBinding.logMileage.text?.append(intent.getLongExtra("mileage", 0L).toString())
+        viewBinding.logText.text?.append(intent.getStringExtra("text"))
     }
 
     private fun validateFields(): Boolean {
         var result = true
 
-        if (title.text.isBlank()) {
-            title.error = getString(R.string.activity_log_title_error)
+        if (viewBinding.logTitle.text.isNullOrBlank()) {
+            viewBinding.logTitle.error = getString(R.string.activity_log_title_error)
             result = false
         }
 
-        if (mileage.text.isNullOrBlank() || mileage.text.toString().toLong() == 0L) {
-            mileage.error = getString(R.string.activity_log_mileage_error)
+        if (viewBinding.logMileage.text.isNullOrBlank() || viewBinding.logMileage.text.toString().toLong() == 0L) {
+            viewBinding.logMileage.error = getString(R.string.activity_log_mileage_error)
             result = false
         }
 
@@ -158,9 +150,9 @@ class LogDataActivity : AppCompatActivity(),
     }
 
     private fun fillIntent(intent: Intent) {
-        intent.putExtra("title", title.text.toString())
-        intent.putExtra("mileage", mileage.text.toString())
-        intent.putExtra("text", text.text.toString())
+        intent.putExtra("title", viewBinding.logTitle.text.toString())
+        intent.putExtra("mileage", viewBinding.logMileage.text.toString())
+        intent.putExtra("text", viewBinding.logText.text.toString())
         intent.putExtra("time", calendar.timeInMillis)
     }
 

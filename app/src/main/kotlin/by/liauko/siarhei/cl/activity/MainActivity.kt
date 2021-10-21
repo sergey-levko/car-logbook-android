@@ -5,19 +5,26 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.MenuItem
+import android.view.View
+import android.view.ViewTreeObserver
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProvider
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import by.liauko.siarhei.cl.R
 import by.liauko.siarhei.cl.activity.fragment.DataFragment
 import by.liauko.siarhei.cl.activity.fragment.SettingsFragment
 import by.liauko.siarhei.cl.database.CarLogbookDatabase
+import by.liauko.siarhei.cl.databinding.ActivityMainBinding
 import by.liauko.siarhei.cl.job.ExportToPdfAsyncJob
+import by.liauko.siarhei.cl.repository.AppDataRepositoryFactory
 import by.liauko.siarhei.cl.util.AppResultCodes.CAR_PROFILE_SHOW_LIST
 import by.liauko.siarhei.cl.util.AppResultCodes.CAR_PROFILE_WELCOME
 import by.liauko.siarhei.cl.util.AppResultCodes.LOG_EXPORT
@@ -30,15 +37,12 @@ import by.liauko.siarhei.cl.util.ApplicationUtil.profileName
 import by.liauko.siarhei.cl.util.ApplicationUtil.type
 import by.liauko.siarhei.cl.util.DataPeriod
 import by.liauko.siarhei.cl.util.DataType
-import com.google.android.material.navigation.NavigationBarView
 import java.util.Calendar
 
 class MainActivity : AppCompatActivity(),
-    NavigationBarView.OnItemSelectedListener,
     PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 
-    private lateinit var toolbar: Toolbar
-    private lateinit var bottomNavigationView: NavigationBarView
+    private lateinit var viewBinding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val preferences = getSharedPreferences(getString(R.string.shared_preferences_name), Context.MODE_PRIVATE)
@@ -52,23 +56,38 @@ class MainActivity : AppCompatActivity(),
         AppCompatDelegate.setDefaultNightMode(uiMode)
 
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        viewBinding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(viewBinding.root)
+
+//        var ready = false
+//        Handler(Looper.getMainLooper()).postDelayed({
+//            ready = true
+//        }, 1000)
+//        model = ViewModelProvider(this).get(AppDataViewModel::class.java)
+//        val loadDataJob = model.loadItems()
+//        val content = findViewById<View>(android.R.id.content)
+//        content.viewTreeObserver.addOnPreDrawListener(
+//            object : ViewTreeObserver.OnPreDrawListener {
+//                override fun onPreDraw() =
+//                    if (loadDataJob.isCompleted) {
+//                        content.viewTreeObserver.removeOnPreDrawListener(this)
+//                        true
+//                    } else {
+//                        false
+//                    }
+//            }
+//        )
 
         profileId = preferences.getLong(getString(R.string.car_profile_id_key), -1L)
         profileName = preferences.getString(getString(R.string.car_profile_name_key), getString(R.string.app_name)) ?: EMPTY_STRING
 
         initToolbar()
         initBottomNavigationView()
-
-        if (savedInstanceState == null) {
-            startActivity(Intent(applicationContext, LaunchScreenActivity::class.java))
-        }
     }
 
     private fun initToolbar() {
-        toolbar = findViewById(R.id.toolbar)
-        toolbar.inflateMenu(R.menu.period_select_menu)
-        toolbar.setOnMenuItemClickListener {
+        viewBinding.toolbar.inflateMenu(R.menu.period_select_menu)
+        viewBinding.toolbar.setOnMenuItemClickListener {
             var result = false
             when (it.itemId) {
                 R.id.period_select_menu_date -> {
@@ -90,9 +109,27 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun initBottomNavigationView() {
-        bottomNavigationView = findViewById(R.id.bottom_navigation_view)
-        bottomNavigationView.setOnItemSelectedListener(this)
-        bottomNavigationView.selectedItemId = when (type) {
+        viewBinding.bottomNavigationView.setOnItemSelectedListener {
+            when (it.itemId) {
+                R.id.log_menu_item -> {
+                    type = DataType.LOG
+                    loadDataFragment()
+                    true
+                }
+                R.id.fuel_menu_item -> {
+                    type = DataType.FUEL
+                    loadDataFragment()
+                    true
+                }
+                R.id.settings_menu_item -> {
+                    periodCalendar = Calendar.getInstance()
+                    loadFragment(SettingsFragment())
+                    true
+                }
+                else -> false
+            }
+        }
+        viewBinding.bottomNavigationView.selectedItemId = when (type) {
             DataType.LOG -> R.id.log_menu_item
             DataType.FUEL -> R.id.fuel_menu_item
         }
@@ -100,40 +137,17 @@ class MainActivity : AppCompatActivity(),
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putInt("item_id", bottomNavigationView.selectedItemId)
+        outState.putInt("item_id", viewBinding.bottomNavigationView.selectedItemId)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        bottomNavigationView.selectedItemId = savedInstanceState.getInt("item_id")
+        viewBinding.bottomNavigationView.selectedItemId = savedInstanceState.getInt("item_id")
     }
 
     override fun onDestroy() {
         super.onDestroy()
         CarLogbookDatabase.closeDatabase()
-    }
-
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        var result = false
-
-        when (item.itemId) {
-            R.id.log_menu_item -> {
-                type = DataType.LOG
-                loadDataFragment()
-                result = true
-            }
-            R.id.fuel_menu_item -> {
-                type = DataType.FUEL
-                loadDataFragment()
-                result = true
-            }
-            R.id.settings_menu_item -> {
-                periodCalendar = Calendar.getInstance()
-                loadFragment(SettingsFragment())
-                result = true
-            }
-        }
-        return result
     }
 
     private fun loadFragment(fragment: Fragment) {
@@ -144,7 +158,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun loadFragment() {
-        when (bottomNavigationView.selectedItemId) {
+        when (viewBinding.bottomNavigationView.selectedItemId) {
             R.id.log_menu_item -> loadDataFragment()
             R.id.fuel_menu_item -> loadDataFragment()
             R.id.settings_menu_item -> loadFragment(SettingsFragment())

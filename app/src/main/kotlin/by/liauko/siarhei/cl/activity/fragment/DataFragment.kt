@@ -5,10 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DiffUtil
@@ -17,9 +15,10 @@ import androidx.recyclerview.widget.RecyclerView
 import by.liauko.siarhei.cl.R
 import by.liauko.siarhei.cl.activity.FuelDataActivity
 import by.liauko.siarhei.cl.activity.LogDataActivity
-import by.liauko.siarhei.cl.entity.AppData
-import by.liauko.siarhei.cl.entity.FuelConsumptionData
-import by.liauko.siarhei.cl.entity.LogData
+import by.liauko.siarhei.cl.databinding.FragmentDataBinding
+import by.liauko.siarhei.cl.model.DataModel
+import by.liauko.siarhei.cl.model.FuelDataModel
+import by.liauko.siarhei.cl.model.LogDataModel
 import by.liauko.siarhei.cl.recyclerview.adapter.RecyclerViewDataAdapter
 import by.liauko.siarhei.cl.repository.AppDataRepositoryFactory
 import by.liauko.siarhei.cl.util.AppResultCodes.FUEL_CONSUMPTION_ADD
@@ -35,55 +34,48 @@ import by.liauko.siarhei.cl.util.DataPeriod
 import by.liauko.siarhei.cl.util.DataType
 import by.liauko.siarhei.cl.viewmodel.AppDataViewModel
 import by.liauko.siarhei.cl.viewmodel.factory.AppDataViewModelFactory
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.runBlocking
 import java.util.Calendar
 
 class DataFragment : Fragment() {
 
-    private lateinit var fragmentView: View
+    private lateinit var viewModel: AppDataViewModel
     private lateinit var rvAdapter: RecyclerViewDataAdapter
-    private lateinit var fab: FloatingActionButton
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var noDataTextView: TextView
 
-    private lateinit var model: AppDataViewModel
+    private var bindingObject: FragmentDataBinding? = null
+    private val viewBinding get() = bindingObject!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        fragmentView = inflater.inflate(R.layout.fragment_data, container, false)
+        bindingObject = FragmentDataBinding.inflate(inflater, container, false)
 
         val modelFactory = AppDataViewModelFactory(AppDataRepositoryFactory.getRepository(requireContext(), type))
-        model = ViewModelProvider(this, modelFactory).get(AppDataViewModel::class.java)
-        model.loadItems()
-        model.items.observe(viewLifecycleOwner) {
+        viewModel = ViewModelProvider(this, modelFactory).get(AppDataViewModel::class.java)
+        runBlocking { viewModel.loadItems() }
+        viewModel.items.observe(viewLifecycleOwner) {
             val result = DiffUtil.calculateDiff(object: DiffUtil.Callback() {
-                override fun getOldListSize() =
-                    model.oldItems.size
+                override fun getOldListSize() = viewModel.oldItems.size
 
-                override fun getNewListSize() =
-                    it.size
+                override fun getNewListSize() = it.size
 
                 override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
-                    model.oldItems[oldItemPosition].id == it[newItemPosition].id
+                    viewModel.oldItems[oldItemPosition].id == it[newItemPosition].id
 
                 override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
-                    model.oldItems[oldItemPosition] == it[newItemPosition]
+                    viewModel.oldItems[oldItemPosition] == it[newItemPosition]
             })
-            rvAdapter.items = it
             result.dispatchUpdatesTo(rvAdapter)
             rvAdapter.refreshNoDataTextVisibility()
-            recyclerView.scrollToPosition(0)
         }
 
         initToolbar(container!!, type)
         initRecyclerView()
 
-        fab = fragmentView.findViewById(R.id.add_fab)
-        fab.setOnClickListener {
+        viewBinding.addFab.setOnClickListener {
             when (type) {
                 DataType.LOG -> startActivityForResult(
                     Intent(requireContext(), LogDataActivity::class.java),
@@ -96,7 +88,12 @@ class DataFragment : Fragment() {
             }
         }
 
-        return fragmentView
+        return viewBinding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        bindingObject = null
     }
 
     private fun initToolbar(container: ViewGroup, type: DataType) {
@@ -114,35 +111,33 @@ class DataFragment : Fragment() {
     }
 
     private fun initRecyclerView() {
-        noDataTextView = fragmentView.findViewById(R.id.no_data_text)
-
         rvAdapter =
             RecyclerViewDataAdapter(
-                model.items.value ?: emptyList(),
+                viewModel.items.value ?: emptyList(),
                 resources,
-                noDataTextView,
+                viewBinding.noDataText,
                 object : RecyclerViewDataAdapter.RecyclerViewOnItemClickListener {
-                    override fun onItemClick(item: AppData) {
-                        if (item is LogData) {
+                    override fun onItemClick(item: DataModel) {
+                        if (item is LogDataModel) {
                             callLogEditActivityForResult(LogDataActivity::class.java, item)
-                        } else if (item is FuelConsumptionData) {
+                        } else if (item is FuelDataModel) {
                             callFuelConsumptionEditActivityForResult(FuelDataActivity::class.java, item)
                         }
                     }
                 })
 
-        recyclerView = fragmentView.findViewById<RecyclerView>(R.id.recycler_view).apply {
+        viewBinding.recyclerView.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
             adapter = rvAdapter
         }
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+        viewBinding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (dy > 0) {
-                    fab.hide()
+                    viewBinding.addFab.hide()
                 } else if (dy < 0) {
-                    fab.show()
+                    viewBinding.addFab.show()
                 }
             }
         })
@@ -159,71 +154,62 @@ class DataFragment : Fragment() {
                     val mileage = data.getStringExtra("mileage")?.toInt() ?: Int.MIN_VALUE
                     val distance = data.getStringExtra("distance")?.toDouble() ?: Double.MIN_VALUE
                     val fuelConsumption = litres * 100 / distance
-                    model.add(
-                        FuelConsumptionData(null, time, fuelConsumption, litres, mileage, distance, profileId)
+                    viewModel.add(
+                        FuelDataModel(null, time, fuelConsumption, litres, mileage, distance, profileId)
                     )
                 }
                 FUEL_CONSUMPTION_EDIT -> {
                     val id = data.getLongExtra("id", -1L)
-                    val item = model.get(id) as FuelConsumptionData
+                    val item = viewModel.get(id) as FuelDataModel
+                    val index = viewModel.indexOf(item)
 
                     if (data.getBooleanExtra("remove", false)) {
-                        val index = model.indexOf(item)
-                        model.delete(index)
+                        viewModel.delete(index)
                         showRemoveItemSnackbar(item, index)
                     } else {
                         val litres = data.getStringExtra("litres")?.toDouble() ?: Double.MIN_VALUE
                         val mileage = data.getStringExtra("mileage")?.toInt() ?: Int.MIN_VALUE
                         val distance = data.getStringExtra("distance")?.toDouble() ?: Double.MIN_VALUE
                         val fuelConsumption = litres * 100 / distance
-                        model.update(
-                            FuelConsumptionData(
-                                id,
-                                time,
-                                fuelConsumption,
-                                litres,
-                                mileage,
-                                distance,
-                                item.profileId
-                            )
-                        )
+                        item.fuelConsumption = fuelConsumption
+                        item.litres = litres
+                        item.mileage = mileage
+                        item.distance = distance
+                        item.time = time
+                        rvAdapter.notifyItemChanged(index, item)
+                        viewModel.update(item)
                     }
                 }
                 LOG_ADD -> {
                     val title = data.getStringExtra("title")?.trim() ?: EMPTY_STRING
                     val text = data.getStringExtra("text")?.trim() ?: EMPTY_STRING
                     val mileage = data.getStringExtra("mileage")?.toLong() ?: Long.MIN_VALUE
-                    model.add(LogData(null, time, title, text, mileage, profileId))
+                    viewModel.add(LogDataModel(null, time, title, text, mileage, profileId))
                 }
                 LOG_EDIT -> {
                     val id = data.getLongExtra("id", -1L)
-                    val item = model.get(id) as LogData
+                    val item = viewModel.get(id) as LogDataModel
+                    val index = viewModel.indexOf(item)
 
                     if (data.getBooleanExtra("remove", false)) {
-                        val index = model.indexOf(item)
-                        model.delete(index)
+                        viewModel.delete(index)
                         showRemoveItemSnackbar(item, index)
                     } else {
                         val title = data.getStringExtra("title") ?: EMPTY_STRING
                         val text = data.getStringExtra("text") ?: EMPTY_STRING
                         val mileage = data.getStringExtra("mileage")?.toLong() ?: Long.MIN_VALUE
-                        model.update(
-                            LogData(
-                                id,
-                                time,
-                                title,
-                                text,
-                                mileage,
-                                item.profileId
-                            )
-                        )
+                        item.title = title
+                        item.text = text
+                        item.mileage = mileage
+                        rvAdapter.notifyItemChanged(index, item)
+                        viewModel.update(item)
                     }
                 }
             }
         }
     }
 
-    private fun callLogEditActivityForResult(activityClass: Class<*>, item: LogData) {
+    private fun callLogEditActivityForResult(activityClass: Class<*>, item: LogDataModel) {
         val intent = Intent(requireContext(), activityClass)
         intent.putExtra("title", R.string.activity_log_title_edit)
         intent.putExtra("id", item.id)
@@ -234,7 +220,7 @@ class DataFragment : Fragment() {
         startActivityForResult(intent, LOG_EDIT)
     }
 
-    private fun callFuelConsumptionEditActivityForResult(activityClass: Class<*>, item: FuelConsumptionData) {
+    private fun callFuelConsumptionEditActivityForResult(activityClass: Class<*>, item: FuelDataModel) {
         val intent = Intent(requireContext(), activityClass)
         intent.putExtra("title", R.string.activity_fuel_title_edit)
         intent.putExtra("id", item.id)
@@ -245,17 +231,16 @@ class DataFragment : Fragment() {
         startActivityForResult(intent, FUEL_CONSUMPTION_EDIT)
     }
 
-    private fun showRemoveItemSnackbar(item: AppData, index: Int) {
-        val view = fragmentView.findViewById<CoordinatorLayout>(R.id.recyclerview_coordinator_layout)
-        Snackbar.make(view, R.string.data_fragment_snackbar_message,
+    private fun showRemoveItemSnackbar(item: DataModel, index: Int) {
+        Snackbar.make(viewBinding.recyclerviewCoordinatorLayout, R.string.data_fragment_snackbar_message,
             Snackbar.LENGTH_LONG
         ).setAction(R.string.data_fragment_snackbar_undo) {
-            model.restore(index, item)
+            viewModel.restore(index, item)
         }.addCallback(object : Snackbar.Callback() {
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                 super.onDismissed(transientBottomBar, event)
                 if (event != DISMISS_EVENT_ACTION) {
-                    model.deleteFromRepo(item)
+                    viewModel.deleteFromRepo(item)
                 }
             }
         }).show()

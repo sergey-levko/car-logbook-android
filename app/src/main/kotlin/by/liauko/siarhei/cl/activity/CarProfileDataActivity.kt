@@ -7,16 +7,13 @@ import android.text.InputType
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import by.liauko.siarhei.cl.R
+import by.liauko.siarhei.cl.databinding.ActivityCarDataBinding
 import by.liauko.siarhei.cl.util.CarBodyType
 import by.liauko.siarhei.cl.util.CarFuelType
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.textfield.TextInputLayout
 
 class CarDataActivity : AppCompatActivity() {
 
@@ -24,18 +21,15 @@ class CarDataActivity : AppCompatActivity() {
 
     private lateinit var bodyTypes: Array<String>
     private lateinit var fuelTypes: Array<String>
-    private lateinit var name: EditText
-    private lateinit var bodyType: AutoCompleteTextView
-    private lateinit var fuelType: AutoCompleteTextView
-    private lateinit var engineVolume: EditText
-    private lateinit var engineVolumeLayout: TextInputLayout
     private lateinit var carInfo: CarInfo
+    private lateinit var viewBinding: ActivityCarDataBinding
 
     private var id = defaultId
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_car_data)
+        viewBinding = ActivityCarDataBinding.inflate(layoutInflater)
+        setContentView(viewBinding.root)
 
         bodyTypes = resources.getStringArray(R.array.body_types)
         fuelTypes = resources.getStringArray(R.array.fuel_type)
@@ -51,14 +45,14 @@ class CarDataActivity : AppCompatActivity() {
     }
 
     private fun initToolbar() {
-        val toolbar = findViewById<Toolbar>(R.id.car_toolbar)
-        toolbar.setTitle(if (id == defaultId) R.string.activity_car_title_create else R.string.activity_car_title_edit)
-        toolbar.setNavigationIcon(R.drawable.arrow_left_white)
-        toolbar.setNavigationOnClickListener {
+        viewBinding.carToolbar.setTitle(if (id == defaultId) R.string.activity_car_title_create else R.string.activity_car_title_edit)
+        viewBinding.carToolbar.setNavigationIcon(R.drawable.arrow_left_white)
+        viewBinding.carToolbar.setNavigationContentDescription(R.string.back_button_content_descriptor)
+        viewBinding.carToolbar.setNavigationOnClickListener {
             handleBackAction()
         }
-        toolbar.inflateMenu(R.menu.data_activity_menu)
-        toolbar.setOnMenuItemClickListener {
+        viewBinding.carToolbar.inflateMenu(R.menu.data_activity_menu)
+        viewBinding.carToolbar.setOnMenuItemClickListener {
             var result = false
             when (it.itemId) {
                 R.id.data_menu_save -> {
@@ -93,11 +87,11 @@ class CarDataActivity : AppCompatActivity() {
             return@setOnMenuItemClickListener result
         }
         if (id == defaultId) {
-            toolbar.menu.findItem(R.id.data_menu_save).isVisible = true
-            toolbar.menu.findItem(R.id.data_menu_delete).isVisible = false
+            viewBinding.carToolbar.menu.findItem(R.id.data_menu_save).isVisible = true
+            viewBinding.carToolbar.menu.findItem(R.id.data_menu_delete).isVisible = false
         } else {
-            toolbar.menu.findItem(R.id.data_menu_save).isVisible = false
-            toolbar.menu.findItem(R.id.data_menu_delete).isVisible = true
+            viewBinding.carToolbar.menu.findItem(R.id.data_menu_save).isVisible = false
+            viewBinding.carToolbar.menu.findItem(R.id.data_menu_delete).isVisible = true
         }
     }
 
@@ -105,33 +99,25 @@ class CarDataActivity : AppCompatActivity() {
         val bodyAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, bodyTypes)
         val fuelAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, fuelTypes)
 
-        name = findViewById(R.id.car_name)
+        viewBinding.carBody.text.append(bodyTypes[carInfo.body.ordinal])
+        viewBinding.carBody.inputType = InputType.TYPE_NULL
+        viewBinding.carBody.setAdapter(bodyAdapter)
+        viewBinding.carBody.setOnFocusChangeListener { view, isFocus -> if (isFocus) hideKeyboard(view) }
+        viewBinding.carBody.setOnItemClickListener { _, _, i, _ -> carInfo.body = CarBodyType.values()[i] }
 
-        bodyType = findViewById(R.id.car_body)
-        bodyType.text.append(bodyTypes[carInfo.body.ordinal])
-        bodyType.inputType = InputType.TYPE_NULL
-        bodyType.setAdapter(bodyAdapter)
-        bodyType.setOnFocusChangeListener { view, isFocus -> if (isFocus) hideKeyboard(view) }
-        bodyType.setOnItemClickListener { _, _, i, _ -> carInfo.body = CarBodyType.values()[i] }
-
-        fuelType = findViewById(R.id.car_fuel_type)
-        fuelType.text.append(fuelTypes[carInfo.fuelType.ordinal])
-        fuelType.inputType = InputType.TYPE_NULL
-        fuelType.setAdapter(fuelAdapter)
-        fuelType.setOnFocusChangeListener { view, isFocus -> if (isFocus) hideKeyboard(view) }
-        fuelType.setOnItemClickListener { _, _, i, _ ->
+        viewBinding.carFuelType.text.append(fuelTypes[carInfo.fuelType.ordinal])
+        viewBinding.carFuelType.inputType = InputType.TYPE_NULL
+        viewBinding.carFuelType.setAdapter(fuelAdapter)
+        viewBinding.carFuelType.setOnFocusChangeListener { view, isFocus -> if (isFocus) hideKeyboard(view) }
+        viewBinding.carFuelType.setOnItemClickListener { _, _, i, _ ->
             carInfo.fuelType = CarFuelType.values()[i]
             if (carInfo.fuelType == CarFuelType.ELECTRICITY
-                && engineVolumeLayout.visibility == View.VISIBLE) {
-                engineVolumeLayout.visibility = View.GONE
+                && viewBinding.carEngineLayout.visibility == View.VISIBLE) {
+                viewBinding.carEngineLayout.visibility = View.GONE
             } else {
-                engineVolumeLayout.visibility = View.VISIBLE
+                viewBinding.carEngineLayout.visibility = View.VISIBLE
             }
         }
-
-        engineVolume = findViewById(R.id.car_engine)
-        engineVolumeLayout = findViewById(R.id.car_engine_layout)
-        engineVolumeLayout.visibility = View.VISIBLE
     }
 
     private fun initCarInfo() {
@@ -149,26 +135,28 @@ class CarDataActivity : AppCompatActivity() {
     }
 
     private fun fillData() {
-        name.text.append(intent.getStringExtra("car_name"))
+        viewBinding.carName.text?.append(intent.getStringExtra("car_name"))
         val volume = intent.getStringExtra("engine_volume")
         if (volume != null) {
-            engineVolume.text.append(volume)
-            engineVolumeLayout.visibility = View.VISIBLE
+            viewBinding.carEngine.text?.append(volume)
+            viewBinding.carEngineLayout.visibility = View.VISIBLE
         } else {
-            engineVolumeLayout.visibility = View.GONE
+            viewBinding.carEngineLayout.visibility = View.GONE
         }
     }
 
     private fun validateFields(): Boolean {
         var result = true
 
-        if (name.text.isBlank()) {
-            name.error = getString(R.string.activity_car_name_error)
+        if (viewBinding.carName.text.isNullOrBlank()) {
+            viewBinding.carName.error = getString(R.string.activity_car_name_error)
             result = false
         }
 
-        if (engineVolumeLayout.visibility != View.GONE && (engineVolume.text.isNullOrBlank() || engineVolume.text.toString().toDouble() <= 0.0)) {
-            engineVolume.error = getString(R.string.activity_car_engine_error)
+        if (viewBinding.carEngineLayout.visibility != View.GONE
+            && (viewBinding.carEngine.text.isNullOrBlank() || viewBinding.carEngine.text.toString().toDouble() <= 0.0)
+        ) {
+            viewBinding.carEngine.error = getString(R.string.activity_car_engine_error)
             result = false
         }
 
@@ -191,12 +179,12 @@ class CarDataActivity : AppCompatActivity() {
     }
 
     private fun fillIntent(intent: Intent) {
-        intent.putExtra("car_name", name.text.toString())
+        intent.putExtra("car_name", viewBinding.carName.text.toString())
         resources.getStringArray(R.array.body_types)
         intent.putExtra("body_type", carInfo.body.name)
         intent.putExtra("fuel_type", carInfo.fuelType.name)
-        if (engineVolume.text.isNotBlank()) {
-            intent.putExtra("engine_volume", engineVolume.text.toString())
+        if (viewBinding.carEngine.text?.isNotBlank() != false) {
+            intent.putExtra("engine_volume", viewBinding.carEngine.text.toString())
         }
     }
 

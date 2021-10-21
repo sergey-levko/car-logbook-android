@@ -1,7 +1,7 @@
 package by.liauko.siarhei.cl.repository.converter
 
 import by.liauko.siarhei.cl.database.entity.LogEntity
-import by.liauko.siarhei.cl.entity.LogData
+import by.liauko.siarhei.cl.model.LogDataModel
 
 /**
  * Utility class for converting entity to model and reverse containing data about log records
@@ -14,20 +14,20 @@ object LogDataConverter {
     /**
      * Converts model to entity
      *
-     * @param data model containing information about log records
+     * @param model model containing information about log records
      *
      * @return database entity containing information about log records
      *
      * @since 4.3
      */
-    fun convertToEntity(data: LogData) =
+    fun convertToEntity(model: LogDataModel) =
         LogEntity(
-            data.id,
-            data.title,
-            data.text,
-            data.mileage,
-            data.time,
-            data.profileId
+            model.id,
+            model.title,
+            model.text,
+            model.mileage,
+            model.time,
+            model.profileId
         )
 
     /**
@@ -40,7 +40,7 @@ object LogDataConverter {
      * @since 4.3
      */
     fun convertToData(entity: LogEntity) =
-        LogData(
+        LogDataModel(
             entity.id,
             entity.time,
             entity.title,
