@@ -2,9 +2,9 @@ package by.liauko.siarhei.cl.job
 
 import android.content.Context
 import android.net.Uri
+import androidx.appcompat.app.AlertDialog
 import androidx.documentfile.provider.DocumentFile
 import by.liauko.siarhei.cl.R
-import by.liauko.siarhei.cl.activity.dialog.ProgressDialog
 import by.liauko.siarhei.cl.backup.BackupEntity
 import by.liauko.siarhei.cl.util.ApplicationUtil
 import by.liauko.siarhei.cl.util.MimeTypes
@@ -24,7 +24,7 @@ class ExportToFileAsyncJob(
     private val directoryUri: Uri,
     private val context: Context,
     private val backUpData: BackupEntity,
-    private val progressDialog: ProgressDialog
+    private val progressDialog: AlertDialog
 ) : AbstractAsyncJob() {
 
     override suspend fun doInBackground() {

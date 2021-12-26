@@ -3,7 +3,6 @@ package by.liauko.siarhei.cl.recyclerview.adapter
 import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import by.liauko.siarhei.cl.R
 import by.liauko.siarhei.cl.model.CarProfileModel
@@ -33,11 +32,8 @@ class RecyclerViewCarProfileAdapter(
         val bodyType = resources.getStringArray(R.array.body_types)[profileData.bodyType.ordinal]
         val fuelType = resources.getStringArray(R.array.fuel_type)[profileData.fuelType.ordinal]
 
-        if (profileData.id == profileId) {
-            holder.cardView.background = ResourcesCompat.getDrawable(resources, R.drawable.selected_car_profile_background, null)
-        } else {
-            holder.cardView.background = ResourcesCompat.getDrawable(resources, R.drawable.car_profile_background, null)
-        }
+        holder.cardView.checkedIcon = null
+        holder.cardView.isChecked = profileData.id == profileId
         holder.profileName.text = profileData.name
         holder.profileDetails.text =
             if (profileData.engineVolume != null) {

@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#c62828</color>
-    <color name="primaryDark">#c7c7c7</color>
-    <color name="secondary">#c62828</color>
-    <color name="secondaryVariant">#ab000d</color>
-    <color name="background">#eaeaea</color>
-    <color name="surface">#f2f2f2</color>
+    <color name="primary">#405742</color>
+    <color name="primaryDark">#C7C7C7</color>
+    <color name="primaryContainer">#405742</color>
+    <color name="onPrimaryContainer">#ECEDE8</color>
+    <color name="secondary">#405742</color>
+    <color name="secondaryContainer">#CED2BA</color>
+    <color name="onSecondaryContainer">#121212</color>
+    <color name="onSurfaceVariant">#121212</color>
+    <color name="secondaryVariant">#CED2BA</color>
+    <color name="background">#FAFAFA</color>
+    <color name="surface">#FAFAFA</color>
+    <color name="surfaceVariant">#FFF</color>
     <color name="error">#b00020</color>
     <color name="onPrimary">#121212</color>
-    <color name="onSecondary">#fafafa</color>
+    <color name="onSecondary">#FAFAFA</color>
     <color name="onBackground">#121212</color>
     <color name="onSurface">#121212</color>
-    <color name="onError">#fafafa</color>
+    <color name="onError">#FAFAFA</color>
 
-    <color name="toolbarPrimary">#fafafa</color>
+    <color name="toolbarPrimary">#FAFAFA</color>
 
-    <color name="datePickerBackground">#fafafa</color>
+    <color name="datePickerBackground">#0000</color>
+    <color name="inactiveElement">#50121212</color>
 
-    <color name="launchScreenBackground">#ab000d</color>
-    <color name="launchScreenAppLogo">#fafafa</color>
-    <color name="launchScreenCompanyLogo">#ff5131</color>
+    <color name="launchScreenBackground">#405742</color>
+    <color name="launchScreenAppLogo">#ECEDE8</color>
 
     <color name="carProfileCardBackground">@color/cardview_light_background</color>
-
-    <color name="white">#fff</color>
-    <color name="black">#000</color>
-    <color name="dialog_out_background">#6000</color>
 </resources>

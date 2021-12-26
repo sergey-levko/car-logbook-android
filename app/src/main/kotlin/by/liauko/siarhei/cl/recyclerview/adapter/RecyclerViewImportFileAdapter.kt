@@ -46,8 +46,7 @@ class RecyclerViewImportFileAdapter(
             val progressDialog = ApplicationUtil.createProgressDialog(
                 context,
                 R.string.dialog_progress_delete_file
-            )
-            progressDialog.show()
+            ).show()
             driveServiceHelper.deleteFile(dataSet[position].second)
                 .addOnCompleteListener {
                     removeItem(position)

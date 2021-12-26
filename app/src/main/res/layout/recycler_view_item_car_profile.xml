@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/car_profile_card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:focusable="true"
         android:clickable="true"
-        android:layout_margin="4dp"
-        app:cardCornerRadius="6dp"
-        android:elevation="1dp">
+        android:checkable="true"
+        android:layout_marginVertical="@dimen/card_view_margin_vertical"
+        android:layout_marginHorizontal="@dimen/card_view_margin_horizontal"
+        style="@style/Theme.App.CardView">
 
     <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="16dp" >
+            android:padding="@dimen/card_view_layout_padding">
 
         <LinearLayout
                 android:layout_width="match_parent"
@@ -24,7 +24,7 @@
                     android:id="@+id/car_profile_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="21sp"
+                    android:textSize="@dimen/car_profile_name_text_size"
                     android:textStyle="bold"
                     android:lines="1" />
 
@@ -47,4 +47,4 @@
 
     </RelativeLayout>
 
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

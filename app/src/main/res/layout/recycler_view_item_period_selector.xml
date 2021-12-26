@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Button xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/item_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Theme.App.SelectorButton"
+        android:layout_marginHorizontal="@dimen/dialog_data_button_horizontal_margin"
+        android:textSize="@dimen/dialog_data_button_text_size" />

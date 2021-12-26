@@ -5,13 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
-import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.DatePicker
 import androidx.appcompat.app.AppCompatActivity
 import by.liauko.siarhei.cl.R
 import by.liauko.siarhei.cl.databinding.ActivityLogDataBinding
 import by.liauko.siarhei.cl.util.DateConverter
+import com.google.android.material.datepicker.MaterialDatePicker
 import java.util.Calendar
 import java.util.Calendar.DAY_OF_MONTH
 import java.util.Calendar.MONTH
@@ -40,17 +40,17 @@ class LogDataActivity : AppCompatActivity(),
         if (id != defaultId) {
             fillData()
         }
-        updateDateButtonText()
+        updateDateText()
     }
 
     private fun initToolbar() {
-        viewBinding.logToolbar.setTitle(intent.getIntExtra("title", R.string.activity_log_title_add))
+        viewBinding.logToolbar.setTitle(intent.getIntExtra("title", R.string.activity_data_title_add))
         viewBinding.logToolbar.setNavigationIcon(R.drawable.arrow_left_white)
         viewBinding.logToolbar.setNavigationContentDescription(R.string.back_button_content_descriptor)
         viewBinding.logToolbar.setNavigationOnClickListener {
             handleBackAction()
         }
-        viewBinding.logToolbar.inflateMenu(R.menu.data_activity_menu)
+        viewBinding.logToolbar.inflateMenu(R.menu.menu_data_activity)
         viewBinding.logToolbar.setOnMenuItemClickListener {
             var result = false
             when (it.itemId) {
@@ -86,27 +86,29 @@ class LogDataActivity : AppCompatActivity(),
 
     private fun initElements() {
         viewBinding.logDate.inputType = InputType.TYPE_NULL
-        viewBinding.logDate.setOnClickListener { showDatePickerDialog(it) }
+        viewBinding.logDate.setOnClickListener { showDatePickerDialog() }
         viewBinding.logDate.setOnFocusChangeListener { view, isFocused ->
             if (isFocused) {
                 (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(view.windowToken, 0)
-                showDatePickerDialog(view)
+                showDatePickerDialog()
             }
         }
     }
 
-    private fun showDatePickerDialog(view: View) {
-        DatePickerDialog(
-            view.context,
-            R.style.Theme_App_DatePicker,
-            this,
-            calendar.get(YEAR),
-            calendar.get(MONTH),
-            calendar.get(DAY_OF_MONTH)
-        ).show()
+    private fun showDatePickerDialog() {
+        val dialogPicker = MaterialDatePicker.Builder.datePicker()
+            .setTitleText(getString(R.string.dialog_date_picker_title))
+            .setSelection(calendar.timeInMillis)
+            .setTheme(R.style.Theme_App_DatePicker)
+            .build()
+        dialogPicker.addOnPositiveButtonClickListener {
+            calendar.timeInMillis = it
+            updateDateText()
+        }
+        dialogPicker.show(supportFragmentManager, null)
     }
 
-    private fun updateDateButtonText() {
+    private fun updateDateText() {
         viewBinding.logDate.text?.clear()
         viewBinding.logDate.text?.append(DateConverter.convert(calendar))
     }
@@ -160,7 +162,7 @@ class LogDataActivity : AppCompatActivity(),
         calendar.set(YEAR, year)
         calendar.set(MONTH, month)
         calendar.set(DAY_OF_MONTH, dayOfMonth)
-        updateDateButtonText()
+        updateDateText()
     }
 
     override fun onBackPressed() {

@@ -4,18 +4,22 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:orientation="vertical"
         tools:context=".activity.LogDataActivity">
 
-    <androidx.appcompat.widget.Toolbar
-            android:id="@+id/log_toolbar"
+    <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:elevation="4dp"
-            android:background="@color/toolbarPrimary"
-            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/app_bar_margin_bottom">
 
-            android:layout_marginBottom="4dp" />
+        <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/log_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:subtitle="@string/activity_log_subtitle"/>
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <ScrollView
             android:layout_width="match_parent"
@@ -29,11 +33,9 @@
             <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginBottom="4dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp">
+                    style="@style/Theme.App.TextInputLayout"
+                    android:layout_marginVertical="@dimen/text_input_margin_vertical"
+                    android:layout_marginHorizontal="@dimen/text_input_margin_horizontal">
 
                 <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/log_title"
@@ -42,7 +44,7 @@
                         android:hint="@string/activity_log_title_hint"
                         android:drawableStart="@drawable/format_color_text_accent"
                         android:inputType="textCapSentences"
-                        android:drawablePadding="8dp" />
+                        android:drawablePadding="@dimen/edit_text_drawable_padding" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <LinearLayout
@@ -54,12 +56,11 @@
                 <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        style="@style/Theme.App.TextInputLayout"
                         android:layout_weight="1"
-                        android:layout_marginTop="4dp"
-                        android:layout_marginBottom="4dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="4dp">
+                        android:layout_marginVertical="@dimen/text_input_margin_vertical"
+                        android:layout_marginStart="@dimen/text_input_margin_horizontal"
+                        android:layout_marginEnd="@dimen/text_input_inline_margin_between_elements">
 
                     <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/log_mileage"
@@ -68,18 +69,17 @@
                             android:hint="@string/activity_data_mileage_parameter_hint"
                             android:drawableStart="@drawable/gauge_accent"
                             android:inputType="number"
-                            android:drawablePadding="8dp" />
+                            android:drawablePadding="@dimen/edit_text_drawable_padding" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        style="@style/Theme.App.TextInputLayout"
                         android:layout_weight="1"
-                        android:layout_marginTop="4dp"
-                        android:layout_marginBottom="4dp"
-                        android:layout_marginStart="4dp"
-                        android:layout_marginEnd="8dp">
+                        android:layout_marginVertical="@dimen/text_input_margin_vertical"
+                        android:layout_marginStart="@dimen/text_input_inline_margin_between_elements"
+                        android:layout_marginEnd="@dimen/text_input_margin_horizontal">
 
                     <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/log_date"
@@ -87,7 +87,7 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/activity_data_date_hint"
                             android:drawableStart="@drawable/calendar_accent"
-                            android:drawablePadding="8dp"
+                            android:drawablePadding="@dimen/edit_text_drawable_padding"
                             android:cursorVisible="false" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -96,11 +96,10 @@
             <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
+                    style="@style/Theme.App.TextInputLayout"
+                    android:layout_marginTop="@dimen/text_input_margin_vertical"
+                    android:layout_marginBottom="@dimen/multiline_text_input_margin_bottom"
+                    android:layout_marginHorizontal="@dimen/text_input_margin_horizontal"
                     android:layout_weight="1">
 
                 <com.google.android.material.textfield.TextInputEditText

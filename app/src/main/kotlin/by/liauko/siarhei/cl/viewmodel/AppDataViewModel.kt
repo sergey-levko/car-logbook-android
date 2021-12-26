@@ -59,7 +59,8 @@ class AppDataViewModel(private val repository: DataRepository<DataModel>) : View
     }
 
     /**
-     * Creates new entity in database, adds it to items list and sorts it by item's time in descending order
+     * Creates new entity in database and if created item has time value in time bounds according to
+     * [ApplicationUtil.dataPeriod] adds it to items list and sorts it by item's time in descending order
      *
      * @param item model containing data about new entity
      *
@@ -68,7 +69,12 @@ class AppDataViewModel(private val repository: DataRepository<DataModel>) : View
     fun add(item: DataModel) {
         viewModelScope.launch {
             val id = repository.insert(item)
-            if (id != -1L) {
+            val timeBounds = ApplicationUtil.prepareDateRange()
+            if (id != -1L
+                && ApplicationUtil.dataPeriod != DataPeriod.ALL
+                && item.time >= timeBounds.first
+                && item.time <= timeBounds.second
+            ) {
                 oldItems = list.toList()
                 item.id = id
                 list.add(item)

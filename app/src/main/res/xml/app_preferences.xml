@@ -19,14 +19,6 @@
                 app:useSimpleSummaryProvider="true"
                 android:entryValues="@array/period_values" />
 
-        <ListPreference
-                android:key="@string/theme_key"
-                android:defaultValue="SYSTEM"
-                android:title="@string/settings_preference_theme_title"
-                android:entries="@array/theme_mode"
-                app:useSimpleSummaryProvider="true"
-                android:entryValues="@array/theme_mode_values" />
-
         <Preference
                 app:fragment="by.liauko.siarhei.cl.activity.fragment.BackupSettingsFragment"
                 android:title="@string/settings_preference_backup_item_title"
