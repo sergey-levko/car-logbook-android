@@ -56,15 +56,18 @@
         <item>Electricity</item>
     </string-array>
 
-    <string-array name="theme_mode">
-        <item>System Default</item>
-        <item>Light</item>
-        <item>Dark</item>
-    </string-array>
-
-    <string-array name="theme_mode_values">
-        <item>SYSTEM</item>
-        <item>LIGHT</item>
-        <item>DARK</item>
+    <string-array name="month_names">
+        <item>JAN</item>
+        <item>FEB</item>
+        <item>MAR</item>
+        <item>APR</item>
+        <item>MAY</item>
+        <item>JUN</item>
+        <item>JUL</item>
+        <item>AUG</item>
+        <item>SEP</item>
+        <item>OCT</item>
+        <item>NOV</item>
+        <item>DEC</item>
     </string-array>
 </resources>

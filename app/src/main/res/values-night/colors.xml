@@ -1,25 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#ab000d</color>
+    <color name="primary">#ABBD9A</color>
     <color name="primaryDark">#202020</color>
-    <color name="secondary">#ab000d</color>
-    <color name="secondaryVariant">#e53935</color>
+    <color name="primaryContainer">#ABBD9A</color>
+    <color name="onPrimaryContainer">#405742</color>
+    <color name="secondary">#ABBD9A</color>
+    <color name="secondaryContainer">#405742</color>
+    <color name="onSecondaryContainer">#CCC</color>
+    <color name="onSurfaceVariant">#CCC</color>
     <color name="background">#202020</color>
-    <color name="surface">#1f1f1f</color>
+    <color name="surface">#202020</color>
     <color name="error">#ff6f60</color>
-    <color name="onPrimary">#fafafa</color>
+    <color name="onPrimary">#CCC</color>
     <color name="onSecondary">#121212</color>
-    <color name="onBackground">#fafafa</color>
-    <color name="onSurface">#fafafa</color>
+    <color name="onBackground">#FAFAFA</color>
+    <color name="onSurface">#FAFAFA</color>
     <color name="onError">#121212</color>
 
-    <color name="toolbarPrimary">#272727</color>
+    <color name="toolbarPrimary">#202020</color>
 
-    <color name="datePickerBackground">#272727</color>
+    <color name="datePickerBackground">#0000</color>
+    <color name="inactiveElement">#50FAFAFA</color>
 
     <color name="launchScreenBackground">#202020</color>
-    <color name="launchScreenAppLogo">#ab000d</color>
-    <color name="launchScreenCompanyLogo">#555</color>
+    <color name="launchScreenAppLogo">#ABBD9A</color>
 
     <color name="carProfileCardBackground">@color/cardview_dark_background</color>
 </resources>

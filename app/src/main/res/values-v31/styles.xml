@@ -1,0 +1,66 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="Theme.App" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/toolbarPrimary</item>
+        <item name="colorPrimaryVariant">@color/primaryDark</item>
+        <item name="colorPrimaryContainer">@color/primaryContainer</item>
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorSecondaryVariant">@color/secondaryVariant</item>
+        <item name="colorSecondaryContainer">@color/secondaryContainer</item>
+        <item name="android:colorBackground">@color/background</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorError">@color/error</item>
+        <item name="colorOnPrimary">@color/onPrimary</item>
+        <item name="colorOnPrimaryContainer">@color/onPrimaryContainer</item>
+        <item name="colorOnSecondary">@color/onSecondary</item>
+        <item name="colorOnSecondaryContainer">@color/onSecondaryContainer</item>
+        <item name="colorOnBackground">@color/onBackground</item>
+        <item name="colorOnSurface">@color/onSurface</item>
+        <item name="colorOnSurfaceVariant">@color/onSurfaceVariant</item>
+        <item name="colorOnError">@color/onError</item>
+        <item name="android:windowLightStatusBar">@bool/isLightStatusBar</item>
+    </style>
+
+    <style name="Theme.App.FullScreenDialog" parent="Theme.Material3.DayNight.Dialog">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primaryDark</item>
+        <item name="colorPrimaryVariant">@color/primaryDark</item>
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorSecondaryVariant">@color/secondaryVariant</item>
+        <item name="android:colorBackground">@color/background</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorError">@color/error</item>
+        <item name="colorOnPrimary">@color/onPrimary</item>
+        <item name="colorOnSecondary">@color/onSecondary</item>
+        <item name="colorOnBackground">@color/onBackground</item>
+        <item name="colorOnSurface">@color/onSurface</item>
+        <item name="colorOnError">@color/onError</item>
+    </style>
+
+    <style name="Theme.App.DatePicker" parent="ThemeOverlay.Material3.MaterialCalendar">
+        <item name="colorOnPrimary">@color/onSecondary</item>
+    </style>
+
+    <style name="Theme.App.Starter" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/launchScreenBackground</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/app_logo</item>
+
+        <item name="postSplashScreenTheme">@style/Theme.App</item>
+    </style>
+
+    <style name="Theme.App.FloatingActionButton" parent="Widget.Material3.ExtendedFloatingActionButton.Icon.Primary" />
+
+    <style name="Theme.App.BottomNavigationView" parent="Widget.Material3.BottomNavigationView" />
+
+    <style name="Theme.App.CardView" parent="Widget.Material3.CardView.Elevated" />
+
+    <style name="Theme.App.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox" />
+    <style name="Theme.App.TextInputLayout.ExposedDropdownMenu" parent="Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu" />
+
+    <style name="Theme.App.TextButton" parent="Widget.Material3.Button.OutlinedButton" />
+    <style name="Theme.App.DialogButton" parent="Widget.Material3.Button.TextButton.Dialog" />
+    <style name="Theme.App.YearButton" parent="Widget.Material3.Button.TextButton.Icon" />
+    <style name="Theme.App.SelectorButton" parent="Widget.Material3.Button.TextButton" />
+
+</resources>

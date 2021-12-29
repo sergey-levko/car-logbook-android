@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DiffUtil
@@ -34,6 +33,7 @@ import by.liauko.siarhei.cl.util.DataPeriod
 import by.liauko.siarhei.cl.util.DataType
 import by.liauko.siarhei.cl.viewmodel.AppDataViewModel
 import by.liauko.siarhei.cl.viewmodel.factory.AppDataViewModelFactory
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.runBlocking
 import java.util.Calendar
@@ -72,7 +72,6 @@ class DataFragment : Fragment() {
             rvAdapter.refreshNoDataTextVisibility()
         }
 
-        initToolbar(container!!, type)
         initRecyclerView()
 
         viewBinding.addFab.setOnClickListener {
@@ -96,20 +95,6 @@ class DataFragment : Fragment() {
         bindingObject = null
     }
 
-    private fun initToolbar(container: ViewGroup, type: DataType) {
-        val toolbar = (container.parent as ViewGroup).getChildAt(0) as Toolbar
-        toolbar.title = profileName
-        toolbar.menu.findItem(R.id.period_select_menu_date).isVisible = when (dataPeriod) {
-            DataPeriod.ALL -> false
-            else -> true
-        }
-        toolbar.menu.findItem(R.id.car_profile_menu).isVisible = true
-        toolbar.menu.findItem(R.id.export_to_pdf).isVisible = when (type) {
-            DataType.LOG -> true
-            DataType.FUEL -> false
-        }
-    }
-
     private fun initRecyclerView() {
         rvAdapter =
             RecyclerViewDataAdapter(
@@ -131,13 +116,13 @@ class DataFragment : Fragment() {
             layoutManager = LinearLayoutManager(context)
             adapter = rvAdapter
         }
-        viewBinding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+        viewBinding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (dy > 0) {
-                    viewBinding.addFab.hide()
+                    viewBinding.addFab.shrink()
                 } else if (dy < 0) {
-                    viewBinding.addFab.show()
+                    viewBinding.addFab.extend()
                 }
             }
         })
@@ -211,7 +196,7 @@ class DataFragment : Fragment() {
 
     private fun callLogEditActivityForResult(activityClass: Class<*>, item: LogDataModel) {
         val intent = Intent(requireContext(), activityClass)
-        intent.putExtra("title", R.string.activity_log_title_edit)
+        intent.putExtra("title", R.string.activity_data_title_edit)
         intent.putExtra("id", item.id)
         intent.putExtra("time", item.time)
         intent.putExtra("log_title", item.title)
@@ -222,7 +207,7 @@ class DataFragment : Fragment() {
 
     private fun callFuelConsumptionEditActivityForResult(activityClass: Class<*>, item: FuelDataModel) {
         val intent = Intent(requireContext(), activityClass)
-        intent.putExtra("title", R.string.activity_fuel_title_edit)
+        intent.putExtra("title", R.string.activity_data_title_edit)
         intent.putExtra("id", item.id)
         intent.putExtra("time", item.time)
         intent.putExtra("litres", item.litres)

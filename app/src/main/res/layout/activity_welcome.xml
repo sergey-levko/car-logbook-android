@@ -8,14 +8,19 @@
         android:orientation="vertical"
         tools:context=".activity.CarDataActivity">
 
-    <androidx.appcompat.widget.Toolbar
-            app:title="@string/app_name"
+    <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:elevation="4dp"
-            android:background="@color/toolbarPrimary"
-            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-            android:layout_marginBottom="4dp" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/app_bar_margin_bottom">
+
+        <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/car_profile_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:title="@string/app_name"
+                app:titleCentered="true"/>
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
             android:orientation="vertical"
@@ -28,37 +33,25 @@
                 android:id="@+id/activity_first_start_create"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
-                app:strokeColor="@color/primary"
-                app:strokeWidth="1dp"
+                style="@style/Theme.App.TextButton"
                 android:text="@string/activity_first_start_create"
-                android:layout_marginStart="24dp"
-                android:layout_marginEnd="24dp"
-                android:layout_marginBottom="4dp" />
+                android:layout_marginHorizontal="@dimen/welcome_button_margin_horizontal" />
 
         <com.google.android.material.button.MaterialButton
                 android:id="@+id/activity_first_start_drive_import"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
-                app:strokeColor="@color/primary"
-                app:strokeWidth="1dp"
+                style="@style/Theme.App.TextButton"
                 android:text="@string/activity_first_start_drive_import"
-                android:layout_marginStart="24dp"
-                android:layout_marginEnd="24dp"
-                android:layout_marginBottom="4dp" />
+                android:layout_marginHorizontal="@dimen/welcome_button_margin_horizontal" />
 
         <com.google.android.material.button.MaterialButton
                 android:id="@+id/activity_first_start_file_import"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
-                app:strokeColor="@color/primary"
-                app:strokeWidth="1dp"
+                style="@style/Theme.App.TextButton"
                 android:text="@string/activity_first_start_file_import"
-                android:layout_marginStart="24dp"
-                android:layout_marginEnd="24dp"
-                android:layout_marginBottom="4dp" />
+                android:layout_marginHorizontal="@dimen/welcome_button_margin_horizontal" />
 
     </LinearLayout>
 

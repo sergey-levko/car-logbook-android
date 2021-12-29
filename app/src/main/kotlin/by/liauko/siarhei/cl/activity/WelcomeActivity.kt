@@ -13,9 +13,9 @@ import by.liauko.siarhei.cl.backup.BackupService
 import by.liauko.siarhei.cl.backup.BackupTask
 import by.liauko.siarhei.cl.backup.PermissionService
 import by.liauko.siarhei.cl.backup.adapter.toBackupAdapter
-import by.liauko.siarhei.cl.databinding.ActivityFirstStartBinding
-import by.liauko.siarhei.cl.model.CarProfileModel
+import by.liauko.siarhei.cl.databinding.ActivityWelcomeBinding
 import by.liauko.siarhei.cl.job.ImportFromFileAsyncJob
+import by.liauko.siarhei.cl.model.CarProfileModel
 import by.liauko.siarhei.cl.repository.CarProfileRepository
 import by.liauko.siarhei.cl.util.AppResultCodes.BACKUP_OPEN_DOCUMENT
 import by.liauko.siarhei.cl.util.AppResultCodes.CAR_PROFILE_ADD
@@ -32,7 +32,7 @@ class WelcomeActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val viewBinding = ActivityFirstStartBinding.inflate(layoutInflater)
+        val viewBinding = ActivityWelcomeBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
         viewBinding.activityFirstStartCreate.setOnClickListener(this)

@@ -51,7 +51,7 @@ class CarDataActivity : AppCompatActivity() {
         viewBinding.carToolbar.setNavigationOnClickListener {
             handleBackAction()
         }
-        viewBinding.carToolbar.inflateMenu(R.menu.data_activity_menu)
+        viewBinding.carToolbar.inflateMenu(R.menu.menu_data_activity)
         viewBinding.carToolbar.setOnMenuItemClickListener {
             var result = false
             when (it.itemId) {

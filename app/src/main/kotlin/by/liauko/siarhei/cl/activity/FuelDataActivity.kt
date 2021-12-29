@@ -1,13 +1,11 @@
 package by.liauko.siarhei.cl.activity
 
-import android.app.DatePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.DatePicker
 import androidx.appcompat.app.AppCompatActivity
 import by.liauko.siarhei.cl.R
 import by.liauko.siarhei.cl.databinding.ActivityFuelDataBinding
@@ -15,13 +13,10 @@ import by.liauko.siarhei.cl.repository.FuelConsumptionRepository
 import by.liauko.siarhei.cl.util.DateConverter
 import by.liauko.siarhei.cl.viewmodel.FuelDataViewModel
 import by.liauko.siarhei.cl.viewmodel.factory.LastMileageViewModelFactory
+import com.google.android.material.datepicker.MaterialDatePicker
 import java.util.Calendar
-import java.util.Calendar.DAY_OF_MONTH
-import java.util.Calendar.MONTH
-import java.util.Calendar.YEAR
 
-class FuelDataActivity : AppCompatActivity(),
-    DatePickerDialog.OnDateSetListener {
+class FuelDataActivity : AppCompatActivity() {
 
     private val defaultId = -1L
 
@@ -58,13 +53,13 @@ class FuelDataActivity : AppCompatActivity(),
     }
 
     private fun initToolbar() {
-        viewBinding.fuelToolbar.setTitle(intent.getIntExtra("title", R.string.activity_fuel_title_add))
+        viewBinding.fuelToolbar.setTitle(intent.getIntExtra("title", R.string.activity_data_title_add))
         viewBinding.fuelToolbar.setNavigationIcon(R.drawable.arrow_left_white)
         viewBinding.fuelToolbar.setNavigationContentDescription(R.string.back_button_content_descriptor)
         viewBinding.fuelToolbar.setNavigationOnClickListener {
             handleBackAction()
         }
-        viewBinding.fuelToolbar.inflateMenu(R.menu.data_activity_menu)
+        viewBinding.fuelToolbar.inflateMenu(R.menu.menu_data_activity)
         viewBinding.fuelToolbar.setOnMenuItemClickListener {
             var result = false
             when (it.itemId) {
@@ -111,24 +106,26 @@ class FuelDataActivity : AppCompatActivity(),
         }
 
         viewBinding.fuelDate.inputType = InputType.TYPE_NULL
-        viewBinding.fuelDate.setOnClickListener { showDatePickerDialog(it) }
+        viewBinding.fuelDate.setOnClickListener { showDatePickerDialog() }
         viewBinding.fuelDate.setOnFocusChangeListener { view, isFocused ->
             if (isFocused) {
                 (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(view.windowToken, 0)
-                showDatePickerDialog(view)
+                showDatePickerDialog()
             }
         }
     }
 
-    private fun showDatePickerDialog(view: View) {
-        DatePickerDialog(
-            view.context,
-            R.style.Theme_App_DatePicker,
-            this,
-            calendar.get(YEAR),
-            calendar.get(MONTH),
-            calendar.get(DAY_OF_MONTH)
-        ).show()
+    private fun showDatePickerDialog() {
+        val dialogPicker = MaterialDatePicker.Builder.datePicker()
+            .setTitleText(getString(R.string.dialog_date_picker_title))
+            .setSelection(calendar.timeInMillis)
+            .setTheme(R.style.Theme_App_DatePicker)
+            .build()
+        dialogPicker.addOnPositiveButtonClickListener {
+            calendar.timeInMillis = it
+            updateDateText()
+        }
+        dialogPicker.show(supportFragmentManager, null)
     }
 
     private fun fillData() {
@@ -158,13 +155,6 @@ class FuelDataActivity : AppCompatActivity(),
         }
 
         return result
-    }
-
-    override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
-        calendar.set(YEAR, year)
-        calendar.set(MONTH, month)
-        calendar.set(DAY_OF_MONTH, dayOfMonth)
-        updateDateText()
     }
 
     override fun onBackPressed() {

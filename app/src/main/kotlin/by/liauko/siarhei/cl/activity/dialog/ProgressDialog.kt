@@ -1,21 +1,25 @@
 package by.liauko.siarhei.cl.activity.dialog
 
 import android.content.Context
-import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import by.liauko.siarhei.cl.databinding.DialogProgressBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class ProgressDialog(
-    context: Context,
-    private val message: String
-) : AlertDialog(context) {
+    applicationContext: Context,
+    message: String
+) {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val viewBinding = DialogProgressBinding.inflate(layoutInflater)
-        setContentView(viewBinding.root)
+    private val builder: MaterialAlertDialogBuilder
+
+    init {
+        val viewBinding = DialogProgressBinding.inflate(LayoutInflater.from(applicationContext))
         viewBinding.progressDialogText.text = message
-        setCancelable(false)
-        setCanceledOnTouchOutside(false)
+        builder = MaterialAlertDialogBuilder(applicationContext)
+            .setView(viewBinding.root)
+            .setCancelable(false)
     }
+
+    fun show(): AlertDialog = builder.show()
 }

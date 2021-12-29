@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="app_bar_margin_bottom">4dp</dimen>
+    <dimen name="text_input_margin_vertical">4dp</dimen>
+    <dimen name="text_input_margin_horizontal">8dp</dimen>
+    <dimen name="text_input_inline_margin_between_elements">4dp</dimen>
+    <dimen name="multiline_text_input_margin_bottom">8dp</dimen>
+    <dimen name="edit_text_drawable_padding">8dp</dimen>
+
+    <dimen name="fab_margin">24dp</dimen>
+    <dimen name="recycler_view_padding_bottom">100dp</dimen>
+
+    <dimen name="welcome_button_margin_horizontal">24dp</dimen>
+
+    <dimen name="dialog_layout_padding">8dp</dimen>
+    <dimen name="dialog_select_year_panel_margin">16dp</dimen>
+    <dimen name="dialog_select_year_button_margin">16dp</dimen>
+    <dimen name="dialog_select_year_button_padding">16dp</dimen>
+    <dimen name="dialog_data_button_horizontal_margin">10dp</dimen>
+
+    <dimen name="progress_dialog_margin_horizontal">32dp</dimen>
+    <dimen name="progress_dialog_margin_vertical">16dp</dimen>
+    <dimen name="progress_bar_margin_vertical">32dp</dimen>
+    <dimen name="progress_dialog_text_margin_start">16dp</dimen>
+
+    <dimen name="card_view_margin_vertical">4dp</dimen>
+    <dimen name="card_view_margin_horizontal">8dp</dimen>
+    <dimen name="card_view_layout_padding">16dp</dimen>
+    <dimen name="data_params_text_margin">4dp</dimen>
+
+    <!-- Text size -->
+    <dimen name="fragment_no_data_text_size">16sp</dimen>
+    <dimen name="dialog_data_button_text_size">16sp</dimen>
+    <dimen name="car_profile_name_text_size">21sp</dimen>
+    <dimen name="log_title_text_size">21sp</dimen>
+    <dimen name="fuel_text_size">20sp</dimen>
+</resources>

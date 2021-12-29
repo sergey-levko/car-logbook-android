@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import by.liauko.siarhei.cl.R
 import by.liauko.siarhei.cl.databinding.ActivityCarProfilesBinding
 import by.liauko.siarhei.cl.model.CarProfileModel
@@ -99,6 +100,16 @@ class CarProfilesActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(context)
             adapter = rvAdapter
         }
+        viewBinding.carProfileRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy > 0) {
+                    viewBinding.addCarProfileFab.shrink()
+                } else if (dy < 0) {
+                    viewBinding.addCarProfileFab.extend()
+                }
+            }
+        })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

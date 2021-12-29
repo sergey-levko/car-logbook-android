@@ -3,28 +3,23 @@ package by.liauko.siarhei.cl.activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewTreeObserver
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import by.liauko.siarhei.cl.R
+import by.liauko.siarhei.cl.activity.dialog.PeriodSelectorDialog
 import by.liauko.siarhei.cl.activity.fragment.DataFragment
 import by.liauko.siarhei.cl.activity.fragment.SettingsFragment
 import by.liauko.siarhei.cl.database.CarLogbookDatabase
 import by.liauko.siarhei.cl.databinding.ActivityMainBinding
 import by.liauko.siarhei.cl.job.ExportToPdfAsyncJob
-import by.liauko.siarhei.cl.repository.AppDataRepositoryFactory
 import by.liauko.siarhei.cl.util.AppResultCodes.CAR_PROFILE_SHOW_LIST
 import by.liauko.siarhei.cl.util.AppResultCodes.CAR_PROFILE_WELCOME
 import by.liauko.siarhei.cl.util.AppResultCodes.LOG_EXPORT
@@ -37,6 +32,7 @@ import by.liauko.siarhei.cl.util.ApplicationUtil.profileName
 import by.liauko.siarhei.cl.util.ApplicationUtil.type
 import by.liauko.siarhei.cl.util.DataPeriod
 import by.liauko.siarhei.cl.util.DataType
+import kotlinx.coroutines.launch
 import java.util.Calendar
 
 class MainActivity : AppCompatActivity(),
@@ -45,53 +41,46 @@ class MainActivity : AppCompatActivity(),
     private lateinit var viewBinding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val preferences = getSharedPreferences(getString(R.string.shared_preferences_name), Context.MODE_PRIVATE)
-        type = DataType.valueOf(preferences.getString(getString(R.string.main_screen_key), "LOG") ?: "LOG")
-        dataPeriod = DataPeriod.valueOf(preferences.getString(getString(R.string.period_key), "MONTH") ?: "MONTH")
-        val defaultUiMode = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P)
-            AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
-        else
-            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-        val uiMode = preferences.getInt(getString(R.string.theme_key), defaultUiMode)
-        AppCompatDelegate.setDefaultNightMode(uiMode)
-
         super.onCreate(savedInstanceState)
+        installSplashScreen()
         viewBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
-//        var ready = false
-//        Handler(Looper.getMainLooper()).postDelayed({
-//            ready = true
-//        }, 1000)
-//        model = ViewModelProvider(this).get(AppDataViewModel::class.java)
-//        val loadDataJob = model.loadItems()
-//        val content = findViewById<View>(android.R.id.content)
-//        content.viewTreeObserver.addOnPreDrawListener(
-//            object : ViewTreeObserver.OnPreDrawListener {
-//                override fun onPreDraw() =
-//                    if (loadDataJob.isCompleted) {
-//                        content.viewTreeObserver.removeOnPreDrawListener(this)
-//                        true
-//                    } else {
-//                        false
-//                    }
-//            }
-//        )
+        val preferences = getSharedPreferences(getString(R.string.shared_preferences_name), Context.MODE_PRIVATE)
 
-        profileId = preferences.getLong(getString(R.string.car_profile_id_key), -1L)
-        profileName = preferences.getString(getString(R.string.car_profile_name_key), getString(R.string.app_name)) ?: EMPTY_STRING
+        val job = lifecycleScope.launch {
+            type = DataType.valueOf(preferences.getString(getString(R.string.main_screen_key), "LOG") ?: "LOG")
+            dataPeriod = DataPeriod.valueOf(preferences.getString(getString(R.string.period_key), "MONTH") ?: "MONTH")
 
-        initToolbar()
-        initBottomNavigationView()
+            profileId = preferences.getLong(getString(R.string.car_profile_id_key), -1L)
+            profileName = preferences.getString(getString(R.string.car_profile_name_key), getString(R.string.app_name)) ?: EMPTY_STRING
+
+            initToolbar()
+            initBottomNavigationView()
+        }
+        val content = findViewById<View>(android.R.id.content)
+        content.viewTreeObserver.addOnPreDrawListener(
+            object : ViewTreeObserver.OnPreDrawListener {
+                override fun onPreDraw() =
+                    if (job.isCompleted) {
+                        content.viewTreeObserver.removeOnPreDrawListener(this)
+                        true
+                    } else {
+                        false
+                    }
+            }
+        )
     }
 
     private fun initToolbar() {
-        viewBinding.toolbar.inflateMenu(R.menu.period_select_menu)
+        viewBinding.toolbar.inflateMenu(R.menu.menu_main_toolbar)
         viewBinding.toolbar.setOnMenuItemClickListener {
             var result = false
             when (it.itemId) {
                 R.id.period_select_menu_date -> {
-                    startActivityForResult(Intent(applicationContext, PeriodSelectorActivity::class.java), PERIOD_DIALOG_RESULT)
+                    val dialog = PeriodSelectorDialog(this)
+                    dialog.setOnDismissListener { loadFragment() }
+                    dialog.show()
                     result = true
                 }
                 R.id.car_profile_menu -> {
@@ -200,9 +189,23 @@ class MainActivity : AppCompatActivity(),
 
     private fun loadDataFragment() {
         if (profileId != -1L) {
+            updateToolbar()
             loadFragment(DataFragment())
         } else {
             startActivityForResult(Intent(applicationContext, WelcomeActivity::class.java), CAR_PROFILE_WELCOME)
+        }
+    }
+
+    private fun updateToolbar() {
+        viewBinding.toolbar.title = profileName
+        viewBinding.toolbar.menu.findItem(R.id.period_select_menu_date).isVisible = when (dataPeriod) {
+            DataPeriod.ALL -> false
+            else -> true
+        }
+        viewBinding.toolbar.menu.findItem(R.id.car_profile_menu).isVisible = true
+        viewBinding.toolbar.menu.findItem(R.id.export_to_pdf).isVisible = when (type) {
+            DataType.LOG -> true
+            DataType.FUEL -> false
         }
     }
 }

@@ -113,8 +113,7 @@ object BackupService {
         val progressDialog = ApplicationUtil.createProgressDialog(
             context,
             R.string.dialog_backup_progress_open_file_list
-        )
-        progressDialog.show()
+        ).show()
 
         var folderId = DRIVE_ROOT_FOLDER_ID
         driveServiceHelper!!.getFolderIdByName("car-logbook-backup")
@@ -136,8 +135,7 @@ object BackupService {
         val progressDialog = ApplicationUtil.createProgressDialog(
             context,
             R.string.dialog_backup_progress_export_text
-        )
-        progressDialog.show()
+        ).show()
 
         runBlocking {
             val backupData = prepareBackupData(context)
@@ -216,8 +214,7 @@ object BackupService {
         val progressDialog = ApplicationUtil.createProgressDialog(
             context,
             R.string.dialog_backup_progress_import_text
-        )
-        progressDialog.show()
+        ).show()
 
         driveServiceHelper.readBackupFile(fileId)
             .addOnCompleteListener {
@@ -262,8 +259,7 @@ object BackupService {
         val progressDialog = ApplicationUtil.createProgressDialog(
             context,
             R.string.dialog_backup_progress_export_text
-        )
-        progressDialog.show()
+        ).show()
 
         runBlocking {
             val logEntities =

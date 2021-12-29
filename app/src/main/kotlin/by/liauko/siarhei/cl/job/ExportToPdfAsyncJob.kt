@@ -8,9 +8,9 @@ import android.graphics.pdf.PdfDocument
 import android.net.Uri
 import android.text.StaticLayout
 import android.text.TextPaint
+import androidx.appcompat.app.AlertDialog
 import androidx.documentfile.provider.DocumentFile
 import by.liauko.siarhei.cl.R
-import by.liauko.siarhei.cl.activity.dialog.ProgressDialog
 import by.liauko.siarhei.cl.model.LogDataModel
 import by.liauko.siarhei.cl.repository.CarProfileRepository
 import by.liauko.siarhei.cl.repository.LogRepository
@@ -36,14 +36,13 @@ class ExportToPdfAsyncJob(
     private val a4Height = 3508
     private val space = " "
 
-    private lateinit var progressDialog: ProgressDialog
+    private lateinit var progressDialog: AlertDialog
 
     override fun onPreExecute() {
         progressDialog = ApplicationUtil.createProgressDialog(
             context,
             R.string.dialog_backup_progress_export_text
-        )
-        progressDialog.show()
+        ).show()
     }
 
     override suspend fun doInBackground() {

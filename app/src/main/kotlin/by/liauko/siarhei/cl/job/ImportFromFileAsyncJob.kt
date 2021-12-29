@@ -3,8 +3,8 @@ package by.liauko.siarhei.cl.job
 import android.app.Activity
 import android.content.Context
 import android.net.Uri
+import androidx.appcompat.app.AlertDialog
 import by.liauko.siarhei.cl.R
-import by.liauko.siarhei.cl.activity.dialog.ProgressDialog
 import by.liauko.siarhei.cl.backup.BackupEntity
 import by.liauko.siarhei.cl.backup.BackupService
 import by.liauko.siarhei.cl.util.ApplicationUtil
@@ -26,14 +26,13 @@ class ImportFromFileAsyncJob(
 
     private val emptyJsonObject = "{}"
 
-    private lateinit var progressDialog: ProgressDialog
+    private lateinit var progressDialog: AlertDialog
 
     override fun onPreExecute() {
         progressDialog = ApplicationUtil.createProgressDialog(
             context,
             R.string.dialog_backup_progress_import_text
-        )
-        progressDialog.show()
+        ).show()
     }
 
     override suspend fun doInBackground() {

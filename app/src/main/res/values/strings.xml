@@ -18,17 +18,17 @@
 
     <string name="activity_data_date_hint">Date</string>
     <string name="activity_data_mileage_parameter_hint">Mileage (km)</string>
+    <string name="activity_data_title_add">Create</string>
+    <string name="activity_data_title_edit">Edit</string>
 
-    <string name="activity_fuel_title_add">New fuel consumption record</string>
-    <string name="activity_fuel_title_edit">Edit fuel consumption record</string>
+    <string name="activity_fuel_subtitle">Fuel consumption</string>
     <string name="activity_fuel_volume_parameter_hint">Volume (L)</string>
     <string name="activity_fuel_distance_parameter_hint">Distance (km)</string>
     <string name="activity_fuel_volume_parameter_error">Volume value is required and can not be 0</string>
     <string name="activity_fuel_distance_parameter_error">Distance value is required and can not be 0</string>
     <string name="activity_fuel_mileage_error">Mileage value is required</string>
 
-    <string name="activity_log_title_add">Add log record</string>
-    <string name="activity_log_title_edit">Edit log record</string>
+    <string name="activity_log_subtitle">Log</string>
     <string name="activity_log_title_hint">Title</string>
     <string name="activity_log_text_hint">Text</string>
     <string name="activity_log_save_button">Save</string>
@@ -52,25 +52,12 @@
     <string name="settings_feedback_email_device">Device:</string>
     <string name="settings_preference_terms_title">Terms &amp; Conditions</string>
     <string name="settings_preference_terms_url" translatable="false">https://www.gnu.org/licenses/gpl-3.0.en.html</string>
-    <string name="settings_preference_theme_title">Theme</string>
     <string name="settings_preference_period_title">Period</string>
     <string name="settings_preference_backup_item_title">Backup &amp; reset</string>
     <string name="settings_preference_backup_item_summary">Backup and reset options</string>
 
-    <string name="period_dialog_jan">JAN</string>
-    <string name="period_dialog_feb">FEB</string>
-    <string name="period_dialog_mar">MAR</string>
-    <string name="period_dialog_apr">APR</string>
-    <string name="period_dialog_may">MAY</string>
-    <string name="period_dialog_jun">JUN</string>
-    <string name="period_dialog_jul">JUL</string>
-    <string name="period_dialog_aug">AUG</string>
-    <string name="period_dialog_sep">SEP</string>
-    <string name="period_dialog_oct">OCT</string>
-    <string name="period_dialog_nov">NOV</string>
-    <string name="period_dialog_dec">DEC</string>
     <string name="period_dialog_positive_button_month">This month</string>
-    <string name="period_dialog_positive_button_year">Select</string>
+    <string name="period_dialog_positive_button_year">This year</string>
     <string name="period_dialog_previous_year_button_content_description">Previous</string>
     <string name="period_dialog_next_year_button_content_description">Next</string>
 
@@ -127,6 +114,8 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
 
+    <string name="back_button_content_descriptor">Back</string>
+
     <string name="activity_car_title_create">Create new car profile</string>
     <string name="activity_car_title_edit">Edit car profile</string>
     <string name="activity_car_name_hint">Car profile name</string>
@@ -160,9 +149,10 @@
     <string name="log_export_description_label">Description</string>
     <string name="log_export_no_entries">No entries</string>
 
+    <string name="dialog_date_picker_title">Select date</string>
+
     <string name="shared_preferences_name" translatable="false">app_preferences</string>
     <string name="main_screen_key" translatable="false">main_screen</string>
-    <string name="theme_key" translatable="false">theme</string>
     <string name="period_key" translatable="false">period</string>
     <string name="backup_switcher_key" translatable="false">backup_switcher</string>
     <string name="backup_frequency_key" translatable="false">backup_frequency</string>

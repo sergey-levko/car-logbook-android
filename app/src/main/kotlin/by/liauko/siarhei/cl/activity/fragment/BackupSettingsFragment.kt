@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.widget.Toolbar
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -27,6 +26,8 @@ import by.liauko.siarhei.cl.util.AppResultCodes.BACKUP_OPEN_DOCUMENT
 import by.liauko.siarhei.cl.util.AppResultCodes.BACKUP_OPEN_DOCUMENT_TREE
 import by.liauko.siarhei.cl.util.AppResultCodes.GOOGLE_SIGN_IN
 import by.liauko.siarhei.cl.util.AppResultCodes.INTERNET_PERMISSION
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class BackupSettingsFragment : PreferenceFragmentCompat() {
@@ -48,7 +49,8 @@ class BackupSettingsFragment : PreferenceFragmentCompat() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val toolbar = (container!!.parent as ViewGroup).getChildAt(0) as Toolbar
+        val toolbar =
+            ((container!!.parent as ViewGroup).getChildAt(0) as AppBarLayout).getChildAt(0) as MaterialToolbar
         toolbar.title = getString(R.string.settings_preference_backup_title)
         toolbar.setNavigationIcon(R.drawable.arrow_left_white)
         toolbar.setNavigationContentDescription(R.string.back_button_content_descriptor)

@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:focusable="true"
         android:clickable="true"
-        android:layout_margin="4dp"
-        app:cardCornerRadius="6dp"
-        android:elevation="1dp">
+        android:layout_marginVertical="@dimen/card_view_margin_vertical"
+        android:layout_marginHorizontal="@dimen/card_view_margin_horizontal"
+        style="@style/Theme.App.CardView">
 
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
+            android:padding="@dimen/card_view_layout_padding"
             android:baselineAligned="false">
 
         <LinearLayout
@@ -28,7 +27,7 @@
                     android:id="@+id/fuel_item_result"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="20sp" />
+                    android:textSize="@dimen/fuel_text_size" />
 
         </LinearLayout>
 
@@ -43,16 +42,16 @@
                     android:id="@+id/fuel_item_parameters"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp" />
+                    android:layout_marginBottom="@dimen/data_params_text_margin" />
 
             <TextView
                     android:id="@+id/fuel_item_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"/>
+                    android:layout_marginTop="@dimen/data_params_text_margin"/>
 
         </LinearLayout>
 
     </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>
