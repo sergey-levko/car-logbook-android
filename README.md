@@ -3,7 +3,7 @@
   <h1 align="center">CAR LOGBOOK</h1>
 </p>
 
-<p align="center">THE APPLICATION IS ARCHIVED NO LONGER AVAILABLE IN GOOGLE PLAY STORE</p>
+<p align="center">THE APPLICATION IS ARCHIVED AND NO LONGER AVAILABLE IN GOOGLE PLAY STORE</p>
 <p align="center">Android application for storing data about car maintenance and fuel consumption in convenient way.</p>
 
 ## About
