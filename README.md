@@ -3,11 +3,7 @@
   <h1 align="center">CAR LOGBOOK</h1>
 </p>
 
-<p align="center">
-  <a href="https://play.google.com/store/apps/details?id=by.liauko.siarhei.cl" target="_blank" rel="noopener noreferrer">
-    <img src="https://github.com/sergey-levv/car-logbook-android/blob/master/github-resources/get-it-on-google-play-badge.svg" alt="google_play" />
-  </a>
-</p>
+<p align="center">THE APPLICATION IS ARCHIVED NO LONGER AVAILABLE IN GOOGLE PLAY STORE</p>
 <p align="center">Android application for storing data about car maintenance and fuel consumption in convenient way.</p>
 
 ## About
